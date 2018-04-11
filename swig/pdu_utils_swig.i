@@ -1,0 +1,120 @@
+/* -*- c++ -*- */
+
+#define PDU_UTILS_API
+
+%include "gnuradio.i"			// the common stuff
+
+//load generated python docstrings
+%include "pdu_utils_swig_doc.i"
+
+%{
+#include "pdu_utils/constants.h"
+#include "pdu_utils/pdu_to_bursts_b.h"
+#include "pdu_utils/pdu_to_bursts_s.h"
+#include "pdu_utils/pdu_to_bursts_f.h"
+#include "pdu_utils/pdu_to_bursts_c.h"
+#include "pdu_utils/tags_to_pdu_b.h"
+#include "pdu_utils/tags_to_pdu_s.h"
+#include "pdu_utils/tags_to_pdu_f.h"
+#include "pdu_utils/tags_to_pdu_c.h"
+#include "pdu_utils/take_skip_to_pdu_b.h"
+#include "pdu_utils/take_skip_to_pdu_s.h"
+#include "pdu_utils/take_skip_to_pdu_f.h"
+#include "pdu_utils/take_skip_to_pdu_c.h"
+#include "pdu_utils/tag_message_trigger_b.h"
+#include "pdu_utils/tag_message_trigger_s.h"
+#include "pdu_utils/tag_message_trigger_i.h"
+#include "pdu_utils/tag_message_trigger_f.h"
+#include "pdu_utils/tag_message_trigger_c.h"
+#include "pdu_utils/pdu_gmsk_fc.h"
+#include "pdu_utils/pdu_set_m.h"
+#include "pdu_utils/pdu_burst_combiner.h"
+#include "pdu_utils/pdu_split.h"
+#include "pdu_utils/pdu_fir_filter_fff.h"
+#include "pdu_utils/pdu_pfb_resamp_ff.h"
+#include "pdu_utils/message_counter.h"
+#include "pdu_utils/message_gate.h"
+#include "pdu_utils/message_emitter.h"
+#include "pdu_utils/message_keep_1_in_n.h"
+#include "pdu_utils/pdu_preamble.h"
+#include "pdu_utils/pack_unpack.h"
+#include "pdu_utils/extract_metadata.h"
+#include "pdu_utils/upsample.h"
+#include "pdu_utils/pdu_add_noise.h"
+#include "pdu_utils/msg_drop_random.h"
+#include "pdu_utils/pdu_head_tail.h"
+#include "pdu_utils/time_delta.h"
+%}
+
+%include "pdu_utils/constants.h"
+
+%include "pdu_utils/pdu_to_bursts_b.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_b);
+%include "pdu_utils/pdu_to_bursts_s.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_s);
+%include "pdu_utils/pdu_to_bursts_f.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_f);
+%include "pdu_utils/pdu_to_bursts_c.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_c);
+%include "pdu_utils/tags_to_pdu_b.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_b);
+%include "pdu_utils/tags_to_pdu_s.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_s);
+%include "pdu_utils/tags_to_pdu_f.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_f);
+%include "pdu_utils/tags_to_pdu_c.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_c);
+%include "pdu_utils/take_skip_to_pdu_b.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_b);
+%include "pdu_utils/take_skip_to_pdu_s.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_s);
+%include "pdu_utils/take_skip_to_pdu_f.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_f);
+%include "pdu_utils/take_skip_to_pdu_c.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_c);
+%include "pdu_utils/tag_message_trigger_b.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_b);
+%include "pdu_utils/tag_message_trigger_s.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_s);
+%include "pdu_utils/tag_message_trigger_i.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_i);
+%include "pdu_utils/tag_message_trigger_f.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_f);
+%include "pdu_utils/tag_message_trigger_c.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_c);
+%include "pdu_utils/pdu_gmsk_fc.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_gmsk_fc);
+%include "pdu_utils/pdu_set_m.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_set_m);
+%include "pdu_utils/pdu_burst_combiner.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_burst_combiner);
+%include "pdu_utils/pdu_split.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_split);
+%include "pdu_utils/pdu_fir_filter_fff.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fir_filter_fff);
+%include "pdu_utils/pdu_pfb_resamp_ff.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_pfb_resamp_ff);
+%include "pdu_utils/message_counter.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, message_counter);
+%include "pdu_utils/message_gate.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, message_gate);
+%include "pdu_utils/message_emitter.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, message_emitter);
+%include "pdu_utils/message_keep_1_in_n.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, message_keep_1_in_n);
+%include "pdu_utils/pdu_preamble.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_preamble);
+%include "pdu_utils/pack_unpack.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pack_unpack);
+%include "pdu_utils/extract_metadata.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, extract_metadata);
+%include "pdu_utils/upsample.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, upsample);
+%include "pdu_utils/pdu_add_noise.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_add_noise);
+%include "pdu_utils/msg_drop_random.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, msg_drop_random);
+%include "pdu_utils/pdu_head_tail.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_head_tail);
+%include "pdu_utils/time_delta.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, time_delta);
