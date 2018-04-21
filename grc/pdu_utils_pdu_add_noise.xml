@@ -4,7 +4,7 @@
   <key>pdu_utils_pdu_add_noise</key>
   <category>[Sandia]/PDU Utilities/Debug Utils</category>
   <import>import pdu_utils</import>
-  <make>pdu_utils.pdu_add_noise($noise_level, $offset, $scale)</make>
+  <make>pdu_utils.pdu_add_noise($level, $offset, $scale)</make>
 
   <callback>set_noise_level($noise_level)</callback>
   <callback>set_offset($offset)</callback>
@@ -32,13 +32,13 @@
   <check>$level &gt;= 0</check>
 
   <sink>
-    <name>in</name>
+    <name>pdu_in</name>
     <type>message</type>
     <optional>1</optional>
   </sink>
 
   <source>
-    <name>out</name>
+    <name>pdu_out</name>
     <type>message</type>
     <optional>1</optional>
   </source>
