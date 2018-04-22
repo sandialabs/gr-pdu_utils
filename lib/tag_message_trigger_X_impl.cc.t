@@ -183,7 +183,7 @@ namespace gr {
 
             // if we have reached the transmit limit, disarm and continue
             if (d_tx_limit == 0) {
-              GR_LOG_NOTICE(d_logger, "not firing, TX Limit reached")
+              GR_LOG_NOTICE(d_logger, "not firing, TX Limit reached");
               d_armed = false;
 
             // otherwise fire the burst

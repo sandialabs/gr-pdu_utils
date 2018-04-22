@@ -67,7 +67,7 @@ list(APPEND filter_libs
 )
 
 add_library(gnuradio-pdu_utils SHARED ${pdu_utils_sources})
-target_link_libraries(gnuradio-pdu_utils ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
+target_link_libraries(gnuradio-pdu_utils ${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
 set_target_properties(gnuradio-pdu_utils PROPERTIES DEFINE_SYMBOL "gnuradio_pdu_utils_EXPORTS")
 add_dependencies(gnuradio-pdu_utils gnuradio-filter
   pdu_utils_generated_includes pdu_utils_generated_swigs
