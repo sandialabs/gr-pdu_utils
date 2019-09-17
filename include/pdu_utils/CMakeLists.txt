@@ -41,8 +41,10 @@ install(FILES
     pdu_set_m.h
     pdu_burst_combiner.h
     pdu_split.h
-    pdu_fir_filter_fff.h
+    pdu_fir_filter.h
+    pdu_pfb_resamp_cc.h
     pdu_pfb_resamp_ff.h
+    #pdu_rational_resampler_cc.h
     message_counter.h
     message_gate.h
     message_emitter.h
@@ -54,5 +56,17 @@ install(FILES
     pdu_add_noise.h
     msg_drop_random.h
     pdu_head_tail.h
-    time_delta.h DESTINATION include/pdu_utils
+    time_delta.h
+    pdu_length_filter.h
+    pdu_logger.h
+    pdu_clock_recovery.h
+    pdu_align.h
+    pdu_range_filter.h
+    pdu_round_robin.h
+    pdu_flow_ctrl_helper.h
+    pdu_binary_tools.h
+    pdu_commutator.h
+    pdu_downsample.h
+    pdu_fine_time_measure.h
+    pdu_complex_to_mag2.h DESTINATION include/pdu_utils
 )

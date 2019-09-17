@@ -137,11 +137,7 @@ namespace gr {
        * pair - calculate the delta and apply accordingly.
        */
       double delta;
-      if (d_sob_tag_offset >= d_known_time_offset) {
-        delta = (d_sob_tag_offset - d_known_time_offset) / d_samp_rate;
-      } else {
-        delta = -1.0 * (d_known_time_offset - d_sob_tag_offset) / d_samp_rate;
-      }
+      delta = (d_sob_tag_offset - d_known_time_offset) / d_samp_rate;
       int int_delta = (int)delta;
       delta -= int_delta;
 

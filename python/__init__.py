@@ -31,6 +31,7 @@ except ImportError:
 	pass
 
 # import any pure python here
+from pdu_flow_ctrl import pdu_flow_ctrl
 try: from qt_pdu_source import qt_pdu_source
 except: print "QT PDU Source not available (import PyQt4 failed)"
 

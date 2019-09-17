@@ -29,8 +29,9 @@ install(FILES
     pdu_utils_pdu_head_tail.xml
     pdu_utils_pdu_burst_combiner.xml
     pdu_utils_take_skip_to_pdu.xml
-    pdu_utils_pdu_fir_filter_fff.xml
-    pdu_utils_pdu_pfb_resamp_ff.xml
+    pdu_utils_pdu_fir_filter.xml
+    pdu_utils_pdu_pfb_resamp.xml
+    #pdu_utils_pdu_rational_resampler_cc.xml
     pdu_utils_message_counter.xml
     pdu_utils_message_gate.xml
     pdu_utils_message_emitter.xml
@@ -41,5 +42,17 @@ install(FILES
     pdu_utils_upsample.xml
     pdu_utils_pdu_add_noise.xml
     pdu_utils_msg_drop_random.xml
-    pdu_utils_time_delta.xml DESTINATION share/gnuradio/grc/blocks
+    pdu_utils_time_delta.xml
+    pdu_utils_pdu_length_filter.xml
+    pdu_utils_pdu_logger.xml
+    pdu_utils_pdu_clock_recovery.xml
+    pdu_utils_pdu_align.xml
+    pdu_utils_pdu_range_filter.xml
+    pdu_utils_pdu_round_robin.xml
+    pdu_utils_pdu_flow_ctrl.xml
+    pdu_utils_pdu_binary_tools.xml
+    pdu_utils_pdu_commutator.xml
+    pdu_utils_pdu_downsample.xml
+    pdu_utils_pdu_fine_time_measure.xml
+    pdu_utils_pdu_complex_to_mag2.xml DESTINATION share/gnuradio/grc/blocks
 )

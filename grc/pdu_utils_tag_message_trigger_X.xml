@@ -85,12 +85,12 @@
     <type>enum</type>
     <option>
       <name>Message</name>
-      <key>0</key>
+      <key>False</key>
       <opt>hide:all</opt>
     </option>
     <option>
       <name>Timed PDU</name>
-      <key>1</key>
+      <key>True</key>
       <opt>hide:part</opt>
     </option>
   </param>

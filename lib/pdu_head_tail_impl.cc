@@ -101,7 +101,7 @@ namespace gr {
       tail_bits_f.resize(d_length, 0);
 
       if (d_input_type == INPUTTYPE_UNPACKED_BYTE) {
-        if (!(is_dict(meta) && pmt::is_u8vector(v_data))) {
+        if (!(pmt::is_dict(meta) && pmt::is_u8vector(v_data))) {
           GR_LOG_WARN(d_logger, "PMT is not a U8 PDU, dropping");
           return;
         }
@@ -122,7 +122,7 @@ namespace gr {
         }
 
       } else if (d_input_type == INPUTTYPE_FLOAT) {
-        if (!(is_dict(meta) && pmt::is_f32vector(v_data))) {
+        if (!(pmt::is_dict(meta) && pmt::is_f32vector(v_data))) {
           GR_LOG_WARN(d_logger, "PMT is not a F32 PDU, dropping");
           return;
         }
@@ -143,7 +143,7 @@ namespace gr {
         }
 
       } else if (d_input_type == INPUTTYPE_PACKED_BYTE) {
-        if (!(is_dict(meta) && pmt::is_u8vector(v_data))) {
+        if (!(pmt::is_dict(meta) && pmt::is_u8vector(v_data))) {
           GR_LOG_WARN(d_logger, "PMT is not a U8 PDU, dropping");
           return;
         }

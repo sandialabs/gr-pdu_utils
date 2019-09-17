@@ -39,8 +39,10 @@ list(APPEND pdu_utils_sources
     pdu_set_m_impl.cc
     pdu_burst_combiner_impl.cc
     pdu_split_impl.cc
-    pdu_fir_filter_fff_impl.cc
+    pdu_fir_filter_impl.cc
+    pdu_pfb_resamp_cc_impl.cc
     pdu_pfb_resamp_ff_impl.cc
+    #pdu_rational_resampler_cc_impl.cc
     message_counter_impl.cc
     message_gate_impl.cc
     message_emitter_impl.cc
@@ -52,7 +54,19 @@ list(APPEND pdu_utils_sources
     pdu_add_noise_impl.cc
     msg_drop_random_impl.cc
     pdu_head_tail_impl.cc
-    time_delta_impl.cc )
+    time_delta_impl.cc
+    pdu_length_filter_impl.cc
+    pdu_logger_impl.cc
+    pdu_clock_recovery_impl.cc
+    pdu_align_impl.cc
+    pdu_range_filter_impl.cc
+    pdu_round_robin_impl.cc
+    pdu_flow_ctrl_helper.cc
+    pdu_binary_tools_impl.cc
+    pdu_commutator_impl.cc
+    pdu_downsample_impl.cc 
+    pdu_fine_time_measure_impl.cc
+    pdu_complex_to_mag2_impl.cc )
 
 set(pdu_utils_sources "${pdu_utils_sources}" PARENT_SCOPE)
 if(NOT pdu_utils_sources)
@@ -78,6 +92,7 @@ if(APPLE)
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
     )
 endif(APPLE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx -O2")
 
 ########################################################################
 # Install built library files
@@ -92,11 +107,10 @@ GR_LIBRARY_FOO(gnuradio-pdu_utils RUNTIME_COMPONENT "pdu_utils_runtime" DEVEL_CO
 include(GrTest)
 
 include_directories(${CPPUNIT_INCLUDE_DIRS})
-
 list(APPEND test_pdu_utils_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_pdu_utils.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_utils.cc
-)
+    )
 
 add_executable(test-pdu_utils ${test_pdu_utils_sources})
 

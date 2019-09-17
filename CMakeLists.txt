@@ -53,6 +53,7 @@ if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
     #http://gcc.gnu.org/wiki/Visibility
     add_definitions(-fvisibility=hidden)
 endif()
+set (CMAKE_CXX_STANDARD 11)
 
 ########################################################################
 # Find boost
@@ -80,6 +81,16 @@ endif()
 ########################################################################
 include(GrMiscUtils) #compiler flag check
 GR_LOGGING()
+
+########################################################################
+# Enable C++11 compiling - rather than requiring CMake 3.1 or greater
+########################################################################
+GR_ADD_CXX_COMPILER_FLAG_IF_AVAILABLE("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(NOT COMPILER_SUPPORTS_CXX11)
+    message(FATAL_ERROR "C++11 compiler required to compile pdu_utils")
+endif()
+
+
 
 ########################################################################
 # Handle ControlPort Stuff
@@ -207,6 +218,7 @@ add_subdirectory(python)
 add_subdirectory(grc)
 add_subdirectory(apps)
 add_subdirectory(docs)
+add_subdirectory(examples)
 
 ########################################################################
 # Install cmake search helper for this library

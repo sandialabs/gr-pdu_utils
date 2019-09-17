@@ -1,15 +1,16 @@
-title: GNU Radio PDU Utilities OOT Module
-brief: Utilities for working with GNU Radio PDU objects and conversion between stream and PDU data formats.
+title: The PDU_UTILS OOT Module
+brief: Short description of gr-pdu_utils
 tags: # Tags are arbitrary, but look at CGRAN what other authors are using
   - sdr
-  - PDU
-  - PMT
-  - UHD
 author:
-  - Sandia National Laboratories <address@hidden>
+  - Author Name <authors@email.address>
 copyright_owner:
-  - National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+  - Copyright Owner 1
 license:
-repo: https://github.com/sandialabs/gr-pdu_utils
+#repo: # Put the URL of the repository here, or leave blank for default
+#website: <module_website> # If you have a separate project website, put it here
+#icon: <icon_url> # Put a URL to a square image here that will be used as an icon on CGRAN
 ---
-
+A longer, multi-line description of gr-pdu_utils.
+You may use some *basic* Markdown here.
+If left empty, it will try to find a README file instead.

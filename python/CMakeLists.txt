@@ -32,7 +32,7 @@ GR_PYTHON_INSTALL(
     FILES
     __init__.py
     qt_pdu_source.py
-    DESTINATION ${GR_PYTHON_DIR}/pdu_utils
+    pdu_flow_ctrl.py DESTINATION ${GR_PYTHON_DIR}/pdu_utils
 )
 
 ########################################################################
@@ -63,3 +63,9 @@ GR_ADD_TEST(qa_pdu_burst_combiner ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DI
 GR_ADD_TEST(qa_msg_drop_random ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_msg_drop_random.py)
 GR_ADD_TEST(qa_pdu_head_tail ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head_tail.py)
 GR_ADD_TEST(qa_time_delta ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_delta.py)
+GR_ADD_TEST(qa_pdu_length_filter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_length_filter.py)
+GR_ADD_TEST(qa_pdu_logger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_logger.py)
+GR_ADD_TEST(qa_pdu_binary_tools ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_binary_tools.py)
+GR_ADD_TEST(qa_pdu_downsample ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_downsample.py)
+GR_ADD_TEST(qa_pdu_commutator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_commutator.py)
+GR_ADD_TEST(qa_pdu_complex_to_mag2 ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_complex_to_mag2.py)

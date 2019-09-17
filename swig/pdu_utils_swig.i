@@ -30,8 +30,10 @@
 #include "pdu_utils/pdu_set_m.h"
 #include "pdu_utils/pdu_burst_combiner.h"
 #include "pdu_utils/pdu_split.h"
-#include "pdu_utils/pdu_fir_filter_fff.h"
+#include "pdu_utils/pdu_fir_filter.h"
+#include "pdu_utils/pdu_pfb_resamp_cc.h"
 #include "pdu_utils/pdu_pfb_resamp_ff.h"
+/*#include "pdu_utils/pdu_rational_resampler_cc.h"*/
 #include "pdu_utils/message_counter.h"
 #include "pdu_utils/message_gate.h"
 #include "pdu_utils/message_emitter.h"
@@ -44,6 +46,18 @@
 #include "pdu_utils/msg_drop_random.h"
 #include "pdu_utils/pdu_head_tail.h"
 #include "pdu_utils/time_delta.h"
+#include "pdu_utils/pdu_length_filter.h"
+#include "pdu_utils/pdu_logger.h"
+#include "pdu_utils/pdu_clock_recovery.h"
+#include "pdu_utils/pdu_align.h"
+#include "pdu_utils/pdu_range_filter.h"
+#include "pdu_utils/pdu_round_robin.h"
+#include "pdu_utils/pdu_flow_ctrl_helper.h"
+#include "pdu_utils/pdu_binary_tools.h"
+#include "pdu_utils/pdu_downsample.h"
+#include "pdu_utils/pdu_commutator.h"
+#include "pdu_utils/pdu_fine_time_measure.h"
+#include "pdu_utils/pdu_complex_to_mag2.h"
 %}
 
 %include "pdu_utils/constants.h"
@@ -90,10 +104,14 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_set_m);
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_burst_combiner);
 %include "pdu_utils/pdu_split.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_split);
-%include "pdu_utils/pdu_fir_filter_fff.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fir_filter_fff);
+%include "pdu_utils/pdu_fir_filter.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fir_filter);
+%include "pdu_utils/pdu_pfb_resamp_cc.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_pfb_resamp_cc);
 %include "pdu_utils/pdu_pfb_resamp_ff.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_pfb_resamp_ff);
+/*%include "pdu_utils/pdu_rational_resampler_cc.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_rational_resampler_cc);*/
 %include "pdu_utils/message_counter.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, message_counter);
 %include "pdu_utils/message_gate.h"
@@ -118,3 +136,29 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, msg_drop_random);
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_head_tail);
 %include "pdu_utils/time_delta.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, time_delta);
+%include "pdu_utils/pdu_length_filter.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_length_filter);
+%include "pdu_utils/pdu_logger.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_logger);
+%include "pdu_utils/pdu_clock_recovery.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_clock_recovery);
+%include "pdu_utils/pdu_align.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_align);
+%include "pdu_utils/pdu_range_filter.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_range_filter);
+%include "pdu_utils/pdu_round_robin.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_round_robin);
+
+%include "pdu_utils/pdu_flow_ctrl_helper.h"
+%include "pdu_utils/pdu_binary_tools.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_binary_tools);
+
+%include "pdu_utils/pdu_downsample.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_downsample);
+%include "pdu_utils/pdu_commutator.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_commutator);
+%include "pdu_utils/pdu_fine_time_measure.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fine_time_measure);
+
+%include "pdu_utils/pdu_complex_to_mag2.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_complex_to_mag2);
