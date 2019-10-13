@@ -55,9 +55,7 @@ class qa_pdu_to_bursts_X (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print(self.vs)
         tags = self.vs.tags()
-        print(tags)
         self.assertEqual(len(tags), 2)
         self.assertEqual(tags[0].offset, e_tag_0.offset)
         self.assertTrue(pmt.equal(tags[0].key, e_tag_0.key))
