@@ -86,4 +86,4 @@ class qa_message_keep_1_in_n (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_message_keep_1_in_n, "qa_message_keep_1_in_n.xml")
+    gr_unittest.run(qa_message_keep_1_in_n)

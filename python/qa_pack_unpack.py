@@ -141,4 +141,4 @@ class qa_pack_unpack (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pack_unpack, "qa_pack_unpack.xml")
+    gr_unittest.run(qa_pack_unpack)

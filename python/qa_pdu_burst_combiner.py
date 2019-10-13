@@ -100,4 +100,4 @@ class qa_pdu_burst_combiner (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_burst_combiner, "qa_pdu_burst_combiner.xml")
+    gr_unittest.run(qa_pdu_burst_combiner)

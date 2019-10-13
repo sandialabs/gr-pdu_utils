@@ -38,4 +38,4 @@ class qa_qt_pdu_source (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_qt_pdu_source, "qa_qt_pdu_source.xml")
+    gr_unittest.run(qa_qt_pdu_source)

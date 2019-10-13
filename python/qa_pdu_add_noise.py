@@ -99,4 +99,4 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_add_noise, "qa_pdu_add_noise.xml")
+    gr_unittest.run(qa_pdu_add_noise)

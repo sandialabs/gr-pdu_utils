@@ -145,4 +145,4 @@ class qa_tag_message_trigger_X (gr_unittest.TestCase):
 
 if __name__ == '__main__':
     #z=raw_input("press enter")
-    gr_unittest.run(qa_tag_message_trigger_X, "qa_tag_message_trigger_X.xml")
+    gr_unittest.run(qa_tag_message_trigger_X)

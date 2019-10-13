@@ -17,42 +17,42 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 install(FILES
-    pdu_utils_tags_to_pdu_X.xml
-    pdu_utils_pdu_to_bursts_X.xml
-    pdu_utils_qt_pdu_source.xml
-    pdu_utils_message_gate.xml
-    pdu_utils_pdu_split.xml
-    pdu_utils_tag_message_trigger_X.xml
-    pdu_utils_pdu_preamble.xml
-    pdu_utils_pdu_gmsk_fc.xml
-    pdu_utils_pdu_set_m.xml
-    pdu_utils_pdu_head_tail.xml
-    pdu_utils_pdu_burst_combiner.xml
-    pdu_utils_take_skip_to_pdu.xml
-    pdu_utils_pdu_fir_filter.xml
-    pdu_utils_pdu_pfb_resamp.xml
+    pdu_utils_tags_to_pdu_X.block.yml
+    pdu_utils_pdu_to_bursts_X.block.yml
+    pdu_utils_qt_pdu_source.block.yml
+    pdu_utils_message_gate.block.yml
+    pdu_utils_pdu_split.block.yml
+    pdu_utils_tag_message_trigger_X.block.yml
+    pdu_utils_pdu_preamble.block.yml
+    pdu_utils_pdu_gmsk_fc.block.yml
+    pdu_utils_pdu_set_m.block.yml
+    pdu_utils_pdu_head_tail.block.yml
+    pdu_utils_pdu_burst_combiner.block.yml
+    pdu_utils_take_skip_to_pdu.block.yml
+    pdu_utils_pdu_fir_filter.block.yml
+    pdu_utils_pdu_pfb_resamp.block.yml
     #pdu_utils_pdu_rational_resampler_cc.xml
-    pdu_utils_message_counter.xml
-    pdu_utils_message_gate.xml
-    pdu_utils_message_emitter.xml
-    pdu_utils_message_keep_1_in_n.xml
-    pdu_utils_pdu_preamble.xml
-    pdu_utils_pack_unpack.xml
-    pdu_utils_extract_metadata.xml
-    pdu_utils_upsample.xml
-    pdu_utils_pdu_add_noise.xml
-    pdu_utils_msg_drop_random.xml
-    pdu_utils_time_delta.xml
-    pdu_utils_pdu_length_filter.xml
-    pdu_utils_pdu_logger.xml
-    pdu_utils_pdu_clock_recovery.xml
-    pdu_utils_pdu_align.xml
-    pdu_utils_pdu_range_filter.xml
-    pdu_utils_pdu_round_robin.xml
-    pdu_utils_pdu_flow_ctrl.xml
-    pdu_utils_pdu_binary_tools.xml
-    pdu_utils_pdu_commutator.xml
-    pdu_utils_pdu_downsample.xml
-    pdu_utils_pdu_fine_time_measure.xml
-    pdu_utils_pdu_complex_to_mag2.xml DESTINATION share/gnuradio/grc/blocks
+    pdu_utils_message_counter.block.yml
+    pdu_utils_message_gate.block.yml
+    pdu_utils_message_emitter.block.yml
+    pdu_utils_message_keep_1_in_n.block.yml
+    pdu_utils_pdu_preamble.block.yml
+    pdu_utils_pack_unpack.block.yml
+    pdu_utils_extract_metadata.block.yml
+    pdu_utils_upsample.block.yml
+    pdu_utils_pdu_add_noise.block.yml
+    pdu_utils_msg_drop_random.block.yml
+    pdu_utils_time_delta.block.yml
+    pdu_utils_pdu_length_filter.block.yml
+    pdu_utils_pdu_logger.block.yml
+    pdu_utils_pdu_clock_recovery.block.yml
+    pdu_utils_pdu_align.block.yml
+    pdu_utils_pdu_range_filter.block.yml
+    pdu_utils_pdu_round_robin.block.yml
+    pdu_utils_pdu_flow_ctrl.block.yml
+    pdu_utils_pdu_binary_tools.block.yml
+    pdu_utils_pdu_commutator.block.yml
+    pdu_utils_pdu_downsample.block.yml
+    pdu_utils_pdu_fine_time_measure.block.yml
+    pdu_utils_pdu_complex_to_mag2.block.yml DESTINATION share/gnuradio/grc/blocks
 )

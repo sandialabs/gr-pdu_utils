@@ -21,10 +21,6 @@
 # Invoke macro to generate various headers
 #######################################################################
 include(GrMiscUtils)
-GR_EXPAND_X_H(pdu_utils pdu_to_bursts_X              c f s b)
-GR_EXPAND_X_H(pdu_utils tags_to_pdu_X                c f s b)
-GR_EXPAND_X_H(pdu_utils tag_message_trigger_X        c f i s b)
-GR_EXPAND_X_H(pdu_utils take_skip_to_pdu_X           c f s b)
 
 add_custom_target(pdu_utils_generated_includes DEPENDS
     ${generated_includes}
@@ -68,5 +64,23 @@ install(FILES
     pdu_commutator.h
     pdu_downsample.h
     pdu_fine_time_measure.h
-    pdu_complex_to_mag2.h DESTINATION include/pdu_utils
+    pdu_complex_to_mag2.h 
+    pdu_to_bursts_b.h  
+    pdu_to_bursts_f.h  
+    tag_message_trigger_b.h  
+    tag_message_trigger_f.h  
+    tag_message_trigger_s.h  
+    tags_to_pdu_c.h  
+    tags_to_pdu_s.h       
+    take_skip_to_pdu_c.h  
+    take_skip_to_pdu_s.h
+    pdu_to_bursts_c.h  
+    pdu_to_bursts_s.h  
+    tag_message_trigger_c.h  
+    tag_message_trigger_i.h  
+    tags_to_pdu_b.h          
+    tags_to_pdu_f.h  
+    take_skip_to_pdu_b.h  
+    take_skip_to_pdu_f.h
+    DESTINATION include/pdu_utils
 )

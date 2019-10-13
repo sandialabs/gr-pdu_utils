@@ -53,14 +53,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test bit_flip:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
-        print
-
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        print("test bit_flip:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+        print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
     def test_to_pam (self):
         self.emitter = pdu_utils.message_emitter()
@@ -82,14 +80,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test to_pam:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0))))
-        print
-
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        print("test to_pam:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))))
+        print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
     def test_from_pam (self):
         self.emitter = pdu_utils.message_emitter()
@@ -111,14 +107,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test from_pam:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
-        print
-
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        print("test from_pam:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+        print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
     def test_slice (self):
         self.emitter = pdu_utils.message_emitter()
@@ -140,14 +134,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test slice:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
-        print
-
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        print("test slice:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+        print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
     def test_endian (self):
         self.emitter = pdu_utils.message_emitter()
@@ -169,14 +161,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test endian_swap8:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
-        print
-
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        print("test endian_swap8:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+        print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_binary_tools, "qa_pdu_binary_tools.xml")
+    gr_unittest.run(qa_pdu_binary_tools)

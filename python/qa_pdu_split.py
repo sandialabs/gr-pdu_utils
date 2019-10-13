@@ -101,4 +101,4 @@ class qa_pdu_split (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_split, "qa_pdu_split.xml")
+    gr_unittest.run(qa_pdu_split)

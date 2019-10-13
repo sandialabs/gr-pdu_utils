@@ -66,4 +66,4 @@ Tests to add:
 """
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_preamble, "qa_pdu_preamble.xml")
+    gr_unittest.run(qa_pdu_preamble)

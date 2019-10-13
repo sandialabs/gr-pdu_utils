@@ -54,15 +54,15 @@ class qa_pdu_complex_to_mag2 (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test ctm2:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.to_python(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0))))
+        print("test ctm2:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.to_python(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0)))))
         print
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_complex_to_mag2, "qa_pdu_complex_to_mag2.xml")
+    gr_unittest.run(qa_pdu_complex_to_mag2)

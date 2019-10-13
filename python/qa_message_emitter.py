@@ -67,11 +67,11 @@ class qa_message_emitter (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print emitter.get_n_msgs()
+        print(emitter.get_n_msgs())
         self.assertEquals(2, debug.num_messages())
         self.assertTrue(pmt.eqv(pmt.PMT_NIL, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_message_emitter, "qa_message_emitter.xml")
+    gr_unittest.run(qa_message_emitter)

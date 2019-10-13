@@ -154,4 +154,4 @@ class qa_tags_to_pdu_X (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_tags_to_pdu_X, "qa_tags_to_pdu_X.xml")
+    gr_unittest.run(qa_tags_to_pdu_X)

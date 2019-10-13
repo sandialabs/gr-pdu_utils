@@ -52,11 +52,11 @@ class qa_pdu_downsample (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test uint8:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
+        print("test uint8:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
         print
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
@@ -81,11 +81,11 @@ class qa_pdu_downsample (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test long:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0))))
+        print("test long:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
         print
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
@@ -109,14 +109,14 @@ class qa_pdu_downsample (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print "test float:"
-        print "pdu expected: " + repr(pmt.car(e_pdu))
-        print "pdu got:      " + repr(pmt.car(self.debug.get_message(0)))
-        print "data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu)))
-        print "data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0))))
+        print("test float:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))))
         print
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_downsample, "qa_pdu_downsample.xml")
+    gr_unittest.run(qa_pdu_downsample)

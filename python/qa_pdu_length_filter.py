@@ -38,4 +38,4 @@ class qa_pdu_length_filter (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_length_filter, "qa_pdu_length_filter.xml")
+    gr_unittest.run(qa_pdu_length_filter)

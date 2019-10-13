@@ -119,4 +119,4 @@ class qa_pdu_head_tail (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_head_tail, "qa_pdu_head_tail.xml")
+    gr_unittest.run(qa_pdu_head_tail)

@@ -38,4 +38,4 @@ class qa_pdu_logger (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_logger, "qa_pdu_logger.xml")
+    gr_unittest.run(qa_pdu_logger)

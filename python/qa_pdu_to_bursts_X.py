@@ -30,7 +30,6 @@ class qa_pdu_to_bursts_X (gr_unittest.TestCase):
 
     def setUp (self):
         self.tb = gr.top_block ()
-
         self.emitter = pdu_utils.message_emitter(pmt.PMT_NIL)
         self.p2b = pdu_utils.pdu_to_bursts_c(pdu_utils.EARLY_BURST_BEHAVIOR__APPEND, 64)
         self.vs = blocks.vector_sink_c(1)
@@ -56,7 +55,9 @@ class qa_pdu_to_bursts_X (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
+        print(self.vs)
         tags = self.vs.tags()
+        print(tags)
         self.assertEqual(len(tags), 2)
         self.assertEqual(tags[0].offset, e_tag_0.offset)
         self.assertTrue(pmt.equal(tags[0].key, e_tag_0.key))
@@ -123,7 +124,7 @@ class qa_pdu_to_bursts_X (gr_unittest.TestCase):
 
         tags = self.vs.tags()
         for tag in tags:
-            print tag.offset, tag.key, tag.value
+            print(tag.offset, tag.key, tag.value)
         self.assertEqual(len(tags), 6)
         self.assertEqual(tags[3].offset, e_tag_0.offset)
         self.assertTrue(pmt.equal(tags[3].key, e_tag_0.key))
@@ -138,4 +139,4 @@ class qa_pdu_to_bursts_X (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_to_bursts_X, "qa_pdu_to_bursts_X.xml")
+    gr_unittest.run(qa_pdu_to_bursts_X)
