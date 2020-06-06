@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,6 +63,39 @@ class qa_extract_metadata (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
 
+    def test_001_int_scalea (self):
+        self.emd.set_key(pmt.intern("int"))
+        self.emd.set_scale(2)
+        self.emd.set_offset(0)
+
+        in_msg = pmt.dict_add(self.base_dict, pmt.intern("int"), pmt.from_long(-4))
+        expected_msg = pmt.cons(pmt.intern("int"), pmt.from_long(-8))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    def test_001_int_scaleb (self):
+        self.emd.set_key(pmt.intern("int"))
+        self.emd.set_scale(-2)
+        self.emd.set_offset(0)
+
+        in_msg = pmt.dict_add(self.base_dict, pmt.intern("int"), pmt.from_long(-4))
+        expected_msg = pmt.cons(pmt.intern("int"), pmt.from_long(8))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
 
     def test_002_float (self):
         self.emd.set_key(pmt.intern("float"))
@@ -96,7 +131,94 @@ class qa_extract_metadata (gr_unittest.TestCase):
         self.tb.wait()
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    def test_004_uint64 (self):
+        self.emd.set_key(pmt.intern("uint64_key"))
+        self.emd.set_scale(1)
+        self.emd.set_offset(0)
+
+        in_msg = self.base_dict
+        expected_msg = pmt.cons(pmt.intern("uint64_key"), pmt.from_uint64(1234567))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    def test_004_uint64_offseta (self):
+        self.emd.set_key(pmt.intern("uint64_key"))
+        self.emd.set_scale(1)
+        self.emd.set_offset(10)
+
+        in_msg = self.base_dict
+        expected_msg = pmt.cons(pmt.intern("uint64_key"), pmt.from_uint64(1234577))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    def test_004_uint64_offsetb (self):
+        self.emd.set_key(pmt.intern("uint64_key"))
+        self.emd.set_scale(1)
+        self.emd.set_offset(-10)
+
+        in_msg = self.base_dict
+        expected_msg = pmt.cons(pmt.intern("uint64_key"), pmt.from_uint64(1234557))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    def test_004_uint64_scalea (self):
+        self.emd.set_key(pmt.intern("uint64_key"))
+        self.emd.set_scale(2)
+        self.emd.set_offset(0)
+
+        in_msg = self.base_dict
+        expected_msg = pmt.cons(pmt.intern("uint64_key"), pmt.from_uint64(2469134))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_msg))
+        
+    
+        
+    def test_005_notfound (self):
+        self.emd.set_key(pmt.intern("barf"))
+        self.emd.set_scale(1)
+        self.emd.set_offset(1)
+
+        in_msg = self.base_dict
+        
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_msg)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        self.assertEqual( 0, self.debug.num_messages() )
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_extract_metadata, "qa_extract_metadata.xml")
+    gr_unittest.run(qa_extract_metadata)

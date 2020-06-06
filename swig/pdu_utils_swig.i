@@ -9,30 +9,16 @@
 
 %{
 #include "pdu_utils/constants.h"
-#include "pdu_utils/pdu_to_bursts_b.h"
-#include "pdu_utils/pdu_to_bursts_s.h"
-#include "pdu_utils/pdu_to_bursts_f.h"
-#include "pdu_utils/pdu_to_bursts_c.h"
-#include "pdu_utils/tags_to_pdu_b.h"
-#include "pdu_utils/tags_to_pdu_s.h"
-#include "pdu_utils/tags_to_pdu_f.h"
-#include "pdu_utils/tags_to_pdu_c.h"
-#include "pdu_utils/take_skip_to_pdu_b.h"
-#include "pdu_utils/take_skip_to_pdu_s.h"
-#include "pdu_utils/take_skip_to_pdu_f.h"
-#include "pdu_utils/take_skip_to_pdu_c.h"
-#include "pdu_utils/tag_message_trigger_b.h"
-#include "pdu_utils/tag_message_trigger_s.h"
-#include "pdu_utils/tag_message_trigger_i.h"
-#include "pdu_utils/tag_message_trigger_f.h"
-#include "pdu_utils/tag_message_trigger_c.h"
+#include "pdu_utils/pdu_to_bursts.h"
+#include "pdu_utils/tags_to_pdu.h"
+#include "pdu_utils/take_skip_to_pdu.h"
+#include "pdu_utils/tag_message_trigger.h"
 #include "pdu_utils/pdu_gmsk_fc.h"
 #include "pdu_utils/pdu_set_m.h"
 #include "pdu_utils/pdu_burst_combiner.h"
 #include "pdu_utils/pdu_split.h"
 #include "pdu_utils/pdu_fir_filter.h"
-#include "pdu_utils/pdu_pfb_resamp_cc.h"
-#include "pdu_utils/pdu_pfb_resamp_ff.h"
+#include "pdu_utils/pdu_pfb_resamp.h"
 /*#include "pdu_utils/pdu_rational_resampler_cc.h"*/
 #include "pdu_utils/message_counter.h"
 #include "pdu_utils/message_gate.h"
@@ -45,7 +31,6 @@
 #include "pdu_utils/pdu_add_noise.h"
 #include "pdu_utils/msg_drop_random.h"
 #include "pdu_utils/pdu_head_tail.h"
-#include "pdu_utils/time_delta.h"
 #include "pdu_utils/pdu_length_filter.h"
 #include "pdu_utils/pdu_logger.h"
 #include "pdu_utils/pdu_clock_recovery.h"
@@ -55,49 +40,44 @@
 #include "pdu_utils/pdu_flow_ctrl_helper.h"
 #include "pdu_utils/pdu_binary_tools.h"
 #include "pdu_utils/pdu_downsample.h"
-#include "pdu_utils/pdu_commutator.h"
 #include "pdu_utils/pdu_fine_time_measure.h"
 #include "pdu_utils/pdu_complex_to_mag2.h"
 #include "pdu_utils/sandia_message_debug.h"
-#include "pdu_utils/wall_clock_time.h"
+#include "pdu_utils/pdu_quadrature_demod_cf.h"
+
 %}
 
 %include "pdu_utils/constants.h"
 
-%include "pdu_utils/pdu_to_bursts_b.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_b);
-%include "pdu_utils/pdu_to_bursts_s.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_s);
-%include "pdu_utils/pdu_to_bursts_f.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_f);
-%include "pdu_utils/pdu_to_bursts_c.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_to_bursts_c);
-%include "pdu_utils/tags_to_pdu_b.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_b);
-%include "pdu_utils/tags_to_pdu_s.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_s);
-%include "pdu_utils/tags_to_pdu_f.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_f);
-%include "pdu_utils/tags_to_pdu_c.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tags_to_pdu_c);
-%include "pdu_utils/take_skip_to_pdu_b.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_b);
-%include "pdu_utils/take_skip_to_pdu_s.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_s);
-%include "pdu_utils/take_skip_to_pdu_f.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_f);
-%include "pdu_utils/take_skip_to_pdu_c.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, take_skip_to_pdu_c);
-%include "pdu_utils/tag_message_trigger_b.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_b);
-%include "pdu_utils/tag_message_trigger_s.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_s);
-%include "pdu_utils/tag_message_trigger_i.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_i);
-%include "pdu_utils/tag_message_trigger_f.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_f);
-%include "pdu_utils/tag_message_trigger_c.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, tag_message_trigger_c);
+// pdu_to_bursts
+%include "pdu_utils/pdu_to_bursts.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_to_bursts_b, pdu_to_bursts<unsigned char>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_to_bursts_s, pdu_to_bursts<short>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_to_bursts_f, pdu_to_bursts<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_to_bursts_c, pdu_to_bursts<gr_complex>);
+
+// tags_measure_trigger
+%include "pdu_utils/tag_message_trigger.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tag_message_trigger_b, tag_message_trigger<unsigned char>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tag_message_trigger_s, tag_message_trigger<short>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tag_message_trigger_i, tag_message_trigger<int32_t>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tag_message_trigger_f, tag_message_trigger<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tag_message_trigger_c, tag_message_trigger<gr_complex>);
+
+// tags_to_pdu
+%include "pdu_utils/tags_to_pdu.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tags_to_pdu_b, tags_to_pdu<unsigned char>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tags_to_pdu_s, tags_to_pdu<short>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tags_to_pdu_f, tags_to_pdu<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, tags_to_pdu_c, tags_to_pdu<gr_complex>);
+
+// take_skip_to_pdu
+%include "pdu_utils/take_skip_to_pdu.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, take_skip_to_pdu_b, take_skip_to_pdu<unsigned char>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, take_skip_to_pdu_s, take_skip_to_pdu<short>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, take_skip_to_pdu_f, take_skip_to_pdu<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, take_skip_to_pdu_c, take_skip_to_pdu<gr_complex>);
+
 %include "pdu_utils/pdu_gmsk_fc.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_gmsk_fc);
 %include "pdu_utils/pdu_set_m.h"
@@ -108,10 +88,13 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_burst_combiner);
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_split);
 %include "pdu_utils/pdu_fir_filter.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fir_filter);
-%include "pdu_utils/pdu_pfb_resamp_cc.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_pfb_resamp_cc);
-%include "pdu_utils/pdu_pfb_resamp_ff.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_pfb_resamp_ff);
+
+// pdu_pfb_resamp
+%include "pdu_utils/pdu_pfb_resamp.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_pfb_resamp_fff, pdu_pfb_resamp<float,float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_pfb_resamp_ccf, pdu_pfb_resamp<gr_complex,float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(pdu_utils, pdu_pfb_resamp_ccc, pdu_pfb_resamp<gr_complex,gr_complex>);
+
 /*%include "pdu_utils/pdu_rational_resampler_cc.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_rational_resampler_cc);*/
 %include "pdu_utils/message_counter.h"
@@ -136,8 +119,7 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_add_noise);
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, msg_drop_random);
 %include "pdu_utils/pdu_head_tail.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_head_tail);
-%include "pdu_utils/time_delta.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, time_delta);
+
 %include "pdu_utils/pdu_length_filter.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_length_filter);
 %include "pdu_utils/pdu_logger.h"
@@ -157,14 +139,14 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_binary_tools);
 
 %include "pdu_utils/pdu_downsample.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_downsample);
-%include "pdu_utils/pdu_commutator.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_commutator);
+
 %include "pdu_utils/pdu_fine_time_measure.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fine_time_measure);
 
 %include "pdu_utils/pdu_complex_to_mag2.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_complex_to_mag2);
+
 %include "pdu_utils/sandia_message_debug.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, sandia_message_debug);
-%include "pdu_utils/wall_clock_time.h"
-GR_SWIG_BLOCK_MAGIC2(pdu_utils, wall_clock_time);
+%include "pdu_utils/pdu_quadrature_demod_cf.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_quadrature_demod_cf);

@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,29 +23,38 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_LOGGER_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_LOGGER_IMPL_H
 
-#include <pdu_utils/pdu_logger.h>
 #include <pdu_utils/constants.h>
+#include <pdu_utils/pdu_logger.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
 
-    class pdu_logger_impl : public pdu_logger
-    {
-     private:
-      std::string d_logfile;
-      int d_burstnum;
+class pdu_logger_impl : public pdu_logger
+{
+private:
+    std::string d_logfile;
+    int d_burstnum;
 
-      void write_data_c(const gr_complex * data, size_t len, char *name, int num);
-      void write_data_f(const float * data, size_t len, char *name, int num);
+    void write_data_c(const gr_complex* data, size_t len, char* name, int num);
+    void write_data_f(const float* data, size_t len, char* name, int num);
 
-     public:
-      pdu_logger_impl(std::string d_logfile);
-      ~pdu_logger_impl();
+public:
+    /**
+     * constructor
+     *
+     * @param logfile - Filename to write to
+     */
+    pdu_logger_impl(std::string logfile);
 
-      void handle_pdu(pmt::pmt_t pdu);
-    };
+    /**
+     * Deconstructor
+     */
+    ~pdu_logger_impl();
 
-  } // namespace pdu_utils
+    void handle_pdu(pmt::pmt_t pdu);
+};
+
+} // namespace pdu_utils
 } // namespace gr
 
 #endif /* INCLUDED_PDU_UTILS_PDU_LOGGER_IMPL_H */

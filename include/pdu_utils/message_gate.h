@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * <COPYRIGHT PLACEHOLDER>
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,40 +24,61 @@
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_GATE_H
 #define INCLUDED_PDU_UTILS_MESSAGE_GATE_H
 
-#include <pdu_utils/api.h>
 #include <gnuradio/block.h>
+#include <pdu_utils/api.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
+
+/*!
+ * \brief Simple message gate
+ * \ingroup pdu_utils
+ *
+ * Simple message gate to control whether or not messages pass.
+ *
+ */
+class PDU_UTILS_API message_gate : virtual public gr::block
+{
+public:
+    typedef boost::shared_ptr<message_gate> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup pdu_utils
+     * \brief Return a shared_ptr to a new instance of pdu_utils::message_gate.
      *
+     * @param enabled - true to pass messages
      */
-    class PDU_UTILS_API message_gate : virtual public gr::block
-    {
-     public:
-      typedef boost::shared_ptr<message_gate> sptr;
+    static sptr make(bool enabled);
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of pdu_utils::message_gate.
-       *
-       * To avoid accidental use of raw pointers, pdu_utils::message_gate's
-       * constructor is in a private implementation
-       * class. pdu_utils::message_gate::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(bool enabled);
+    /**
+     * Return count of passed messages
+     *
+     * @return uint64_t
+     */
+    virtual uint64_t get_n_passed(void) = 0;
 
-      virtual uint64_t get_n_passed(void) = 0;
-      virtual uint64_t get_n_blocked(void) = 0;
-      virtual bool get_enabled(void) = 0;
-      virtual void set_enabled(bool) = 0;
+    /**
+     * Return count of blocked messages
+     *
+     * @return uint64_t
+     */
+    virtual uint64_t get_n_blocked(void) = 0;
 
-    };
+    /**
+     * Returns enable status
+     *
+     * @return bool - true when messages passed
+     */
+    virtual bool get_enabled(void) = 0;
 
-  } // namespace pdu_utils
+    /**
+     * Set gate state
+     *
+     * @param enabled - true to pass messages
+     */
+    virtual void set_enabled(bool enabled) = 0;
+};
+
+} // namespace pdu_utils
 } // namespace gr
 
 #endif /* INCLUDED_PDU_UTILS_MESSAGE_GATE_H */

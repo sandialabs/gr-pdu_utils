@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,21 +27,30 @@ import ast
 import math
 from gnuradio import gr
 import pmt
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt5 import Qt, QtCore, QtGui
+from PyQt5.QtWidgets import (QGroupBox)
 import pprint, re
 import string
 
 
-class qt_pdu_source(gr.sync_block, QtGui.QGroupBox):
+class qt_pdu_source(gr.sync_block, QGroupBox):
     """
-    docstring for block qt_pdu_source
+    This block will emit a PDU when the button is clicked.
+
     """
     def __init__(self, defaults={"PDU Vector":[0,1,0,1],"PDU Metadata":'{}'}, submit_text="Send", *args):
         gr.sync_block.__init__(self,
             name="qt_pdu_source",
             in_sig=None,
             out_sig=None)
-        QtGui.QGroupBox.__init__(self, *args)
+        QGroupBox.__init__(self, *args)
+        '''
+        Constructor
+        
+        @param default - PDU to send
+        @param submit_text - Button Text
+        @param args - 
+        '''
 
         self.defaults = defaults
 
@@ -100,9 +111,9 @@ class qt_pdu_source(gr.sync_block, QtGui.QGroupBox):
 
     def set_ascii_cr(self, cr_on):
         if cr_on:
-	  self.add_ascii_cr = True
+          self.add_ascii_cr = True
         else:
-	  self.add_ascii_cr = False
+          self.add_ascii_cr = False
 
 
     def button_clicked(self):
@@ -148,12 +159,12 @@ class qt_pdu_source(gr.sync_block, QtGui.QGroupBox):
         return vec
 
     def parse_ascii(self,v_txt):
-        #print repr(v_txt)
+        #print(repr(v_txt))
         if self.add_ascii_cr:
-	  v_txt = v_txt + "\r\n"
-	  #print repr(v_txt)
+          v_txt = v_txt + "\r\n"
+	  #print(repr(v_txt))
         vec = [ord(x) for x in v_txt]
-	#print repr(vec)
+	#print(repr(vec))
         return vec
 
     def parse_binary_array(self,v_txt):
@@ -175,16 +186,16 @@ class qt_pdu_source(gr.sync_block, QtGui.QGroupBox):
 
         # Strip leading brackets off
         v_txt = ''.join( c for c in v_txt if  c not in '[]' )
-        #print "v_txt: ",v_txt
+        #print("v_txt: ",v_txt)
         # Replace commas with spaces
         allow = string.letters + string.digits
         for entry in re.sub('[^%s]' % allow, ' ', v_txt).split():
             try:
-                #print "entry = ", int(entry,16)
+                #print("entry = ", int(entry,16))
                 item = int(entry,16)
                 vec.append(item)
             except:
-                print "some error"
+                print("some error")
                 pass
 
         return vec
@@ -193,8 +204,8 @@ class qt_pdu_source(gr.sync_block, QtGui.QGroupBox):
         pass
 
 if __name__ == "__main__":
-    print "testing qt_pdu_source"
+    print("testing qt_pdu_source")
     app = QtGui.QApplication([])
     src = qt_pdu_source(defaults={"PDU Vector":[0,1,0,1],"PDU Metadata":"{'trailer flags':(0,0,0),'trailer window':1000,'net ID':25}"})
     src.button_clicked()
-    print "all done"
+    print("all done")

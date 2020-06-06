@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -100,4 +102,4 @@ class qa_pdu_burst_combiner (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_burst_combiner, "qa_pdu_burst_combiner.xml")
+    gr_unittest.run(qa_pdu_burst_combiner)

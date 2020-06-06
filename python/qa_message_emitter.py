@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,9 +50,10 @@ class qa_message_emitter (gr_unittest.TestCase):
         time.sleep(.01)
         self.tb.stop()
         self.tb.wait()
-
+        
+        
         self.assertEquals(3, debug.num_messages())
-
+        self.assertEquals(3, emitter.get_n_msgs() )
 
     def test_002_emit2 (self):
         emitter = pdu_utils.message_emitter()
@@ -67,11 +70,12 @@ class qa_message_emitter (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        print emitter.get_n_msgs()
+        print(emitter.get_n_msgs())
         self.assertEquals(2, debug.num_messages())
+        self.assertEquals(2, emitter.get_n_msgs() )
         self.assertTrue(pmt.eqv(pmt.PMT_NIL, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_message_emitter, "qa_message_emitter.xml")
+    gr_unittest.run(qa_message_emitter)

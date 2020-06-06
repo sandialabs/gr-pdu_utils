@@ -26,7 +26,16 @@ import sys
 
 class pdu_flow_ctrl(gr.basic_block):
     """
-    docstring for block pdu_flow_ctrl
+    Message in GNU Radio lack any flow control. As far as I can tell, 
+    the message queues have an infinite length.
+
+    The PDU Flow Controller can be placed in-line (usually right after 
+    the source where PDUs are generated). It takes block IDs as parameters. 
+    Each time a PDU enters the flow controller, the flow controller 
+    checks each block it has an ID for. If any of those blocks have 
+    more than the configured number of messages pending, then the PDU 
+    in the flow controller is dropped. Otherwise, it passes through.
+
     """
     def __init__(self, parent, block_ids, max_nmsgs, verbose=False):
         gr.basic_block.__init__(self,
@@ -34,6 +43,13 @@ class pdu_flow_ctrl(gr.basic_block):
             in_sig=None,
             out_sig=None)
 
+        '''
+        Constructor
+        
+        @param block_ids - 
+        @param max_nmsgs - 
+        @param verbose -
+        '''
         self.parent = parent
         self.block_ids = block_ids
         self.max_nmsgs = max_nmsgs
@@ -49,7 +65,7 @@ class pdu_flow_ctrl(gr.basic_block):
         try:
             blocks = [eval('self.parent.'+block_id+'.to_basic_block()') for block_id in self.block_ids]
         except AttributeError as e:
-            print 'ERROR: problem setting up PDU Flow Controller:', e, '(was an invalid block_id given?)'
+            print('ERROR: problem setting up PDU Flow Controller:', e, '(was an invalid block_id given?)')
             raise
         self.helper = pdu_utils.pdu_flow_ctrl_helper(blocks)
 
@@ -62,7 +78,7 @@ class pdu_flow_ctrl(gr.basic_block):
         return True
 
     def stop(self):
-        print 'pdu_flow_ctrl: dropped', self.n_dropped, 'PDUs'
+        print('pdu_flow_ctrl: dropped', self.n_dropped, 'PDUs')
         self.helper = None
         return True
 
@@ -74,7 +90,7 @@ class pdu_flow_ctrl(gr.basic_block):
             self.n_dropped += 1
             if self.verbose:
                 self.helper.print_nmsgs()
-                print 'WARNING: messages backing up, dropping a PDU'
+                print('WARNING: messages backing up, dropping a PDU')
             else:
                 sys.stdout.write('F')
                 sys.stdout.flush()

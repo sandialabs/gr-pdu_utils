@@ -29,7 +29,7 @@ from build_utils_codes import *
 # set srcdir to the directory that contains Makefile.am
 try:
     srcdir = os.environ['srcdir']
-except KeyError, e:
+except (KeyError) as e:
     srcdir = "."
 srcdir = srcdir + '/'
 
@@ -39,7 +39,7 @@ try:
         do_makefile = False
     else:
         do_makefile = True
-except KeyError, e:
+except (KeyError) as e:
     do_makefile = False
 
 # set do_sources to either true or false dependeing on the environment
@@ -48,7 +48,7 @@ try:
         do_sources = False
     else:
         do_sources = True
-except KeyError, e:
+except (KeyError) as e:
     do_sources = True
 
 name_dict = {}
@@ -127,7 +127,7 @@ def extract_extension (template_name):
     # we return everything between the penultimate . and .t
     mo = re.search (r'\.([a-z]+)\.t$', template_name)
     if not mo:
-        raise ValueError, "Incorrectly formed template_name '%s'" % (template_name,)
+        raise ValueError("Incorrectly formed template_name '%s'" % (template_name,))
     return mo.group (1)
 
 def open_src (name, mode):
@@ -137,7 +137,7 @@ def open_src (name, mode):
 def do_substitution (d, in_file, out_file):
     def repl (match_obj):
         key = match_obj.group (1)
-        # print key
+        # print(key)
         return d[key]
 
     inp = in_file.read ()

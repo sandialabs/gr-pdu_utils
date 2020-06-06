@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * <COPYRIGHT PLACEHOLDER>
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,41 +20,68 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef INCLUDED_PDU_UTILS_MSG_DROP_RANDOM_H
 #define INCLUDED_PDU_UTILS_MSG_DROP_RANDOM_H
 
-#include <pdu_utils/api.h>
 #include <gnuradio/block.h>
+#include <pdu_utils/api.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
+
+/*!
+ * \brief Will randomly drop a message with specified probability.
+ * \ingroup pdu_utils
+ *
+ */
+class PDU_UTILS_API msg_drop_random : virtual public gr::block
+{
+public:
+    typedef boost::shared_ptr<msg_drop_random> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup pdu_utils
+     * \brief Return a shared_ptr to a new instance of pdu_utils::msg_drop_random.
      *
+     * @param p_drop - percentage to drop, [0..1]
+     * @param seed - RNG seed value
      */
-    class PDU_UTILS_API msg_drop_random : virtual public gr::block
-    {
-     public:
-      typedef boost::shared_ptr<msg_drop_random> sptr;
+    static sptr make(float p_drop, uint64_t seed = 12345678);
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of pdu_utils::msg_drop_random.
-       *
-       * To avoid accidental use of raw pointers, pdu_utils::msg_drop_random's
-       * constructor is in a private implementation
-       * class. pdu_utils::msg_drop_random::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(float p_drop, uint64_t seed=12345678);
+    /**
+     * Set percentage of dropped messages
+     *
+     * @param p - percentage drop, [0..1]
+     */
+    virtual void set_prob_drop(float p) = 0;
 
-      virtual void set_prob_drop(float) = 0;
-      virtual void reset(void) = 0;
-    };
+    /**
+     * Resets counters
+     */
+    virtual void reset(void) = 0;
 
-  } // namespace pdu_utils
+    /**
+     * Returns count of dropped messages
+     *
+     * @return uint64_t
+     */
+    virtual uint64_t get_drop_count() = 0;
+
+    /**
+     * Returns count of incoming messages
+     *
+     * @return uint64_t
+     */
+    virtual uint64_t get_msg_count() = 0;
+
+    /**
+     * Returns count of passed messages
+     *
+     * @return uint64_t
+     */
+    virtual uint64_t get_pass_count() = 0;
+};
+
+} // namespace pdu_utils
 } // namespace gr
 
 #endif /* INCLUDED_PDU_UTILS_MSG_DROP_RANDOM_H */

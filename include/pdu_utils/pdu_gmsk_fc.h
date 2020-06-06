@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * <COPYRIGHT PLACEHOLDER>
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,43 +20,53 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
-
 #ifndef INCLUDED_PDU_UTILS_PDU_GMSK_FC_H
 #define INCLUDED_PDU_UTILS_PDU_GMSK_FC_H
 
-#include <pdu_utils/api.h>
 #include <gnuradio/block.h>
+#include <pdu_utils/api.h>
 //#include <gnuradio/sync_block.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
+
+/*!
+ * \brief GMSK Modulator
+ * \ingroup pdu_utils
+ *
+ * This block accepts a float PDU of size n containing baseband
+ * data, applies GMSK modulation, then sends a gr_complex PDU of
+ * size n-len(taps)+1.
+ */
+class PDU_UTILS_API pdu_gmsk_fc : virtual public gr::block
+{
+public:
+    typedef boost::shared_ptr<pdu_gmsk_fc> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup pdu_utils
+     * \brief Return a shared_ptr to a new instance of pdu_utils::pdu_gmsk_fc.
      *
+     * @param sensitivity -
+     * @param taps -
      */
-    class PDU_UTILS_API pdu_gmsk_fc : virtual public gr::block
-    {
-     public:
-      typedef boost::shared_ptr<pdu_gmsk_fc> sptr;
+    static sptr make(float sensitivity, const std::vector<float> taps);
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of pdu_utils::pdu_gmsk_fc.
-       *
-       * To avoid accidental use of raw pointers, pdu_utils::pdu_gmsk_fc's
-       * constructor is in a private implementation
-       * class. pdu_utils::pdu_gmsk_fc::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(float sensitivity, const std::vector<float> taps);
+    /**
+     * Sets sensitivity
+     *
+     * @param sensitivity -
+     */
+    virtual void set_sensitivity(float sensitivity) = 0;
 
-      virtual void set_sensitivity(float) = 0;
-      virtual void set_taps(std::vector<float>) = 0;
-    };
+    /**
+     * Sets taps array
+     *
+     * @param taps -
+     */
+    virtual void set_taps(std::vector<float> taps) = 0;
+};
 
-  } // namespace pdu_utils
+} // namespace pdu_utils
 } // namespace gr
 
 #endif /* INCLUDED_PDU_UTILS_PDU_GMSK_FC_H */

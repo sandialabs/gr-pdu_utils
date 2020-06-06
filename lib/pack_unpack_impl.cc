@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * <COPYRIGHT PLACEHOLDER>
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,107 +24,101 @@
 #include "config.h"
 #endif
 
-#include <gnuradio/io_signature.h>
 #include "pack_unpack_impl.h"
+#include <gnuradio/io_signature.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
 
-    pack_unpack::sptr
-    pack_unpack::make(uint32_t mode, uint32_t bit_order)
-    {
-      return gnuradio::get_initial_sptr
-        (new pack_unpack_impl(mode, bit_order));
-    }
+pack_unpack::sptr pack_unpack::make(uint32_t mode, uint32_t bit_order)
+{
+    return gnuradio::get_initial_sptr(new pack_unpack_impl(mode, bit_order));
+}
 
-    /*
-     * The private constructor
-     */
-    pack_unpack_impl::pack_unpack_impl(uint32_t mode, uint32_t bit_order)
-      : gr::block("pack_unpack",
-              io_signature::make (0, 0, 0),
-              io_signature::make (0, 0, 0)),
-        d_mode(mode),
-        d_bit_order(bit_order)
-    {
-      message_port_register_in(PMTCONSTSTR__PDU_IN);
-      set_msg_handler(PMTCONSTSTR__PDU_IN, boost::bind(&pack_unpack_impl::handle_msg, this, _1));
-      message_port_register_out(PMTCONSTSTR__PDU_OUT);
+/*
+ * The private constructor
+ */
+pack_unpack_impl::pack_unpack_impl(uint32_t mode, uint32_t bit_order)
+    : gr::block("pack_unpack", io_signature::make(0, 0, 0), io_signature::make(0, 0, 0)),
+      d_mode(mode),
+      d_bit_order(bit_order)
+{
+    message_port_register_in(PMTCONSTSTR__PDU_IN);
+    set_msg_handler(PMTCONSTSTR__PDU_IN,
+                    boost::bind(&pack_unpack_impl::handle_msg, this, _1));
+    message_port_register_out(PMTCONSTSTR__PDU_OUT);
 
-      if (d_mode == MODE_UNPACK_BYTE) {
+    if (d_mode == MODE_UNPACK_BYTE) {
         GR_LOG_INFO(d_logger, "PDU Pack/Unpack instantiated in UNPACK BYTE mode");
-      } else if (d_mode == MODE_PACK_BYTE) {
+    } else if (d_mode == MODE_PACK_BYTE) {
         GR_LOG_INFO(d_logger, "PDU Pack/Unpack instantiated in PACK BYTE mode");
-      } else if (d_mode == MODE_BITSWAP_BYTE) {
+    } else if (d_mode == MODE_BITSWAP_BYTE) {
         GR_LOG_INFO(d_logger, "PDU Pack/Unpack instantiated in BITSWAP mode");
-      } else {
+    } else {
         GR_LOG_WARN(d_logger, "PDU Pack/Unpack instantiated in UNKNOWN mode");
-      }
-
     }
+}
 
-    /*
-     * Our virtual destructor.
-     */
-    pack_unpack_impl::~pack_unpack_impl()
-    {
-    }
+/*
+ * Our virtual destructor.
+ */
+pack_unpack_impl::~pack_unpack_impl() {}
 
 
-    void
-    pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
-    {
-      // make sure PDU data is formed properly
-      if (!(pmt::is_pair(pdu))) {
+void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
+{
+    // make sure PDU data is formed properly
+    if (!(pmt::is_pair(pdu))) {
         GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-pair)");
         return;
-      }
+    }
 
-      gr::thread::scoped_lock l(d_setlock);
+    gr::thread::scoped_lock l(d_setlock);
 
-      pmt::pmt_t meta = pmt::car(pdu);
-      pmt::pmt_t v_data = pmt::cdr(pdu);
+    pmt::pmt_t meta = pmt::car(pdu);
+    pmt::pmt_t v_data = pmt::cdr(pdu);
 
-      if (!(is_dict(meta) && pmt::is_uniform_vector(v_data))) {
+    if (!(is_dict(meta) && pmt::is_uniform_vector(v_data))) {
         GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-PDU)");
         return;
-      }
+    }
 
-      uint32_t v_len = pmt::length(v_data);
-      size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
+    uint32_t v_len = pmt::length(v_data);
+    size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
 
-      if (d_mode == MODE_UNPACK_BYTE) {
+    if (d_mode == MODE_UNPACK_BYTE) {
         /*
          * UNPACK BYTE: input is an aray of bytes to be converted to bits. The
          * input can be any byte vector.
          */
         if (!pmt::is_u8vector(v_data)) {
-          GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
-          return;
+            GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
+            return;
         }
         const std::vector<uint8_t> data = pmt::u8vector_elements(v_data);
         std::vector<uint8_t> out;
 
         for (int ii = 0; ii < data.size(); ii++) {
-          if (d_bit_order == BIT_ORDER_LSB_FIRST) {
-            // START LSB FIRST PROCESSING
-            for (int jj = 0; jj < 8; jj++) {
-              out.push_back((data[ii]>>jj) & 0x01);
+            if (d_bit_order == BIT_ORDER_LSB_FIRST) {
+                // START LSB FIRST PROCESSING
+                for (int jj = 0; jj < 8; jj++) {
+                    out.push_back((data[ii] >> jj) & 0x01);
+                }
+                // END LSB FIRST PROCESSING
+            } else {
+                // START MSB FIRST PROCESSING
+                for (int jj = 7; jj >= 0; jj--) {
+                    out.push_back((data[ii] >> jj) & 0x01);
+                }
+                // END MSB FIRST PROCESSING
             }
-            // END LSB FIRST PROCESSING
-          } else {
-            // START MSB FIRST PROCESSING
-            for (int jj = 7; jj >= 0; jj--) {
-              out.push_back((data[ii]>>jj) & 0x01);
-            }
-            // END MSB FIRST PROCESSING
-          }
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
+        message_port_pub(PMTCONSTSTR__PDU_OUT,
+                         pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
-      } else if (d_mode == MODE_PACK_BYTE) {
+    } else if (d_mode == MODE_PACK_BYTE) {
         /*
          * PACK BYTE: input is an aray of bits to be converted to bytes. The
          * input should be a multiple of 8 bytes and  will be zero padded to
@@ -130,8 +126,8 @@ namespace gr {
          * Values other than zero will map to '1'.
          */
         if (!pmt::is_u8vector(v_data)) {
-          GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
-          return;
+            GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
+            return;
         }
 
         const std::vector<uint8_t> data_in = pmt::u8vector_elements(v_data);
@@ -139,82 +135,84 @@ namespace gr {
         std::vector<uint8_t> out;
 
         uint32_t nbytes = data.size() / 8;
-        if (data.size() % 8) nbytes++;
-        data.resize(nbytes*8, 0);
+        if (data.size() % 8)
+            nbytes++;
+        data.resize(nbytes * 8, 0);
         out.reserve(nbytes);
 
         uint8_t byte = 0;
         for (int ii = 0; ii < data.size(); ii++) {
-          if (d_bit_order == BIT_ORDER_LSB_FIRST) {
-            // START LSB FIRST PROCESSING
-            byte >>= 1;
-            if (data[ii]) byte |= 0x80;
-              if ((ii % 8)==7) {
-              out.push_back(byte);
-              byte = 0;
+            if (d_bit_order == BIT_ORDER_LSB_FIRST) {
+                // START LSB FIRST PROCESSING
+                byte >>= 1;
+                if (data[ii])
+                    byte |= 0x80;
+                if ((ii % 8) == 7) {
+                    out.push_back(byte);
+                    byte = 0;
+                }
+                // END LSB FIRST PROCESSING
+            } else {
+                // START MSB FIRST PROCESSING
+                byte <<= 1;
+                if (data[ii])
+                    byte |= 0x01;
+                if ((ii % 8) == 7) {
+                    out.push_back(byte);
+                    byte = 0;
+                }
+                // END MSB FIRST PROCESSING
             }
-            // END LSB FIRST PROCESSING
-          } else {
-            // START MSB FIRST PROCESSING
-            byte <<= 1;
-            if (data[ii]) byte |=0x01;
-              if ((ii % 8)==7) {
-              out.push_back(byte);
-              byte = 0;
-            }
-            // END MSB FIRST PROCESSING
-          }
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
+        message_port_pub(PMTCONSTSTR__PDU_OUT,
+                         pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
-      } else if (d_mode == MODE_BITSWAP_BYTE) {
+    } else if (d_mode == MODE_BITSWAP_BYTE) {
         /*
          * BITSWAP BYTE: input is a packed byte and output will have bit order
          * reversed on a byte-by-byte basis.
          */
 
         if (!pmt::is_u8vector(v_data)) {
-          GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
-          return;
+            GR_LOG_ERROR(d_logger, "PDU vector is not uint8, dropping");
+            return;
         }
 
         std::vector<uint8_t> data = pmt::u8vector_elements(v_data);
         std::vector<uint8_t> out;
         out.reserve(v_len);
         for (int ii = 0; ii < v_len; ii++) {
-          out.push_back(bitreverse[data[ii]]);
+            out.push_back(bitreverse[data[ii]]);
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
+        message_port_pub(PMTCONSTSTR__PDU_OUT,
+                         pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
-      } else {
+    } else {
         /*
          * All other modes are undefined... print a warning and drop PDU
          */
         GR_LOG_WARN(d_logger, boost::format("Unknown block mode %d") % d_mode);
-      }
-
     }
+}
 
-    void
-    pack_unpack_impl::set_mode(uint32_t mode)
-    {
-      gr::thread::scoped_lock l(d_setlock);
+void pack_unpack_impl::set_mode(uint32_t mode)
+{
+    gr::thread::scoped_lock l(d_setlock);
 
-      d_mode = mode;
-    }
+    d_mode = mode;
+}
 
 
-    void
-    pack_unpack_impl::set_bit_order(uint32_t order)
-    {
-      gr::thread::scoped_lock l(d_setlock);
+void pack_unpack_impl::set_bit_order(uint32_t order)
+{
+    gr::thread::scoped_lock l(d_setlock);
 
-      d_bit_order = order;
-    }
+    d_bit_order = order;
+}
 
-  } /* namespace pdu_utils */
+} /* namespace pdu_utils */
 } /* namespace gr */

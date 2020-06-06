@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +41,7 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
         self.tb = None
 
     def test_001_nochange (self):
+        self.add.set_seed(123)
         in_data = range(8)
         expected_data = range(8)
         in_pdu = pmt.cons(pmt.make_dict(), pmt.init_u8vector(len(in_data), in_data))
@@ -58,6 +61,7 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
     def test_002_u8_scale_offset (self):
         self.add.set_scale(4)
         self.add.set_offset(3)
+        self.add.set_seed(123)
 
         in_data = range(8)
         expected_data = range(3,32,4)
@@ -79,9 +83,10 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
         self.add.set_scale(4)
         self.add.set_offset(3)
         self.add.set_noise_level(0.1)
+        self.add.set_seed(123)
 
         in_data = range(8)
-        expected_data = [2.7966434955596924, 7.237407207489014, 11.077142715454102, 14.856366157531738, 18.887033462524414, 22.75377082824707, 26.903127670288086, 30.93477439880371]
+        expected_data = [3.1571753, 7.1703644, 10.828911, 14.942777, 18.78148, 23.152708, 27.041052, 31.17532]
         in_pdu = pmt.cons(pmt.make_dict(), pmt.init_f32vector(len(in_data), in_data))
 
         self.tb.start()
@@ -92,18 +97,19 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
         time.sleep(.01)
         self.tb.stop()
         self.tb.wait()
-
+        
         out_data = pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))
 
-        self.assertComplexTuplesAlmostEqual(out_data, expected_data)
+        self.assertComplexTuplesAlmostEqual(out_data, expected_data, 3)
 
     def test_003_c32noise (self):
         self.add.set_scale(4)
         self.add.set_offset(3)
         self.add.set_noise_level(0.1)
+        self.add.set_seed(123)
 
         in_data = range(8)
-        expected_data = ((2.8562052249908447+3.167872428894043j), (7.054548263549805+2.898435354232788j), (10.920120239257812+2.8258891105651855j), (14.931501388549805+2.9538779258728027j), (18.730989456176758+2.91664981842041j), (22.851964950561523+2.7894411087036133j), (26.93660545349121+3.223921537399292j), (31.102128982543945+3.0600478649139404j))
+        expected_data = [(3.1111398+3.1204658j), (6.879022+2.959537j), (10.845484+3.1079807j), (15.029028+3.12397j), (19.124151+2.994976j), (22.956503+3.1584077j), (27.271961+2.9496112j), (31.104555+3.0450819j)]
         in_pdu = pmt.cons(pmt.make_dict(), pmt.init_c32vector(len(in_data), in_data))
 
         self.tb.start()
@@ -117,16 +123,17 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
 
         out_data = pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0)))
 
-        self.assertComplexTuplesAlmostEqual(out_data, expected_data)
+        self.assertComplexTuplesAlmostEqual(out_data, expected_data, 3)
 
     def test_004_c32noise_gaus (self):
         self.add.set_scale(4)
         self.add.set_offset(3)
         self.add.set_noise_level(0.1)
         self.add.set_noise_dist(pdu_utils.GAUSSIAN)
+        self.add.set_seed(123)
 
         in_data = range(8)
-        expected_data = ((3.213324785232544+2.8172717094421387j), (6.527881145477295+3.2535653114318848j), (10.679037094116211+2.8527472019195557j), (14.64943790435791+2.4793572425842285j), (18.989013671875+2.964545965194702j), (22.857892990112305+2.9000906944274902j), (27.240381240844727+2.931946039199829j), (31.267457962036133+3.4548940658569336j))
+        expected_data = [(3.3071127+3.283337j), (6.8398867+2.5212853j), (11.206407+2.7046404j), (15.492073+3.1152205j), (18.979256+3.5126355j), (23.402103+2.8895853j), (26.984592+3.0831635j), (31.213652+3.4955065j)]
         in_pdu = pmt.cons(pmt.make_dict(), pmt.init_c32vector(len(in_data), in_data))
 
         self.tb.start()
@@ -140,9 +147,7 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
 
         out_data = pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0)))
 
-        self.assertComplexTuplesAlmostEqual(out_data, expected_data)
-
-
+        self.assertComplexTuplesAlmostEqual(out_data, expected_data, 3)
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pdu_add_noise, "qa_pdu_add_noise.xml")
+    gr_unittest.run(qa_pdu_add_noise)

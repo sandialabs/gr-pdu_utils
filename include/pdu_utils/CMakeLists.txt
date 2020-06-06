@@ -21,10 +21,6 @@
 # Invoke macro to generate various headers
 #######################################################################
 include(GrMiscUtils)
-GR_EXPAND_X_H(pdu_utils pdu_to_bursts_X              c f s b)
-GR_EXPAND_X_H(pdu_utils tags_to_pdu_X                c f s b)
-GR_EXPAND_X_H(pdu_utils tag_message_trigger_X        c f i s b)
-GR_EXPAND_X_H(pdu_utils take_skip_to_pdu_X           c f s b)
 
 add_custom_target(pdu_utils_generated_includes DEPENDS
     ${generated_includes}
@@ -42,8 +38,7 @@ install(FILES
     pdu_burst_combiner.h
     pdu_split.h
     pdu_fir_filter.h
-    pdu_pfb_resamp_cc.h
-    pdu_pfb_resamp_ff.h
+    pdu_pfb_resamp.h
     #pdu_rational_resampler_cc.h
     message_counter.h
     message_gate.h
@@ -56,7 +51,6 @@ install(FILES
     pdu_add_noise.h
     msg_drop_random.h
     pdu_head_tail.h
-    time_delta.h
     pdu_length_filter.h
     pdu_logger.h
     pdu_clock_recovery.h
@@ -65,10 +59,13 @@ install(FILES
     pdu_round_robin.h
     pdu_flow_ctrl_helper.h
     pdu_binary_tools.h
-    pdu_commutator.h
     pdu_downsample.h
     pdu_fine_time_measure.h
     pdu_complex_to_mag2.h
-    sandia_message_debug.h
-    wall_clock_time.h DESTINATION include/pdu_utils
+    pdu_to_bursts.h
+    tag_message_trigger.h
+    tags_to_pdu.h
+    take_skip_to_pdu.h
+    pdu_quadrature_demod_cf.h
+    sandia_message_debug.h DESTINATION include/pdu_utils
 )

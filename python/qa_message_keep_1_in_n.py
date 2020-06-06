@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,22 +52,6 @@ class qa_message_keep_1_in_n (gr_unittest.TestCase):
 
         self.assertEquals(1, debug.num_messages())
 
-    def test_001_send5_keep1 (self):
-        emitter = pdu_utils.message_emitter()
-        keep = pdu_utils.message_keep_1_in_n(3)
-        debug = blocks.message_debug()
-        self.tb.msg_connect((emitter, 'msg'), (keep, 'in'))
-        self.tb.msg_connect((keep, 'out'), (debug, 'store'))
-
-        self.tb.start()
-        for x in range(5):
-            time.sleep(.001)
-            emitter.emit()
-        time.sleep(.01)
-        self.tb.stop()
-        self.tb.wait()
-
-        self.assertEquals(1, debug.num_messages())
 
     def test_002_send8_keep4 (self):
         emitter = pdu_utils.message_emitter()
@@ -86,4 +72,4 @@ class qa_message_keep_1_in_n (gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_message_keep_1_in_n, "qa_message_keep_1_in_n.xml")
+    gr_unittest.run(qa_message_keep_1_in_n)

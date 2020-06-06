@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+ * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
+ * certain rights in this software.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,60 +20,54 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef INCLUDED_PDU_UTILS_PDU_ALIGN_H
 #define INCLUDED_PDU_UTILS_PDU_ALIGN_H
 
+#include <gnuradio/block.h>
 #include <pdu_utils/api.h>
 #include <pdu_utils/constants.h>
-#include <gnuradio/block.h>
 
 namespace gr {
-  namespace pdu_utils {
+namespace pdu_utils {
+
+/*!
+ * \brief Aligns to a sync word
+ * \ingroup pdu_utils
+ *
+ * Takes in unpacked u8vector PDUs and seaches for a syncword. If found, the
+ * block outputs the entire PDU except for the syncword (with a programmable
+ * offset). If not found, the PDU is dropped.
+ *
+ * The syncwords field is a string that takes a list of comma separated binary
+ * numbers. For example, if using the 32-bit syncword 0xDEADBEEF, you would
+ * enter it in binary (11011110101011011011111011101111) with an offset of 0.
+ * The PDU will be truncated up through the syncword. If the offset is set to
+ * -16, 0xDEAD is truncated, but 0xBEEF remains.
+ *
+ * The threshold is the number of bit errors allowed to still count as a match.
+ *
+ */
+class PDU_UTILS_API pdu_align : virtual public gr::block
+{
+public:
+    typedef boost::shared_ptr<pdu_align> sptr;
 
     /*!
-     * \brief Align output data to syncword
-     * \ingroup pdu_utils
+     * \brief Return a shared_ptr to a new instance of pdu_utils::pdu_align.
      *
-     * PDU Align attempts to find the syncword(s) in the input
-     * data stream and generate an output message with a specified alignment.
-     * Symbols within the sync pattern can be included in the output by
-     * specifying a negative value for the offset, while symbols after the
-     * end of the sync pattern can be excluded from the output by specifying
-     * a positive offset.
-     *
-     * The operation mode determines the output when the sync is unable to be
-     * found.  If ALIGN_DROP is selected, no output message will be emitted.  If
-     * ALIGN_FORWARD is selected, the input pdu will be echoed at the output.
-     * If ALIGN_EMPTY is selected, the output PDU will contain the metadata
-     * from the incoming pdu but the data will be empty.  The default mode of
-     * operation is ALIGN_DROP.
-     *
-     * Note: Maximum sync word length is 64 symbols.
-     *
+     * @param syncwords - binary syncword to search for
+     * @param threshold - number of bit errors allowed
+     * @param offset - bit offset to pass through
+     * @param mode - mode to operate when sync is not found
+     *  ALIGN_DROP(default) - drop pdu
+     *  ALIGN_FORWARD - forward pdu
+     *  ALIGN_EMPTY - emit empty pdu
      */
-    class PDU_UTILS_API pdu_align : virtual public gr::block
-    {
-     public:
-      typedef boost::shared_ptr<pdu_align> sptr;
+    static sptr
+    make(std::string syncwords, int threshold, int offset, align_modes mode = ALIGN_DROP);
+};
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of pdu_utils::pdu_align.
-       *
-       * /param syncwords comma delimited string of syncwords to search for
-       * /param threshold number of errors to allow when searching for sync
-       * /param offset number of symbols before (-) or after (+) to begin output
-       *               data
-       * /param mode Mode to operate when sync is not found
-       *               ALIGN_DROP (default) - drop pdu
-       *               ALIGN_FORWARD - forward pdu
-       *               ALIGN_EMPTY - emit empty pdu
-       */
-      static sptr make(std::string syncwords, int threshold, int offset,
-        align_modes mode = ALIGN_DROP);
-    };
-
-  } // namespace pdu_utils
+} // namespace pdu_utils
 } // namespace gr
 
 #endif /* INCLUDED_PDU_UTILS_PDU_ALIGN_H */

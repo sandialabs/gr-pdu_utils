@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -139,6 +141,24 @@ class qa_pack_unpack (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), expected_pdu))
 
+    def test_006_bitswap (self):
+        self.pack.set_mode(pdu_utils.MODE_BITSWAP_BYTE)
+
+        in_data = [0x7b, 0xd1, 0x11, 0x23]
+        expected_data = [0xde, 0x8b, 0x88, 0xc4]
+        in_pdu = pmt.cons(pmt.make_dict(), pmt.init_u8vector(len(in_data), in_data))
+        expected_pdu = pmt.cons(pmt.make_dict(), pmt.init_u8vector(len(expected_data), expected_data))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(pmt.cons(pmt.intern("NON U8 PDU"), pmt.init_u16vector(2,[1,2])))
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+        
+        self.assertTrue(pmt.equal(self.debug.get_message(0), expected_pdu))
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pack_unpack, "qa_pack_unpack.xml")
+    gr_unittest.run(qa_pack_unpack)

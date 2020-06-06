@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# <COPYRIGHT PLACEHOLDER>
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,36 +31,34 @@ class qa_message_counter (gr_unittest.TestCase):
 
     def setUp (self):
         self.tb = gr.top_block ()
+        self.strobe = blocks.message_strobe(pmt.PMT_NIL, 25)
+        self.ctr = pdu_utils.message_counter(pmt.intern("counter"))
+        self.tb.msg_connect((self.strobe, 'strobe'), (self.ctr, 'msg'))
 
     def tearDown (self):
         self.tb = None
 
     def test_001_5x_pass (self):
-        strobe = blocks.message_strobe(pmt.PMT_NIL, 25)
-        ctr = pdu_utils.message_counter(pmt.intern("counter"))
-        self.tb.msg_connect((strobe, 'strobe'), (ctr, 'msg'))
+        
 
         self.tb.start()
         time.sleep(.135)
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(5, ctr.get_ctr())
+        self.assertEquals(5, self.ctr.get_ctr())
 
 
     def test_002_rst_3x_pass (self):
-        strobe = blocks.message_strobe(pmt.PMT_NIL, 25)
-        ctr = pdu_utils.message_counter(pmt.intern("counter"))
-        self.tb.msg_connect((strobe, 'strobe'), (ctr, 'msg'))
-
+       
         self.tb.start()
         time.sleep(.06)
-        ctr.reset()
+        self.ctr.reset()
         time.sleep(.075)
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(3, ctr.get_ctr())
+        self.assertEquals(3, self.ctr.get_ctr())
 
 
 if __name__ == '__main__':
