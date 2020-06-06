@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * Copyright 2018 <+YOU OR YOUR COMPANY+>.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,16 @@ namespace gr {
        boost::posix_time::ptime d_epoch;
        std::string d_name;
 
+       // statistic tracking
+       double d_sum_x, d_sum_x2;
+       int    d_n;
+
      public:
       time_delta_impl(const std::string &name);
       ~time_delta_impl();
+
+      // overloaded functions
+      bool stop();
 
       void handle_pdu(pmt::pmt_t pdu);
     };

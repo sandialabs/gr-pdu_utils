@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +28,29 @@
 namespace gr {
   namespace pdu_utils {
 
-    pdu_preamble::sptr
-    pdu_preamble::make(const std::vector<uint8_t> preamble, const std::vector<uint8_t> tail, uint32_t interp, uint32_t zero_pad, bool nrz)
+    /**
+     * Creates a pdu_preamble and returns a shared pointer
+     *
+     * @param preable - array to be inserted at the begining of the PDU data
+     * @param tail - array to be inserted after the PDU data
+     * @param interp - interpolation factor of each value
+     * @param zero_pad - number of zeros inserted at the start and end of the PDU
+     * @param nrz - Non Return to Zero encoding mode
+     * @return pdu_preamble::sptr - shared pointer to pdu_preamble instance
+     */
+    pdu_preamble::sptr pdu_preamble::make(const std::vector<uint8_t> preamble, const std::vector<uint8_t> tail, uint32_t interp, uint32_t zero_pad, bool nrz)
     {
-      return gnuradio::get_initial_sptr
-        (new pdu_preamble_impl(preamble, tail, interp, zero_pad, nrz));
+      return gnuradio::get_initial_sptr (new pdu_preamble_impl(preamble, tail, interp, zero_pad, nrz));
     }
 
-    /*
-     * The private constructor
+    /**
+     * Constructor
+     *
+     * @param preamble - array to be inserted at the begining of the PDU data
+     * @param tail - array to be inserted after the PDU data
+     * @param interp - interpolation factor of each value, default = 1
+     * @param zero_pad - number of zeros inserted at the start and end of the PDU, default = 0
+     * @param nrz - Non Return to Zero encoding mode, default = true
      */
     pdu_preamble_impl::pdu_preamble_impl(const std::vector<uint8_t> preamble, const std::vector<uint8_t> tail, uint32_t interp, uint32_t zero_pad, bool nrz)
       : gr::block("pdu_preamble",
@@ -51,10 +65,9 @@ namespace gr {
       set_zero_pad(d_zero_pad);
 
       message_port_register_in(PMTCONSTSTR__PDU_IN);
-      set_msg_handler(PMTCONSTSTR__PDU_IN,
-          boost::bind(&pdu_preamble_impl::handle_msg, this, _1));
+      set_msg_handler(PMTCONSTSTR__PDU_IN, boost::bind(&pdu_preamble_impl::handle_msg, this, _1));
       message_port_register_out(PMTCONSTSTR__PDU_OUT);
-    }
+    } //end constructor
 
     /*
      * Our virtual destructor.
@@ -63,8 +76,7 @@ namespace gr {
     {
     }
 
-    void
-    pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
+    void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
     {
       // make sure PDU data is formed properly
       if (!(pmt::is_pair(pdu))) {
@@ -124,8 +136,12 @@ namespace gr {
     }
 
 
-    void
-    pdu_preamble_impl::set_preamble(const std::vector<uint8_t> preamble)
+    /**
+     * Set the preamble array
+     *
+     * @param preamble - preamble array thats inserted before PDU
+     */
+    void pdu_preamble_impl::set_preamble(const std::vector<uint8_t> preamble)
     {
       gr::thread::scoped_lock l(d_setlock);
 
@@ -148,8 +164,12 @@ namespace gr {
     }
 
 
-    void
-    pdu_preamble_impl::set_tail(const std::vector<uint8_t> tail)
+    /**
+     * Set the tail array
+     *
+     * @param tail - tail array thats inserted after the PDU
+     */
+    void pdu_preamble_impl::set_tail(const std::vector<uint8_t> tail)
     {
       gr::thread::scoped_lock l(d_setlock);
 
@@ -172,8 +192,12 @@ namespace gr {
     }
 
 
-    void
-    pdu_preamble_impl::set_zero_pad(uint32_t zero_pad)
+    /**
+     * Sets the number of zeros pading the front and rear of the encoded PDU
+     *
+     * @param zero_pad - number of zeros to pad with
+     */
+    void pdu_preamble_impl::set_zero_pad(uint32_t zero_pad)
     {
       gr::thread::scoped_lock l(d_setlock);
 
@@ -184,8 +208,12 @@ namespace gr {
     }
 
 
-    void
-    pdu_preamble_impl::set_interp(uint32_t interp)
+    /**
+     * Sets the interpolation factor
+     *
+     * @param interp - desired interpolation value
+     */
+    void pdu_preamble_impl::set_interp(uint32_t interp)
     {
       d_interp = interp;
       set_preamble(d_preamble);
@@ -193,8 +221,12 @@ namespace gr {
     }
 
 
-    void
-    pdu_preamble_impl::set_nrz(bool nrz)
+    /**
+     * Sets the Non Return to Zero( NRZ ) behavior
+     *
+     * @parma nrz - desired nrz value
+     */
+    void pdu_preamble_impl::set_nrz(bool nrz)
     {
       d_nrz = nrz;
       set_preamble(d_preamble);

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace gr {
       float d_phase;
       std::vector<float> d_taps;
       filter::kernel::fir_filter_fff *d_fir;
-
+      std::vector<float> d_log_ramp;
 
      public:
       pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> taps);

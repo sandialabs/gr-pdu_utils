@@ -67,6 +67,20 @@
     <optional>1</optional>
   </source>
 
-  <doc>This block will add a preamble, tail, interpolate, NRZ encode, and zero pad according to the users specification.</doc>
+  <doc>
+  	Transforms an incoming PDU by adding a preamble and tail and then perform interpolation and NRZ encoding
+  	
+  	Configuration:
+  		Preamble - array of data inserted before the PDU
+  		Tail - array of data inserted after the PDU
+  		Interpolation - Interpolation factor of each data point
+  		Pad Size - Amount of zero pad to insert at the front and end of the encoded PDU
+  		NRZ - Perform NRZ encoding
+  	
+  	Input:
+  		PMT pair of metadata and data. Data is a u8vector
+  	Output:
+  		PMT pair of metadata and data. Data is a f32vector. Metadata is a copy from input
+  </doc>
 
 </block>

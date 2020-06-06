@@ -68,5 +68,7 @@ install(FILES
     pdu_commutator.h
     pdu_downsample.h
     pdu_fine_time_measure.h
-    pdu_complex_to_mag2.h DESTINATION include/pdu_utils
+    pdu_complex_to_mag2.h
+    sandia_message_debug.h
+    wall_clock_time.h DESTINATION include/pdu_utils
 )

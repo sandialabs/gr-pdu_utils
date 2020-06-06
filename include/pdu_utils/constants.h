@@ -25,6 +25,7 @@
 #define INCLUDED_PDU_UTILS_CONSTANTS_H
 
 #include <pdu_utils/api.h>
+#include <pmt/pmt.h>
 
 namespace gr {
   namespace pdu_utils {
@@ -61,12 +62,20 @@ namespace gr {
     static const pmt::pmt_t PMTCONSTSTR__CONF = pmt::mp("conf");
     static const pmt::pmt_t PMTCONSTSTR__BURSTS = pmt::mp("bursts");
     static const pmt::pmt_t PMTCONSTSTR__DETECTS = pmt::mp("detects");
+    static const pmt::pmt_t PMTCONSTSTR__DEBUG = pmt::mp("debug");
+    static const pmt::pmt_t PMTCONSTSTR__ZEROX = pmt::mp("zeroX");
+    static const pmt::pmt_t PMTCONSTSTR__WINDOW = pmt::mp("window");
+    static const pmt::pmt_t PMTCONSTSTR__TRUTH = pmt::mp("truth");
 
     static const pmt::pmt_t PMTCONSTSTR__EOB_OFFSET = pmt::mp("eob_offset");
     static const pmt::pmt_t PMTCONSTSTR__EOB_ALIGNMENT = pmt::mp("eob_alignment");
     static const pmt::pmt_t PMTCONSTSTR__RX_TIME = pmt::mp("rx_time");
+    static const pmt::pmt_t PMTCONSTSTR__SAMP_RATE = pmt::mp( "sample_rate" );
+    static const pmt::pmt_t PMTCONSTSTR__SYM_RATE = pmt::mp( "symbol_rate" );
 
     static const pmt::pmt_t PMTCONSTSTR__BURST_TIME = pmt::mp("burst_time");
+    static const pmt::pmt_t PMTCONSTSTR__START_TIME = pmt::mp("start_time");
+    static const pmt::pmt_t PMTCONSTSTR__START_TIME_OFFSET = pmt::mp("start_time_offset");
     static const pmt::pmt_t PMTCONSTSTR__TX_TIME = pmt::mp("tx_time");
     static const pmt::pmt_t PMTCONSTSTR__TX_SOB = pmt::mp("tx_sob");
     static const pmt::pmt_t PMTCONSTSTR__TX_EOB = pmt::mp("tx_eob");
@@ -74,6 +83,7 @@ namespace gr {
     static const pmt::pmt_t PMTCONSTSTR__TIME_TYPE = pmt::mp("time_type");
     static const pmt::pmt_t PMTCONSTSTR__UHD_TIME_TUPLE = pmt::mp("uhd_time_tuple");
     static const pmt::pmt_t PMTCONSTSTR__WALL_CLOCK_TIME = pmt::mp("wall_clock_time");
+    static const pmt::pmt_t PMTCONSTSTR__DURATION = pmt::mp("duration");
 
     // enumerate command port commands:
     static const pmt::pmt_t PMTCONSTSTR__SET_TRIGGER_KEY = pmt::string_to_symbol("set_trigger_tag");
@@ -92,6 +102,25 @@ namespace gr {
     static const uint64_t TX_OFF = 0;  // no transmissions
 
 
+    // noise generation distributions
+    enum noise_dist
+    {
+      UNIFORM = 0,
+      GAUSSIAN = 1
+    };
+
+    //! pdu align modes
+    enum align_modes
+    {
+      //! do not emit a packet if sync word is not found
+      ALIGN_DROP = 0,
+
+      //! forward packet if sync word is not found
+      ALIGN_FORWARD = 1,
+
+      //! emit empty pdu if sync word is not found
+      ALIGN_EMPTY = 2
+    };
 
   } // namespace pdu_utils
 } // namespace gr

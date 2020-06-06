@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,9 +92,11 @@ namespace gr {
         //std::cout << "got uniform vector of length " << v_len << " and itemsize " << v_itemsize << std::endl;
 
         const std::vector<std::complex<float> > input_data = pmt::c32vector_elements(v_data);
-        if (d_input_size < input_data.size() + d_nfilts) {
+        // allocate enough space to pad with 1/2 filter length on each side of the data (group delay)
+        // also tack on some extra memory because the in-tree filter() call accesses out-of-bounds memory
+        if (d_input_size < input_data.size() + d_nfilts*2) {
           // Give ourselves some extra size to prevent a ton of reallocs
-          resize_arrays(input_data.size()*1.25 + d_nfilts);
+          resize_arrays(input_data.size()*1.25 + 2*d_nfilts);
         }
         //std::vector<std::complex<float> > d_out, in_data; // output
         const float z=0.0;
@@ -105,7 +107,7 @@ namespace gr {
         for (int ii=0; ii < start; ii++) d_in[ii] = input_data[0];
         memcpy(&d_in[start], &input_data[0], sizeof(gr_complex)*input_data.size());
         for (int ii=0; ii < 2*start; ii++) d_in[ii+start+input_data.size()] = input_data[input_data.size()-1];
-        
+
         int n_out = d_pfb->filter(d_out, d_in, input_data.size() + start, num_read);  // C++11??
 
         //in_data.reserve(2*start + d_in.size());

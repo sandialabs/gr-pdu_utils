@@ -55,7 +55,7 @@ class qa_pdu_commutator (gr_unittest.TestCase):
           self.emitter.emit(pc)
         
         # Sleep for a little bit to let the messages finish propagating
-        time.sleep(.002)
+        time.sleep(.05)
         self.tb.stop()
         self.tb.wait()
         msg_count = 0

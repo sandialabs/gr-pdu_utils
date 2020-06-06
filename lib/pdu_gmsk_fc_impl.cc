@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,14 @@ namespace gr {
         d_taps(taps)
     {
       d_fir = new filter::kernel::fir_filter_fff(1, taps);
+
+
+      // table of a log-ramp for scaling bursts
+      // [10**((x-50)/10.) for x in range(0,50)]
+      d_log_ramp.clear();
+      for (size_t i=0; i<50; i++) {
+        d_log_ramp.push_back( std::pow(10, ((float)i-50.0)/10.0 ) );
+      }
 
       message_port_register_in(PMTCONSTSTR__PDU_IN);
       set_msg_handler(PMTCONSTSTR__PDU_IN,
@@ -132,6 +140,12 @@ namespace gr {
         for (int ii = 0; ii < start; ii++){
           mod.push_back(fill_val);
           v_len++;
+        }
+
+        // scale the first HARDCODE 50 samples with a simple ramp function
+        size_t end_samp = std::min(d_log_ramp.size(), mod.size());
+        for (size_t i=0; i<end_samp; i++) {
+          mod[i] *= d_log_ramp[i];
         }
 
         message_port_pub(PMTCONSTSTR__PDU_OUT, (pmt::cons(meta, pmt::init_c32vector(v_len, (const gr_complex *)&mod[0]) )));

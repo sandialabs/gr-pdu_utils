@@ -17,5 +17,9 @@
     <name>msg</name>
     <type>message</type>
   </sink>
+  
+  <doc>
+Simply counts the number of messages received. Stop function of the module prints the count when the flow graph stops.
+  </doc>
 
 </block>

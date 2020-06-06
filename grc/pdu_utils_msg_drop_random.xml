@@ -25,13 +25,13 @@
   <check>$p_drop &lt;= 1</check>
 
   <sink>
-    <name>in</name>
+    <name>pdu_in</name>
     <type>message</type>
     <optional>1</optional>
   </sink>
 
   <source>
-    <name>out</name>
+    <name>pdu_out</name>
     <type>message</type>
     <optional>1</optional>
   </source>

@@ -54,5 +54,7 @@ install(FILES
     pdu_utils_pdu_commutator.xml
     pdu_utils_pdu_downsample.xml
     pdu_utils_pdu_fine_time_measure.xml
-    pdu_utils_pdu_complex_to_mag2.xml DESTINATION share/gnuradio/grc/blocks
+    pdu_utils_pdu_complex_to_mag2.xml
+    pdu_utils_sandia_message_debug.xml
+    pdu_utils_wall_clock_time.xml DESTINATION share/gnuradio/grc/blocks
 )

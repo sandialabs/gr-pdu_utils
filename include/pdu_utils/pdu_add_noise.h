@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,11 +45,18 @@ namespace gr {
        * constructor is in a private implementation
        * class. pdu_utils::pdu_add_noise::make is the public interface for
        * creating new instances.
+       *
+       * @param noise_level - noise scaling (std dev)
+       * @param offset - signal shifting
+       * @param scale - signal scaling
+       * @param seed - RNG seed
+       * @param dist - noise distribution from enum noise_dist
        */
-      static sptr make(float noise_level, float offset, float scale, long seed=12345678);
+      static sptr make(float noise_level, float offset, float scale, long seed=12345678, int dist=0);
       virtual void set_noise_level(float) = 0;
       virtual void set_offset(float) = 0;
       virtual void set_scale(float) = 0;
+      virtual void set_noise_dist(int) = 0;
     };
 
   } // namespace pdu_utils

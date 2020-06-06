@@ -69,3 +69,5 @@ GR_ADD_TEST(qa_pdu_binary_tools ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}
 GR_ADD_TEST(qa_pdu_downsample ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_downsample.py)
 GR_ADD_TEST(qa_pdu_commutator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_commutator.py)
 GR_ADD_TEST(qa_pdu_complex_to_mag2 ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_complex_to_mag2.py)
+GR_ADD_TEST(qa_pdu_clock_recovery ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_clock_recovery.py)
+GR_ADD_TEST(qa_pdu_align ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_align.py)

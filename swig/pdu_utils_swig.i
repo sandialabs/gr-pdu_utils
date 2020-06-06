@@ -58,6 +58,8 @@
 #include "pdu_utils/pdu_commutator.h"
 #include "pdu_utils/pdu_fine_time_measure.h"
 #include "pdu_utils/pdu_complex_to_mag2.h"
+#include "pdu_utils/sandia_message_debug.h"
+#include "pdu_utils/wall_clock_time.h"
 %}
 
 %include "pdu_utils/constants.h"
@@ -162,3 +164,7 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_fine_time_measure);
 
 %include "pdu_utils/pdu_complex_to_mag2.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_complex_to_mag2);
+%include "pdu_utils/sandia_message_debug.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, sandia_message_debug);
+%include "pdu_utils/wall_clock_time.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, wall_clock_time);

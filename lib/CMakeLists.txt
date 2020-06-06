@@ -66,7 +66,9 @@ list(APPEND pdu_utils_sources
     pdu_commutator_impl.cc
     pdu_downsample_impl.cc 
     pdu_fine_time_measure_impl.cc
-    pdu_complex_to_mag2_impl.cc )
+    pdu_complex_to_mag2_impl.cc
+    sandia_message_debug_impl.cc
+    wall_clock_time_impl.cc )
 
 set(pdu_utils_sources "${pdu_utils_sources}" PARENT_SCOPE)
 if(NOT pdu_utils_sources)

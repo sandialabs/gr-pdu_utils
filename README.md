@@ -96,11 +96,11 @@ __Usage:__ This block can be used to add uniform random values to an input array
 
 Which is to say that the order of operations is to apply the random data first, then scale the data, then offset it. Generally useful for debugging and testing, and as such it has not seen extensive use so there may be some issues. Noise profiles are not supported, only uniform random data from the ran1() function within gr::random. It could be argued that these should be separate blocks entirely, but to reduce the overhead of PMT-ifying and de-PMT-ifying data it was implemented this way to allow all three opeartions to be done at once. Maybe the name should be changed...
 
-### In Progress Work and Future TODO
+##### ___GR PDU Utils - PDU FIR Filter___
 
-There are several blocks that are under development, and may not work as expected yet, specifically:
+__Usage:__ This block is a direct analog to the in-tree Decimating FIR streaming filter. It makes use of the same underlying filterNdec function in the from the _fir\_filter\_xxf_ kernel from gr::filter. This block will reject non-PDU type data. As PDUs are inherently weakly-typed, this block will work on either f32 or c32 type PDUs; taps must be real valued.
 
-- PDU FIR Filter
-- PDU PFB Resamp
+##### ___GR PDU Utils - PDU PFB Arbitrary Resampler___
 
-These blocks make use of gr::filter kernels to accomplish PDU-based DSP and are are under development. Use at your own risk.
+__Usage:__ This block is a direct analog to the in-tree PFB Arbitrary Resampler streaming block. It makes use of the same _pfb\_arb\_resampler\_ccf_ kernel from gr::filter. This block will reject non-PDU type data, and currently only works on c32 type PDUs; taps must be real valued.
+

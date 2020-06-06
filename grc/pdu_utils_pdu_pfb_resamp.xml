@@ -7,10 +7,10 @@
   <import>from gnuradio import filter</import>
   <make>pdu_utils.pdu_pfb_resamp_$(type)(
 #if $taps()
-    taps,
+    $taps,
 #else
-    filter.firdes.low_pass_2($nfilts, $nfilts, 0.4, 0.2, 100, filter.firdes.WIN_BLACKMAN_HARRIS)\
-    if $(resamp_rate) &lt; 1\
+    filter.firdes.low_pass_2($nfilts, $nfilts, 0.4, 0.2, 100, filter.firdes.WIN_BLACKMAN_HARRIS) \
+    if $(resamp_rate) &lt; 1 \
     else filter.optfir.low_pass($nfilts, $nfilts, 0.4, 0.6, .1, 100),
 #end if
     $nfilts, $resamp_rate)</make>

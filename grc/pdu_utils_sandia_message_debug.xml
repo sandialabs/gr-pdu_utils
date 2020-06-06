@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<block>
+  <name>Message Debug++</name>
+  <key>pdu_utils_sandia_message_debug</key>
+  <category>[Sandia]/PDU Utilities/Debug Utils</category>
+  <import>import pdu_utils</import>
+  <make>pdu_utils.sandia_message_debug()</make>
+	<sink>
+		<name>print</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+	<sink>
+		<name>store</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+	<sink>
+		<name>print_pdu</name>
+		<type>message</type>
+        <optional>1</optional>
+	</sink>
+	
+	<doc>
+	Provides Message printing to STDOUT for debug purposes. 
+	
+	3 ports are provided, each with different functionality. 
+	- print
+		- simply renders the PMT using pmt::write_string() to STDOUT
+	- store
+		- stores the PMT in an internal vector for later retrival
+	- print_pdu
+		- expects the incoming message to be a PMT pair of meta data and data
+		- utilizes pmt::write_string for meta data portion
+		- expects the data portion to be a u8vector, if not, the data portion won't be rendered
+		- prints out data portion as a hex dump
+	</doc>
+</block>

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,25 +24,59 @@
 #include <pdu_utils/message_counter.h>
 #include <pdu_utils/constants.h>
 
-namespace gr {
-  namespace pdu_utils {
+namespace gr
+{
+  namespace pdu_utils
+  {
 
     class message_counter_impl : public message_counter
     {
-     private:
-      uint64_t d_ctr;
-      pmt::pmt_t d_name;
+      private:
+        uint64_t d_ctr;
+        pmt::pmt_t d_name;
 
-     public:
-      message_counter_impl(pmt::pmt_t name);
-      ~message_counter_impl();
-      bool stop();        // overloaded for print output
-      void setup_rpc(); 	// enable controlport
+      public:
+        /**
+         * Constructor
+         *
+         * @param name - name of counter
+         */
+        message_counter_impl( pmt::pmt_t name );
 
-      void handle_msg(pmt::pmt_t msg);
-      void reset(void) { d_ctr=0; };
-      uint64_t get_ctr() { return d_ctr; };
-    };
+        /**
+         * deconstructor
+         */
+        virtual ~message_counter_impl();
+        bool stop();        // overloaded for print output
+        void setup_rpc(); 	// enable controlport
+
+        /**
+         * message handler
+         *
+         * @param msg - incoming message
+         */
+        void handle_msg( pmt::pmt_t msg );
+
+        /**
+         * resets the counter to zero
+         */
+        void reset( void )
+        {
+          d_ctr = 0;
+        }
+
+
+        /**
+         * returns the current value of the counter
+         *
+         * @return uint64_t - counter value.
+         */
+        uint64_t get_ctr()
+        {
+          return d_ctr;
+        }
+
+    }; //end class message_counter_impl
 
   } // namespace pdu_utils
 } // namespace gr

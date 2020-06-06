@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ namespace gr {
        * pair - calculate the delta and apply accordingly.
        */
       double delta;
-      delta = (d_sob_tag_offset - d_known_time_offset) / d_samp_rate;
+      delta = ((int64_t)d_sob_tag_offset - (int64_t)d_known_time_offset) / d_samp_rate;
       int int_delta = (int)delta;
       delta -= int_delta;
 
@@ -222,17 +222,20 @@ namespace gr {
             d_vector.insert(d_vector.end(), &in[0], &in[consumed-1]);
 
             // check to see if the EOB tag is correctly aligned within the burst
-            if (((d_vector.size() - d_eob_offset) % d_eob_alignment) == 0) {
-
+            size_t n_aligned_needed = (d_vector.size() - d_eob_offset) % d_eob_alignment;
+            if (n_aligned_needed == 0) {
               publish_message();
 
-            // if the tag is not byte-aligned, issue a warning and continue
+            // if the tag is not aligned, issue a warning and continue
             } else {
               // we will consume the tagged sample, so save it ot the data vector
-              d_vector.push_back(in[consumed-1]);
+              //d_vector.push_back(in[consumed-1]);
 
-              // The printout below is normal behavior...warning is not neecssary
-              //std::cout << "EOB tag at " << d_tag.offset << " in burst " << d_burst_counter << " was not correctly aligned..." << std::endl;
+              // if misaligned, publish immediately and don't worry about it
+              for (size_t i=0; i<(d_eob_alignment - n_aligned_needed); i++){
+                  d_vector.push_back(0);
+              }
+              publish_message();
             }
 
           // if we have received a second SOB tag, reset and dump previous data
@@ -254,7 +257,7 @@ namespace gr {
           // don't consume a SOB tag...
           consumed--;
           d_vector.insert(d_vector.end(), &in[0], &in[consumed]);
-          if (d_vector.size() > d_max_pdu_size) {
+          if (d_vector.size() >= d_max_pdu_size) {
             //std::cout << "PDU larger than " << d_max_pdu_size << ", writing it out with no EOB tag!" << std::endl;
             d_vector.resize(d_max_pdu_size);
             publish_message();

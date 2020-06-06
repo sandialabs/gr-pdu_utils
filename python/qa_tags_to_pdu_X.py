@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+# <COPYRIGHT PLACEHOLDER>
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ class qa_tags_to_pdu_X (gr_unittest.TestCase):
         self.tb.connect(vs, t2p)
         self.tb.msg_connect((t2p, 'pdu_out'), (dbg, 'store'))
         expected_vec1 = pmt.init_s16vector((8*11), range(51,51+(8*11)))
-        expected_vec2 = pmt.init_s16vector(16, range(400,416))
+        expected_vec2 = pmt.init_s16vector(16, list(range(400,409)) + [0]*7)
         expected_time1 = start_time + (51 / 1000000.0)
         expected_time2 = 4.125 + ((400-360) / 1000000.0)
 
@@ -145,9 +145,102 @@ class qa_tags_to_pdu_X (gr_unittest.TestCase):
 
         self.tb = None
 
+    def test_005_two_sobs_misaligned (self):
+        # Two SOB tags and the SOB-to-EOB length is not aligned
+        self.tb = gr.top_block ()
+        start_time = 0.1
+        sob_tag = gr.tag_utils.python_to_tag((34, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+        sob_tag2 = gr.tag_utils.python_to_tag((35, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+        eob_tag = gr.tag_utils.python_to_tag((34+(8*31), pmt.intern("EOB"), pmt.PMT_T, pmt.intern("src")))
+        vs = blocks.vector_source_s(range(1350), False, 1, [sob_tag, sob_tag2, eob_tag])
+        #vs = blocks.vector_source_s(range(350), False, 1, [sob_tag, eob_tag])
+        t2p = pdu_utils.tags_to_pdu_s(pmt.intern('SOB'), pmt.intern('EOB'), 1024, 512000, ([]), False, 0, start_time)
+        t2p.set_eob_parameters(8, 0)
+        dbg = blocks.message_debug()
+        self.tb.connect(vs, t2p)
+        self.tb.msg_connect((t2p, 'pdu_out'), (dbg, 'store'))
+        expected_vec = pmt.init_s16vector((8*31), list(range(35,34+(8*31))) + [0])
+        expected_time = start_time + (35 / 512000.0)
+
+        self.tb.run ()
+
+        self.assertEqual(dbg.num_messages(), 1)
+        #print "got ", dbg.get_message(0)
+        #print "expected", expected_vec
+        #print "len is {}".format(len(pmt.to_python(pmt.cdr(dbg.get_message(0)))))
+        self.assertTrue(pmt.equal(pmt.cdr(dbg.get_message(0)), expected_vec))
+        time_tuple1 = pmt.dict_ref(pmt.car(dbg.get_message(0)), pmt.intern("burst_time"), pmt.PMT_NIL)
+        self.assertAlmostEqual(pmt.to_uint64(pmt.tuple_ref(time_tuple1,0)) + pmt.to_double(pmt.tuple_ref(time_tuple1,1)), expected_time)
+
+        self.tb = None
+
+    def test_006_max_pdu_size (self):
+        # two SOB tags exactly max_pdu_size samples apart, with an SOB-to-EOB length that is not divisible by the alignment size
+        self.tb = gr.top_block ()
+        start_time = 0.1
+        max_size = 100
+        sob_tag = gr.tag_utils.python_to_tag((10, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+        eob_tag = gr.tag_utils.python_to_tag((91, pmt.intern("EOB"), pmt.PMT_T, pmt.intern("src")))
+
+        sob_tag3 = gr.tag_utils.python_to_tag((11+max_size, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+
+        vs = blocks.vector_source_s(range(1350), False, 1, [sob_tag, eob_tag, sob_tag3])
+        t2p = pdu_utils.tags_to_pdu_s(pmt.intern('SOB'), pmt.intern('EOB'), 1024, 512000, ([]), False, 0, start_time)
+        t2p.set_eob_parameters(10, 0)
+        t2p.set_max_pdu_size(max_size)
+
+        dbg = blocks.message_debug()
+        self.tb.connect(vs, t2p)
+        self.tb.msg_connect((t2p, 'pdu_out'), (dbg, 'store'))
+        expected_vec = pmt.init_s16vector((9*10), list(range(10,91)) + [0]*9)
+        expected_time = start_time + (10 / 512000.0)
+
+        self.tb.run ()
+
+        # assertions for the first PDU only, second PDU will exist
+        self.assertEqual(dbg.num_messages(), 2)
+        #print "got ", dbg.get_message(0)
+        #print "expected", expected_vec
+        #print "len is {}".format(len(pmt.to_python(pmt.cdr(dbg.get_message(0)))))
+        self.assertTrue(pmt.equal(pmt.cdr(dbg.get_message(0)), expected_vec))
+        time_tuple1 = pmt.dict_ref(pmt.car(dbg.get_message(0)), pmt.intern("burst_time"), pmt.PMT_NIL)
+        self.assertAlmostEqual(pmt.to_uint64(pmt.tuple_ref(time_tuple1,0)) + pmt.to_double(pmt.tuple_ref(time_tuple1,1)), expected_time)
+
+        self.tb = None
+
+    def test_007_max_pdu_size_SOBs (self):
+        # two SOB tags exactly max_pdu_size samples apart
+        self.tb = gr.top_block ()
+        start_time = 0.1
+        max_size = 100
+        sob_tag = gr.tag_utils.python_to_tag((10, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+        sob_tag3 = gr.tag_utils.python_to_tag((10+max_size, pmt.intern("SOB"), pmt.PMT_T, pmt.intern("src")))
+
+        vs = blocks.vector_source_s(range(1350), False, 1, [sob_tag, sob_tag3])
+        t2p = pdu_utils.tags_to_pdu_s(pmt.intern('SOB'), pmt.intern('EOB'), 1024, 512000, ([]), False, 0, start_time)
+        t2p.set_eob_parameters(10, 0)
+        t2p.set_max_pdu_size(max_size)
+
+        dbg = blocks.message_debug()
+        self.tb.connect(vs, t2p)
+        self.tb.msg_connect((t2p, 'pdu_out'), (dbg, 'store'))
+        expected_vec = pmt.init_s16vector((max_size), range(10,10+max_size))
+        expected_time = start_time + (10 / 512000.0)
+
+        self.tb.run ()
+
+        # assertions for the first PDU only, second PDU will exist
+        self.assertEqual(dbg.num_messages(), 2)
+        #print "got ", dbg.get_message(0)
+        #print "expected", expected_vec
+        self.assertTrue(pmt.equal(pmt.cdr(dbg.get_message(0)), expected_vec))
+        time_tuple1 = pmt.dict_ref(pmt.car(dbg.get_message(0)), pmt.intern("burst_time"), pmt.PMT_NIL)
+        self.assertAlmostEqual(pmt.to_uint64(pmt.tuple_ref(time_tuple1,0)) + pmt.to_double(pmt.tuple_ref(time_tuple1,1)), expected_time)
+
+        self.tb = None
+
 
 # TODO: add more tests:
-#   - test ability to correctly handle max-length pdus
 #   - test callbacks
 #   - test message setting interface
 #   - test time-tracking tags

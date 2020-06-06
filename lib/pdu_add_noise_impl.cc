@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,28 +29,31 @@ namespace gr {
   namespace pdu_utils {
 
     pdu_add_noise::sptr
-    pdu_add_noise::make(float noise_level, float offset, float scale, long seed)
+    pdu_add_noise::make(float noise_level, float offset, float scale, long seed, int dist)
     {
       return gnuradio::get_initial_sptr
-        (new pdu_add_noise_impl(noise_level, offset, scale, seed));
+        (new pdu_add_noise_impl(noise_level, offset, scale, seed, dist));
     }
 
     /*
      * The private constructor
      */
-    pdu_add_noise_impl::pdu_add_noise_impl(float noise_level, float offset, float scale, long seed)
+    pdu_add_noise_impl::pdu_add_noise_impl(float noise_level, float offset, float scale, long seed, int dist)
       : gr::block("pdu_add_noise",
               io_signature::make (0, 0, 0),
               io_signature::make (0, 0, 0)),
-        d_noise_level(noise_level),
         d_offset(offset),
         d_scale(scale),
         d_rng(seed)
     {
+      set_noise_dist(dist);
+      set_noise_level(noise_level);
       message_port_register_in(PMTCONSTSTR__PDU_IN);
       set_msg_handler(PMTCONSTSTR__PDU_IN,
           boost::bind(&pdu_add_noise_impl::handle_msg, this, _1));
       message_port_register_out(PMTCONSTSTR__PDU_OUT);
+
+
     }
 
     /*
@@ -84,7 +87,7 @@ namespace gr {
 
         for (int ii=0; ii < v_len; ii++) {
           //u8 noise is [0-1]
-          out[ii] = uint8_t ((input[ii] + ((d_rng.ran1()) * d_noise_level)) * d_scale + d_offset);
+          out[ii] = uint8_t ((input[ii] + (((get_rand_samp()+1)/2) * d_noise_level)) * d_scale + d_offset);
         }
         message_port_pub(PMTCONSTSTR__PDU_OUT, (pmt::cons(meta, pmt::init_u8vector(v_len, out))));
 
@@ -95,7 +98,7 @@ namespace gr {
         out.resize(v_len);
 
         for (int ii=0; ii < v_len; ii++) {
-          out[ii] = (input[ii] + ((d_rng.ran1()*2 - 1) * d_noise_level)) * d_scale + d_offset;
+          out[ii] = (input[ii] + (get_rand_samp() * d_noise_level)) * d_scale + d_offset;
         }
         message_port_pub(PMTCONSTSTR__PDU_OUT, (pmt::cons(meta, pmt::init_f32vector(v_len, out))));
 
@@ -106,13 +109,28 @@ namespace gr {
         out.resize(v_len);
 
         for (int ii=0; ii < v_len; ii++) {
-          out[ii] = (input[ii] + ((d_rng.ran1()*2 - 1) * d_noise_level)) * d_scale + d_offset;
+          out[ii].real( (input[ii].real() + (get_rand_samp() * d_complex_nl)) * d_scale + d_offset );
+          out[ii].imag( (input[ii].imag() + (get_rand_samp() * d_complex_nl)) * d_scale + d_offset );
         }
+
         message_port_pub(PMTCONSTSTR__PDU_OUT, (pmt::cons(meta, pmt::init_c32vector(v_len, out))));
 
       } else {
         GR_LOG_WARN(d_logger, "unsupported PDU type received");
       }
+    }
+
+    float
+    pdu_add_noise_impl::get_rand_samp()
+    {
+      float r_samp = 0;
+      if (d_noise_dist == UNIFORM) {
+        r_samp = d_rng.ran1() * 2 - 1;
+      } else if (d_noise_dist == GAUSSIAN) {
+        r_samp = d_rng.gasdev();
+      }
+
+      return  r_samp;
     }
 
     void
@@ -121,6 +139,7 @@ namespace gr {
       gr::thread::scoped_lock l(d_setlock);
 
       d_noise_level = nl;
+      d_complex_nl = (float)(nl / std::sqrt(2.0));
     }
 
     void
@@ -137,6 +156,13 @@ namespace gr {
       gr::thread::scoped_lock l(d_setlock);
 
       d_scale = s;
+    }
+
+    void
+    pdu_add_noise_impl::set_noise_dist(int d)
+    {
+      gr::thread::scoped_lock l(d_setlock);
+      d_noise_dist = static_cast<noise_dist>(d);
     }
 
   } /* namespace pdu_utils */

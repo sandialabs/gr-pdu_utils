@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * Copyright 2018 <+YOU OR YOUR COMPANY+>.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,10 @@ namespace gr {
       : gr::block("time_delta",
               io_signature::make (0, 0, 0),
               io_signature::make (0, 0, 0)),
-        d_name(name)
+        d_name(name),
+        d_sum_x(0.0),
+        d_sum_x2(0.0),
+        d_n(0)
     {
       boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
       d_epoch = epoch;
@@ -57,6 +60,17 @@ namespace gr {
      */
     time_delta_impl::~time_delta_impl()
     {
+    }
+
+    bool
+    time_delta_impl::stop()
+    {
+      double mean = d_sum_x / (double)d_n;
+      double var = (d_sum_x2 - (d_sum_x*d_sum_x) / (double)d_n) / (double)d_n;
+
+      GR_LOG_INFO(d_logger, boost::format("WALL_CLOCK_TIME_DEBUG (%s): Mean = %0.6f ms, Var = %0.6f ms")
+        % d_name % mean % var );
+      return true;
     }
 
     void
@@ -88,6 +102,12 @@ namespace gr {
       double pdu_time = pmt::to_double(wct_pmt);
       double time_delta = (t_now - pdu_time) * 1000.0;
       GR_LOG_NOTICE(d_logger, boost::format("%s PDU received at %f with time delta %f milliseconds") % d_name % t_now % time_delta);
+      GR_LOG_INFO(d_logger, boost::format("WALL_CLOCK_TIME_DEBUG: <<%s@%f>>") % d_name % time_delta);
+
+      // update estimates
+      d_sum_x += time_delta;
+      d_sum_x2 += (time_delta*time_delta);
+      d_n++;
     }
 
 

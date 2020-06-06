@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+# <COPYRIGHT PLACEHOLDER>
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -96,6 +96,52 @@ class qa_pdu_add_noise (gr_unittest.TestCase):
         out_data = pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))
 
         self.assertComplexTuplesAlmostEqual(out_data, expected_data)
+
+    def test_003_c32noise (self):
+        self.add.set_scale(4)
+        self.add.set_offset(3)
+        self.add.set_noise_level(0.1)
+
+        in_data = range(8)
+        expected_data = ((2.8562052249908447+3.167872428894043j), (7.054548263549805+2.898435354232788j), (10.920120239257812+2.8258891105651855j), (14.931501388549805+2.9538779258728027j), (18.730989456176758+2.91664981842041j), (22.851964950561523+2.7894411087036133j), (26.93660545349121+3.223921537399292j), (31.102128982543945+3.0600478649139404j))
+        in_pdu = pmt.cons(pmt.make_dict(), pmt.init_c32vector(len(in_data), in_data))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(pmt.intern("MALFORMED PDU"))
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        out_data = pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0)))
+
+        self.assertComplexTuplesAlmostEqual(out_data, expected_data)
+
+    def test_004_c32noise_gaus (self):
+        self.add.set_scale(4)
+        self.add.set_offset(3)
+        self.add.set_noise_level(0.1)
+        self.add.set_noise_dist(pdu_utils.GAUSSIAN)
+
+        in_data = range(8)
+        expected_data = ((3.213324785232544+2.8172717094421387j), (6.527881145477295+3.2535653114318848j), (10.679037094116211+2.8527472019195557j), (14.64943790435791+2.4793572425842285j), (18.989013671875+2.964545965194702j), (22.857892990112305+2.9000906944274902j), (27.240381240844727+2.931946039199829j), (31.267457962036133+3.4548940658569336j))
+        in_pdu = pmt.cons(pmt.make_dict(), pmt.init_c32vector(len(in_data), in_data))
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(pmt.intern("MALFORMED PDU"))
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        out_data = pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0)))
+
+        self.assertComplexTuplesAlmostEqual(out_data, expected_data)
+
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@
   <key>pdu_utils_pdu_align</key>
   <category>[Sandia]/PDU Utilities</category>
   <import>import pdu_utils</import>
-  <make>pdu_utils.pdu_align($syncwords, $threshold, $offset)</make>
+  <make>pdu_utils.pdu_align($syncwords, $threshold, $offset, $mode)</make>
 
   <param>
     <name>Syncwords</name>
@@ -23,6 +23,24 @@
     <key>threshold</key>
     <value>0</value>
     <type>int</type>
+  </param>
+
+  <param>
+    <name>Mode</name>
+    <key>mode</key>
+    <type>enum</type>
+    <option>
+      <name>Drop</name>
+      <key>pdu_utils.ALIGN_DROP</key>
+    </option>
+    <option>
+      <name>Forward</name>
+      <key>pdu_utils.ALIGN_FORWARD</key>
+    </option>
+    <option>
+      <name>Empty</name>
+      <key>pdu_utils.ALIGN_EMPTY</key>
+    </option>
   </param>
 
   <check>$threshold &gt;= 0</check>

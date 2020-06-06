@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "config.h"
 #endif
 
+#include<unistd.h>
 #include <gnuradio/io_signature.h>
 #include "message_counter_impl.h"
 
@@ -35,8 +36,10 @@ namespace gr {
         (new message_counter_impl(name));
     }
 
-    /*
-     * The private constructor
+    /**
+     * Constructor
+     *
+     * @param name - name of counter
      */
     message_counter_impl::message_counter_impl(pmt::pmt_t name)
       : gr::block("message_counter",
@@ -50,8 +53,8 @@ namespace gr {
 
     }
 
-    /*
-     * Our virtual destructor.
+    /**
+     * deconstructor
      */
     message_counter_impl::~message_counter_impl()
     {
@@ -71,12 +74,12 @@ namespace gr {
       #else
       std::cout << alias() << " :INFO: Message counter " << d_name << " got " << d_ctr << " messages" << std::endl;
       #endif
+
       return true;
     }
 
 
-    void
-    message_counter_impl::setup_rpc()
+    void message_counter_impl::setup_rpc()
     {
       #ifdef GR_CTRLPORT
 
@@ -91,8 +94,12 @@ namespace gr {
       #endif /* GR_CTRLPORT */
     }
 
-    void
-    message_counter_impl::handle_msg(pmt::pmt_t msg)
+    /**
+     * message handler
+     *
+     * @param msg - incoming message
+     */
+    void message_counter_impl::handle_msg(pmt::pmt_t msg)
     {
       d_ctr++;
     }

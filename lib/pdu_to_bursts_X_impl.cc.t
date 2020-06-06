@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
+ * <COPYRIGHT PLACEHOLDER>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -211,6 +211,14 @@ namespace gr {
           pmt::is_real(pmt::tuple_ref(pmt_time, 1))) {
         // it's a good tuple...
         d_time_tag = pmt_time;
+      }
+
+      // possibly is a pair
+      if (pmt::is_pair(pmt_time) &&
+          pmt::is_uint64(pmt::car(pmt_time)) &&
+          pmt::is_real(pmt::cdr(pmt_time))) {
+        // it's a good pair...
+        d_time_tag = pmt::make_tuple(pmt::car(pmt_time), pmt::cdr(pmt_time));
       }
 
       return data_size;
