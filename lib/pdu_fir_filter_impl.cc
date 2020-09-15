@@ -165,7 +165,6 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
             }
             memcpy(&d_ctmp[0] + 10, &d_in[0], sizeof(gr_complex) * d_in.size());
 
-            std::vector<gr_complex> d_out;
             d_out.resize((d_in.size() - d_fir_ccf.ntaps() + 1) / d_decimation);
 
             // do FIR filtering
