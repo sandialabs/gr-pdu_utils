@@ -30,21 +30,25 @@
 namespace gr {
 namespace pdu_utils {
 
-pdu_fir_filter::sptr pdu_fir_filter::make(int decimation, const std::vector<float> taps)
+pdu_fir_filter::sptr pdu_fir_filter::make(int decimation, const std::vector<float> taps,
+                                          bool pad_for_filter)
 {
-    return gnuradio::get_initial_sptr(new pdu_fir_filter_impl(decimation, taps));
+    return gnuradio::get_initial_sptr
+      (new pdu_fir_filter_impl(decimation, taps, pad_for_filter));
 }
 
 /*
  * The private constructor
  */
-pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float> taps)
+pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float> taps,
+                                         bool pad_for_filter)
     : gr::block("pdu_fir_filter",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_fir_fff(1, taps),
       d_fir_ccf(1, taps),
-      d_decimation(decimation)
+      d_decimation(decimation),
+      d_pad_for_filter(pad_for_filter)
 {
     message_port_register_in(PMTCONSTSTR__PDU_IN);
     message_port_register_out(PMTCONSTSTR__PDU_OUT);
@@ -77,21 +81,53 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
     if (pmt::dict_has_key(metadata, pmt::mp("sample_rate"))) {
         double sample_rate =
             pmt::to_double(pmt::dict_ref(metadata, pmt::mp("sample_rate"), pmt::PMT_NIL));
+        double input_sample_rate = sample_rate;
         sample_rate /= d_decimation;
         metadata = pmt::dict_delete(metadata, pmt::mp("sample_rate"));
         metadata = pmt::dict_add(
             metadata, pmt::mp("sample_rate"), pmt::from_double(sample_rate));
+
+        // if there's a "start_time" tag, update it (if we are not padding)
+        if (!d_pad_for_filter && pmt::dict_has_key(metadata, pmt::mp("start_time"))) {
+          double start_time =
+            pmt::to_double(pmt::dict_ref(metadata, pmt::mp("start_time"), pmt::PMT_NIL));
+          start_time += double(d_fir_fff.ntaps()>>1)/input_sample_rate;
+          metadata = pmt::dict_delete(metadata, pmt::mp("start_time"));
+          metadata =
+            pmt::dict_add(metadata, pmt::mp("start_time"), pmt::from_double(start_time));
+        }
     }
 
     if (pmt::is_f32vector(pdu_data)) {
 
         const std::vector<float> d_in = pmt::f32vector_elements(pdu_data);
-
         std::vector<float> d_out;
-        d_out.resize((d_in.size() - d_fir_fff.ntaps() + 1) / d_decimation);
 
-        // do FIR filtering
-        d_fir_fff.filterNdec(d_out.data(), d_in.data(), d_out.size(), d_decimation);
+        if (d_pad_for_filter)
+        {
+            size_t ntap = d_fir_fff.ntaps();
+            size_t htap = ntap>>1;
+            size_t rtap = ntap-htap; //in case ntap is odd
+            size_t nin = d_in.size();
+            size_t nbuf = nin + ntap;
+            size_t nout = ((int)nin / d_decimation) + 1;
+            if (d_ftmp.size() < nbuf)
+            {
+                d_ftmp.resize(nbuf);
+            }
+            memset(&d_ftmp[0], 0, sizeof(gr_complex)*htap);
+            memset(&d_ftmp[nin+htap], 0, sizeof(gr_complex)*rtap);
+            memcpy(&d_ftmp[0+htap], &d_in[0], sizeof(gr_complex)*nin);
+            d_out.resize(nout);
+            // do FIR filtering
+            d_fir_fff.filterNdec(d_out.data(), d_ftmp.data(), nout, d_decimation);
+        }
+        else
+        {
+            d_out.resize((d_in.size() - d_fir_fff.ntaps() + 1) / d_decimation);
+            // do FIR filtering
+            d_fir_fff.filterNdec(d_out.data(), d_in.data(), d_out.size(), d_decimation);
+        }
 
         message_port_pub(
             PMTCONSTSTR__PDU_OUT,
@@ -99,18 +135,42 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
     } else if (pmt::is_c32vector(pdu_data)) {
 
         const std::vector<gr_complex> d_in = pmt::c32vector_elements(pdu_data);
-        if (d_tmp.size() < d_in.size() + 20) {
-            d_tmp.resize(d_in.size() + 200);
-            memset(&d_tmp[0], 0, sizeof(gr_complex) * 10);
-            memset(&d_tmp[d_in.size() - 10], 0, sizeof(gr_complex) * 10);
-        }
-        memcpy(&d_tmp[0] + 10, &d_in[0], sizeof(gr_complex) * d_in.size());
-
         std::vector<gr_complex> d_out;
-        d_out.resize((d_in.size() - d_fir_ccf.ntaps() + 1) / d_decimation);
 
-        // do FIR filtering
-        d_fir_ccf.filterNdec(d_out.data(), d_tmp.data() + 10, d_out.size(), d_decimation);
+        if (d_pad_for_filter)
+        {
+            size_t ntap = d_fir_ccf.ntaps();
+            size_t htap = ntap>>1;
+            size_t rtap = ntap-htap; //in case ntap is odd
+            size_t nin = d_in.size();
+            size_t nbuf = nin + ntap;
+            size_t nout = ((int)nin / d_decimation) + 1;
+            if (d_ctmp.size() < (nbuf+20))
+            {
+                d_ctmp.resize(nbuf+20);
+            }
+            memset(&d_ctmp[0], 0, sizeof(gr_complex)*(htap+10));
+            memset(&d_ctmp[nin+htap+10], 0, sizeof(gr_complex)*(rtap+10));
+            memcpy(&d_ctmp[0+htap+10], &d_in[0], sizeof(gr_complex)*nin);
+            d_out.resize(nout);
+            // do FIR filtering
+            d_fir_ccf.filterNdec(d_out.data(), d_ctmp.data()+10, nout, d_decimation);
+        }
+        else
+        {
+            if (d_ctmp.size() < d_in.size() + 20) {
+                d_ctmp.resize(d_in.size() + 200);
+                memset(&d_ctmp[0], 0, sizeof(gr_complex) * 10);
+                memset(&d_ctmp[d_in.size() - 10], 0, sizeof(gr_complex) * 10);
+            }
+            memcpy(&d_ctmp[0] + 10, &d_in[0], sizeof(gr_complex) * d_in.size());
+
+            std::vector<gr_complex> d_out;
+            d_out.resize((d_in.size() - d_fir_ccf.ntaps() + 1) / d_decimation);
+
+            // do FIR filtering
+            d_fir_ccf.filterNdec(d_out.data(), d_ctmp.data() + 10, d_out.size(), d_decimation);
+        }
 
         message_port_pub(
             PMTCONSTSTR__PDU_OUT,
@@ -119,12 +179,34 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
 
         const std::vector<uint8_t> d_in_byte = pmt::u8vector_elements(pdu_data);
         std::vector<float> d_in(d_in_byte.begin(), d_in_byte.end());
-
         std::vector<float> d_out;
-        d_out.resize((d_in.size() - d_fir_fff.ntaps() + 1) / d_decimation);
 
-        // do FIR filtering
-        d_fir_fff.filterNdec(d_out.data(), d_in.data(), d_out.size(), d_decimation);
+        if (d_pad_for_filter)
+        {
+            size_t ntap = d_fir_fff.ntaps();
+            size_t htap = ntap>>1;
+            size_t rtap = ntap-htap; //in case ntap is odd
+            size_t nin = d_in.size();
+            size_t nbuf = nin + ntap;
+            size_t nout = ((int)nin / d_decimation) + 1;
+            if (d_ftmp.size() < nbuf)
+            {
+                d_ftmp.resize(nbuf);
+            }
+            memset(&d_ftmp[0], 0, sizeof(gr_complex)*htap);
+            memset(&d_ftmp[nin+htap], 0, sizeof(gr_complex)*rtap);
+            memcpy(&d_ftmp[0+htap], &d_in[0], sizeof(gr_complex)*nin);
+            d_out.resize(nout);
+            // do FIR filtering
+            d_fir_fff.filterNdec(d_out.data(), d_ftmp.data(), nout, d_decimation);
+        }
+        else
+        {
+            d_out.resize((d_in.size() - d_fir_fff.ntaps() + 1) / d_decimation);
+
+            // do FIR filtering
+            d_fir_fff.filterNdec(d_out.data(), d_in.data(), d_out.size(), d_decimation);
+        }
 
         std::vector<uint8_t> d_out_byte(d_out.begin(), d_out.end());
         message_port_pub(
