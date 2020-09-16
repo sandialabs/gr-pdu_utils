@@ -29,7 +29,7 @@
 namespace gr {
 namespace pdu_utils {
 
-message_counter::sptr message_counter::make(pmt::pmt_t name)
+message_counter::sptr message_counter::make(std::string name)
 {
     return gnuradio::get_initial_sptr(new message_counter_impl(name));
 }
@@ -39,7 +39,7 @@ message_counter::sptr message_counter::make(pmt::pmt_t name)
  *
  * @param name - name of counter
  */
-message_counter_impl::message_counter_impl(pmt::pmt_t name)
+message_counter_impl::message_counter_impl(std::string name)
     : gr::block(
           "message_counter", io_signature::make(0, 0, 0), io_signature::make(0, 0, 0)),
       d_name(name),

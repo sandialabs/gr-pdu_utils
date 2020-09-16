@@ -26,6 +26,8 @@
 
 #include <gnuradio/block.h>
 #include <pdu_utils/api.h>
+#include <string>
+
 
 namespace gr {
 namespace pdu_utils {
@@ -53,7 +55,7 @@ public:
      *
      * @param name - name of counter
      */
-    static sptr make(pmt::pmt_t name);
+    static sptr make(std::string name);
 
     /**
      * resets the counter to zero
@@ -66,6 +68,13 @@ public:
      * @return uint64_t - counter value.
      */
     virtual uint64_t get_ctr(void) = 0;
+
+    /**
+     * returns the counter name
+     *
+     * @return std::string
+     */
+    virtual std::string get_name(void) = 0;
 };
 
 } // namespace pdu_utils

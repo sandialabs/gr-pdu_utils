@@ -27,24 +27,27 @@ import pdu_utils_swig as pdu_utils
 import pmt
 import time
 
+
 class qa_pdu_binary_tools (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
+    def setUp(self):
+        self.tb = gr.top_block()
+        self.emitter = pdu_utils.message_emitter()
+        self.debug = blocks.message_debug()
 
-    def tearDown (self):
+    def connectUp(self):
+        self.tb.msg_connect((self.emitter, 'msg'), (self.dut, 'pdu_in'))
+        self.tb.msg_connect((self.dut, 'pdu_out'), (self.debug, 'store'))
+
+    def tearDown(self):
         self.tb = None
 
-    def test_bit_flip (self):
-        self.emitter = pdu_utils.message_emitter()
-        #self.flip = pdu_utils.pdu_binary_tools(pdu_utils.pdu_binary_tools.BIT_FLIP)
-        self.flip = pdu_utils.pdu_binary_tools(0)
-        self.debug = blocks.message_debug()
-        self.tb.msg_connect((self.emitter, 'msg'), (self.flip, 'pdu_in'))
-        self.tb.msg_connect((self.flip, 'pdu_out'), (self.debug, 'store'))
+    def test_bit_flip(self):
+        self.dut = pdu_utils.pdu_binary_tools(0)
+        self.connectUp()
 
-        i_vec = pmt.init_u8vector(6, [1,0,0,1,0,1])
-        e_vec = pmt.init_u8vector(6, [0,1,1,0,1,0])
+        i_vec = pmt.init_u8vector(6, [1, 0, 0, 1, 0, 1])
+        e_vec = pmt.init_u8vector(6, [0, 1, 1, 0, 1, 0])
         in_pdu = pmt.cons(pmt.make_dict(), i_vec)
         e_pdu = pmt.cons(pmt.make_dict(), e_vec)
 
@@ -62,16 +65,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
         print(self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu)))
 
-    def test_to_pam (self):
-        self.emitter = pdu_utils.message_emitter()
-        #self.flip = pdu_utils.pdu_binary_tools(pdu_utils.pdu_binary_tools.TO_PAM)
-        self.flip = pdu_utils.pdu_binary_tools(1)
-        self.debug = blocks.message_debug()
-        self.tb.msg_connect((self.emitter, 'msg'), (self.flip, 'pdu_in'))
-        self.tb.msg_connect((self.flip, 'pdu_out'), (self.debug, 'store'))
+    def test_to_pam(self):
+        self.dut = pdu_utils.pdu_binary_tools(1) #TO_NRZ
+        self.connectUp()
 
-        i_vec = pmt.init_u8vector(6, [1,0,0,1,0,1])
-        e_vec = pmt.init_f32vector(6, [1,-1,-1,1,-1,1])
+        i_vec = pmt.init_u8vector(6, [1, 0, 0, 1, 0, 1])
+        e_vec = pmt.init_f32vector(6, [1, -1, -1, 1, -1, 1])
         in_pdu = pmt.cons(pmt.make_dict(), i_vec)
         e_pdu = pmt.cons(pmt.make_dict(), e_vec)
 
@@ -90,16 +89,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
-    def test_from_pam (self):
-        self.emitter = pdu_utils.message_emitter()
-        #self.flip = pdu_utils.pdu_binary_tools(pdu_utils.pdu_binary_tools.FROM_PAM)
-        self.flip = pdu_utils.pdu_binary_tools(2)
-        self.debug = blocks.message_debug()
-        self.tb.msg_connect((self.emitter, 'msg'), (self.flip, 'pdu_in'))
-        self.tb.msg_connect((self.flip, 'pdu_out'), (self.debug, 'store'))
+    def test_from_pam(self):
+        self.dut = pdu_utils.pdu_binary_tools(2) #FROM_NRZ
+        self.connectUp()
 
-        i_vec = pmt.init_f32vector(6, [1,-1,-1,1,-1,1])
-        e_vec = pmt.init_u8vector(6, [1,0,0,1,0,1])
+        i_vec = pmt.init_f32vector(6, [1, -1, -1, 1, -1, 1])
+        e_vec = pmt.init_u8vector(6, [1, 0, 0, 1, 0, 1])
         in_pdu = pmt.cons(pmt.make_dict(), i_vec)
         e_pdu = pmt.cons(pmt.make_dict(), e_vec)
 
@@ -118,16 +113,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
-    def test_slice (self):
-        self.emitter = pdu_utils.message_emitter()
-        #self.flip = pdu_utils.pdu_binary_tools(pdu_utils.pdu_binary_tools.SLICE)
-        self.flip = pdu_utils.pdu_binary_tools(3)
-        self.debug = blocks.message_debug()
-        self.tb.msg_connect((self.emitter, 'msg'), (self.flip, 'pdu_in'))
-        self.tb.msg_connect((self.flip, 'pdu_out'), (self.debug, 'store'))
+    def test_slice(self):
+        self.dut = pdu_utils.pdu_binary_tools(3) #SLICE
+        self.connectUp()
 
-        i_vec = pmt.init_f32vector(6, [2,-1,-2,.1,-.1,1000])
-        e_vec = pmt.init_u8vector(6, [1,0,0,1,0,1])
+        i_vec = pmt.init_f32vector(6, [2, -1, -2, .1, -.1, 1000])
+        e_vec = pmt.init_u8vector(6, [1, 0, 0, 1, 0, 1])
         in_pdu = pmt.cons(pmt.make_dict(), i_vec)
         e_pdu = pmt.cons(pmt.make_dict(), e_vec)
 
@@ -146,16 +137,12 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
-    def test_endian (self):
-        self.emitter = pdu_utils.message_emitter()
-        #self.endi = pdu_utils.pdu_binary_tools(pdu_utils.pdu_binary_tools.ENDIAN_SWAP8)
-        self.endi = pdu_utils.pdu_binary_tools(4)
-        self.debug = blocks.message_debug()
-        self.tb.msg_connect((self.emitter, 'msg'), (self.endi, 'pdu_in'))
-        self.tb.msg_connect((self.endi, 'pdu_out'), (self.debug, 'store'))
+    def test_endian(self):
+        self.dut = pdu_utils.pdu_binary_tools(4) #ENDIAN_SWAP8
+        self.connectUp()
 
-        i_vec = pmt.init_u8vector(16, [1,0,1,0, 0,0,1,1,  1,1,0,1, 0,0,1,0])
-        e_vec = pmt.init_u8vector(16, [1,1,0,0, 0,1,0,1,  0,1,0,0, 1,0,1,1])
+        i_vec = pmt.init_u8vector(16, [1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0])
+        e_vec = pmt.init_u8vector(16, [1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
         in_pdu = pmt.cons(pmt.make_dict(), i_vec)
         e_pdu = pmt.cons(pmt.make_dict(), e_vec)
 
@@ -173,6 +160,7 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
         print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+
 
 if __name__ == '__main__':
     gr_unittest.run(qa_pdu_binary_tools)

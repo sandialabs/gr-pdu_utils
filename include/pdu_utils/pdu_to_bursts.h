@@ -66,8 +66,8 @@ public:
 
 typedef pdu_to_bursts<unsigned char> pdu_to_bursts_b;
 typedef pdu_to_bursts<short> pdu_to_bursts_s;
-typedef pdu_to_bursts<float> pdu_to_bursts_c;
-typedef pdu_to_bursts<gr_complex> pdu_to_bursts_f;
+typedef pdu_to_bursts<float> pdu_to_bursts_f;
+typedef pdu_to_bursts<gr_complex> pdu_to_bursts_c;
 } // namespace pdu_utils
 } // namespace gr
 

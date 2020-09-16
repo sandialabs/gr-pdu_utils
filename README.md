@@ -1,9 +1,4 @@
-
-
-
 ![snl](docs/figures/snl.png "Sandia National Laboratories")
-
-
 
 ## GNU Radio PDU Utilities
 
@@ -13,7 +8,7 @@ All blocks are written in C++, and make use of the GR_LOG API, there is no stdou
 
 ---
 
-### General Concept of PDU Conversion with the PDU Utils Module
+## General Concept of PDU Conversion with the PDU Utils Module
 
 The general concept of PDU conversion using this module is shown below:
 
@@ -34,17 +29,39 @@ Timed transmission is also supported via UHD-style _tx\_sob_ and _tx\_eob_ tags 
 When the metadata dictionary key _tx\_time_ is provided with UHD-style tuple of {uint64 seconds, double fractional seconds}, this value will be added to a _tx\_time_ tag on the _tx\_sob_ sample. This allows for timed transmission with UHD-style transmit blocks.
 
 
-#### Burst Tagging Methods
+### Burst Tagging Methods
 
-There are several ways to tag bursts that work well with this type of data. To identify Start-of-Burst, a very simple way is to do a basic energy detection threshold and tag according to energy level, however this is not very robust. Another straightforward method is to run an open-loop demodulator and use a _Correlate Access Code - Tag_ block to detect the preamble and start of unique word to delineate and tag SOBs. Alternately, a correlation-based method can be used if this is already implemented for preamble detection.
+Conversion between the Streaming and Messaging APIs using the Sandia Utilities require that signals be localized temporally and spectrally in order to be further processed. There are several ways to tag bursts that work well with this type of data that are presented here.
 
-End of Burst tagging can be a little trickier as there are several ways RF protocols indicate end-of-burst. Generally, the best way is to write a custom block that detects SOB tags, parses the RF header for length information, and automatically tags EOB's accordingly. Sometimes RF protocols will specify a detectable EOB sequence which can be detected with a second _Correlate Access Code - Tag_ block directly. For fixed length bursts an EOB is not necessary and the block can be configured by the maximum length parameter to effectively set the EOB.
+#### Start and End of Burst Tagging
 
-### Usage of Significant blocks
+To identify Start-of-Burst, a very simple way is to do a basic energy detection threshold and tag according to energy level, however this is not very robust. Another straightforward method is to run an open-loop demodulator and use a Correlate Access Code - Tag block to detect the preamble and start of unique word to delineate and tag SOBs. Alternately, a correlation-based method can be used if this is already implemented for preamble detection.
+
+End of Burst tagging can be trickier as there are several ways RF protocols indicate end-of-burst. Generally, the best way is to write a custom block that detects SOB tags, parses the RF header for length information, and automatically tags EOB's accordingly. Sometimes RF protocols will specify a detectable EOB sequence which can be detected with a second _Correlate Access Code - Tag_ block directly. For fixed length bursts an EOB is not necessary and the block can be configured by the maximum length parameter to effectively set the EOB. Example processing flow for this type of tagging is shown below.
+
+![tagging_methods.png](docs/figures/tagging_methods.png "Stream Tagging Methods")
+
+#### Broadband Energy Burst Tagging
+
+SOB/EOB sequence detection requires knowledge of the modulation scheme and details about the time/frequency medium access scheme and the signal protocol framing, and quickly breaks down for signals in which one or more of these features are not known. The FHSS Utilities module provides a different way to isolate bursts based on broadband energy detection. The general processing flow for this model of burst detection is shown below.
+
+![fhss_tag.png](docs/figures/fhss_tag.png "FHSS Broadband Tagging Methods")
+
+In this model, time domain data representing a broadband digitized signal is passed through a processing block which makes time and frequency estimates for energy using the Discrete Fourier Transform and applies tags in the output data stream. The next block isolates these tagged start and end of bursts in time, of which there can be many simultaneously, and emits each individually as a PDU with metadata indicating the approximate center frequency estimation. The final block in this processing chain uses the center frequency estimate to decimate the block in frequency, re-estimate the center frequency, and perform fine frequency correction prior to emitting the signal data that has been time/frequency isolated.
+
+Many such detections can happen simultaneously as would be observed in real-world congested multi-user bands such as the various unlicensed ISM bands.
+
+#### Additional PDU Tagging Techniques
+
+There are other possibilities for burst tagging that are not included within the Sandia Utilities modules and more tools may be included in the future. It is also not a requirement that PDUs be generated only on bursty signals. Many continuous signals contain frame sync data or other in-band signaling that can be used to break down signals into discrete units that are more suitable for PDU processing. It is also possible for out-of-band information to be processed and used to segment a signal into PDUs. Added functionality will be included for Streaming to Message API conversion in the future as requirements are identified.
+
+---
+
+## Usage of Significant blocks
 
 The usage of several significant blocks are described in this section. Many blocks are omitted as their behavior is straightforward or documented in the GRC XML sufficiently.
 
-##### ___GR PDU Utils - Tags to PDU Block___
+#### ___GR PDU Utils - Tags to PDU Block___
 
 __Basic Usage:__ The _Tags to PDU_ block accepts a stream input and produces a PDU output. The start of a PDU is indicated by a configurable GR stream tag (only the Key matters), and the end of a PDU can be defined by a configurable tag, or by a configurable maximum length; when the maximum length is reached, the PDU will be emitted. If a second start-of-burst tags is received prior to an end-of-burst tag or the maximum length being reached, the block will discard data from the first tag and reset the internal state starting with the latest start-of-burst tag. The block also accepts a _Prepend_ vector argument, which allows for data elements to be included at the start of each PDU. This is useful for byte alignment, or when correlating against a complete or partial Unique Word, and it is desirable to have the complete UW represented in the output. The elements in this vector count toward the _Max PDU Size_ parameter.
 
@@ -54,13 +71,13 @@ __Advanced Timing Features:__ As described above, this block can be used with UH
 
 __Detection Emissions:__ The block can be configured to emit a message every time a SOB tag is detected. This is useful when a low-latency reaction is necessary to incoming data, though it must be used with caution as it is prone to false detections. The emission is simply a uint64 PMT containing the offset of the received SOB tag.
 
-##### ___GR PDU Utils - PDU to Bursts Block___
+#### ___GR PDU Utils - PDU to Bursts Block___
 
 __Basic Usage:__ The _PDU to Bursts_ block accepts PDUs of user-specified type and emits them as streaming data. The original intent of this block was to allow USRP based transmission of data originating from PDU-based processing from data converted to PDUs by the _Tags to PDU_ block for half-duplex transceiver applications. As such, the block will automatically append _tx\_sob_ and _tx\_eob_ tags around streaming output data to indicate the start and end of valid data to the SDR. The block is simple to use; configuration is limited to type and behavior when new PDUs are received while the data from a current PDU is still being emitted. The data can either be appended to the current burst, dropped, or the block can throw an error ('Balk'). The latter two modes were implemented for very specific cases and generally 'Append' mode is the best choice. The number of PDUs that can queue up waiting for transmission is also configurable to bound memory usage (though the individual PDUs can be large).
 
 __Timed Transmissions:__ The _PDU to Bursts_ block also supports UHD-style timed transmissions. If a PDU metadata dictionary key _tx\_time_ exists, and the value is a properly formatted UHD time tuple, a _tx\_time_ tag will be added along with the _tx\_sob_ tag to the first item in the PDU, which will be recognized as a timed transmission by downstream blocks. Late bursts will be handled according to the behavior of the downstream processing elements, and may be dropped, sent immediately, or potentially errors caused. It is also necessary to be careful with setting timestamps too far in the future as this can result in issues due to backpressure in the DSP chain.
 
-##### ___GR PDU Utils - Tag Message Trigger Block___
+#### ___GR PDU Utils - Tag Message Trigger Block___
 
 __Overview:__ The _Tag Message Trigger_ block emits PDUs based on certain input conditions observed on either stream or message inputs and supports operating with or without an arming step prior to triggering. This block is more complicated and powerful that it looks, though it has utility in many straightforward applications also. The initial intention of this block was to allow for a stream tag to emit a PDU immediately. This has been expanded upon to support several additional modes of operation which are described here.
 
@@ -72,13 +89,13 @@ __Timed PDU Mode:__ The _Tag Message Trigger_ block can operate in two fundament
 
 __Transmission Limit:__ A final feature that is not exposed to the GRC is the concept of transmission limits. This value can be updated by callback, and if it is not set to _TX\_UNLIMITED_ it will be decremented each time the block triggers. When it reaches zero, trigger events will be treated as though the block is disarmed.
 
-##### ___GR PDU Utils - PDU Pack Unpack Block___
+#### ___GR PDU Utils - PDU Pack Unpack Block___
 
 __Usage:__ The _PDU Pack Unpack_ block is primarily used to convert between U8 PDUs representing one bit per element, and U8 PDUs representing 8 bits per element. The block can also convert bit order for packed U8 data. The usage is straightforward, specify pack/unpack/reverse and declare the bit order, however it is included in this section due to the usefulness.
 
 This block could also be extended to support other options (higher order modulation packing, conversion to U16, etc) if necessary but a use case as not yet been identified. If this happens appropriate test code should be added to exercise such conditions.
 
-##### ___GR PDU Utils - PDU Add Noise Block___
+#### ___GR PDU Utils - PDU Add Noise Block___
 
 __Usage:__ This block can be used to add uniform random values to an input array of uint8, float, or complex data; other PDU types will be dropped with a WARNING level GR_LOG message. This is fairly straightforward; however, it is included here as the block also the non-obvious capability to scale and offset the input data PDU as well. This is done through the following logic:
 
@@ -86,24 +103,58 @@ __Usage:__ This block can be used to add uniform random values to an input array
 
 Which is to say that the order of operations is to apply the random data first, then scale the data, then offset it. Generally useful for debugging and testing, and as such it has not seen extensive use so there may be some issues. Noise profiles are not supported, only uniform random data from the ran1() function within gr::random. It could be argued that these should be separate blocks entirely, but to reduce the overhead of PMT-ifying and de-PMT-ifying data it was implemented this way to allow all three operations to be done at once. Maybe the name should be changed...
 
-##### ___GR PDU Utils - PDU Clock Recovery___
+#### ___GR PDU Utils - PDU Clock Recovery___
 
 __Summary:__ This block performs clock synchronization and symbol recovery on 2-ary modulated data using algorithms from M. Ossmann’s WPCR project. The block accepts soft and unsynchronized data and uses a zero-crossing detector to effectively recover data sampled between 4 and 60 samples per symbol, though it does perform better below 16 samples per symbol. Compared to in-tree options, this block has several advantages, primarily that it operates on PDU formatted data enabling it to work within the Message Passing API. Because the block operates on PDU data, it can make use of the entire packet to aid in data synchronization improving sensitivity. Additionally, the block does not require precise configuration or tuning which results in reduced user-error and increased capability when processing signals for which exact parameters are unknown.
 
-##### ___GR PDU Utils - PDU FIR Filter___
+#### ___GR PDU Utils - PDU FIR Filter___
 
 __Summary:__ This block is a direct analog to the in-tree Decimating FIR streaming filter. It makes use of the same underlying filterNdec function in the from the _fir\_filter\_xxf_ kernel from gr::filter. The use of this block has uncovered several invalid operations due to the pointer logic used which do not manifest themselves when used with the streaming API but are a problem with the filter kernels in general. Upstream issues have been filed and workarounds built into the blocks.
 
 These blocks do not use FFT based filters as the FFT kernels are not yet templatized. This may be added as an option to this block in the future as the FFT implementation of discrete filters is more efficient for large numbers of taps
 
 
-##### ___GR PDU Utils - PDU PFB Arbitrary Resampler___
+#### ___GR PDU Utils - PDU PFB Arbitrary Resampler___
 
 __Summary:__ This block is a direct analog to the in-tree PFB Arbitrary Resampler streaming block. It makes use of the same _pfb\_arb\_resampler\_ccf_ kernel from gr::filter. This block will reject non-PDU type data, and currently only works on c32 type PDUs; taps must be real valued.
 
 
-##### ___GR PDU Utils - PDU Flow Controller___
+#### ___GR PDU Utils - PDU Flow Controller___
 
 __Summary:__ The GNU Radio Asynchronous Message Passing API has no concept of flow control or backpressure. A slow block in the processing chain will cause an unbounded backup of messages which can in turn result in software failures as messages are never dropped, and the publish method does not block.
 
 This block will check the message queue size for subscribed blocks, and it will drop messages over a configurable maximum queue size. Dropping data is not always preferred, so this should only be used in situations where data loss is acceptable.
+
+## Blocks Marked for Upstreaming
+
+Several blocks in this module are very general in nature and have been marked for upstreaming pending resolution of some process and software organization factors:
+
+1. Message Counter
+
+1. Message Emitter
+
+1. Message Gate
+
+1. Message Keep 1-in-N
+
+1. Pack Unpack
+
+1. PDU Align
+
+1. PDU Binary Tools
+
+1. PDU Clock Recovery
+
+1. PDU Complex to Mag^2
+
+1. PDU FIR Filter
+
+1. PDU GMSK (rename to PDU FM Modulator)
+
+1. PDU Logger
+
+1. PDU PFB Resampler
+
+1. PDU Quadrature Demod
+
+1. PDU Split

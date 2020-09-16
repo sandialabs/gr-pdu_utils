@@ -17,6 +17,6 @@ templates:
     imports: |-
         import pmt
         import pdu_utils
-    make: pdu_utils.message_counter(pmt.intern(${name}))
+    make: pdu_utils.message_counter( ${name} )
 
 file_format: 1

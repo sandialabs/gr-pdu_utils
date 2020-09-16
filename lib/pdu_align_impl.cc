@@ -26,6 +26,7 @@
 
 #include "pdu_align_impl.h"
 #include <gnuradio/io_signature.h>
+#include <pdu_utils/constants.h>
 #include <volk/volk.h>
 
 namespace gr {
@@ -71,21 +72,29 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
             syncword_int = std::stoul(syncword, &syncword_len, 2);
             mask_int = (syncword_len >= 64 ? -1 : (1lu << syncword_len) - 1);
         } catch (std::invalid_argument ex) {
-            printf("unable to parse syncword '%s' (must be base 2)\n", syncword.c_str());
+            GR_LOG_ERROR(d_logger,
+                         boost::format("unable to parse syncword '%s' (must be base 2)") %
+                             syncword.c_str());
             exit(1);
         } catch (std::out_of_range ex) {
-            printf("syncword '%s' out of range (max of 64 bits)\n", syncword.c_str());
+
+            GR_LOG_ERROR(d_logger,
+                         boost::format("syncword '%s' out of range (max of 64 bits)") %
+                             syncword.c_str());
             exit(1);
         }
-        printf("PDU align syncword: 0x%016lX (mask 0x%016lX)\n", syncword_int, mask_int);
+        GR_LOG_DEBUG(d_logger,
+                     boost::format("PDU align syncword: 0x%016lX (mask 0x%016lX)") %
+                         syncword_int % mask_int);
         d_syncwords.push_back(syncword_int);
         d_syncword_lens.push_back(syncword_len);
         d_masks.push_back(mask_int);
     }
 
-    message_port_register_in(pmt::mp("pdu_in"));
-    message_port_register_out(pmt::mp("pdu_out"));
-    set_msg_handler(pmt::mp("pdu_in"),
+
+    message_port_register_in(PMTCONSTSTR__PDU_IN);
+    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    set_msg_handler(PMTCONSTSTR__PDU_IN,
                     boost::bind(&pdu_align_impl::pdu_handler, this, _1));
 }
 
@@ -97,37 +106,40 @@ pdu_align_impl::~pdu_align_impl() {}
 void pdu_align_impl::update_time_metadata(pmt::pmt_t& metadata, int start_idx)
 {
     // if the pmt has a start_time or duration field to udpate
-    if (pmt::dict_has_key(metadata, pmt::mp("start_time")) ||
-        pmt::dict_has_key(metadata, pmt::mp("duration"))) {
+    if (pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME) ||
+        pmt::dict_has_key(metadata, PMTCONSTSTR__DURATION)) {
         // get the sample rate (or symbol rate)
         float samp_rate;
-        if (pmt::dict_has_key(metadata, pmt::mp("sample_rate"))) {
+
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__SAMP_RATE)) {
             samp_rate = pmt::to_float(
-                pmt::dict_ref(metadata, pmt::mp("sample_rate"), pmt::PMT_NIL));
-        } else if (pmt::dict_has_key(metadata, pmt::mp("symbol_rate"))) {
+                pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::PMT_NIL));
+        } else if (pmt::dict_has_key(metadata, PMTCONSTSTR__SYM_RATE)) {
             samp_rate = pmt::to_float(
-                pmt::dict_ref(metadata, pmt::mp("symbol_rate"), pmt::PMT_NIL));
+                pmt::dict_ref(metadata, PMTCONSTSTR__SYM_RATE, pmt::PMT_NIL));
         } else {
             return;
         }
         // update the fields
         float offset = start_idx / samp_rate;
-        if (pmt::dict_has_key(metadata, pmt::mp("start_time"))) {
+
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME)) {
             double start_time = pmt::to_double(
-                pmt::dict_ref(metadata, pmt::mp("start_time"), pmt::PMT_NIL));
-            metadata = pmt::dict_delete(metadata, pmt::mp("start_time"));
+                pmt::dict_ref(metadata, PMTCONSTSTR__START_TIME, pmt::PMT_NIL));
+            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__START_TIME);
             metadata = pmt::dict_add(
-                metadata, pmt::mp("start_time"), pmt::from_double(start_time + offset));
+                metadata, PMTCONSTSTR__START_TIME, pmt::from_double(start_time + offset));
             metadata = pmt::dict_add(
-                metadata, pmt::mp("start_time_offset"), pmt::from_double(offset));
+                metadata, PMTCONSTSTR__START_TIME_OFFSET, pmt::from_double(offset));
             // printf("incremented start time by %f\n", offset);
         }
-        if (pmt::dict_has_key(metadata, pmt::mp("duration"))) {
-            float duration =
-                pmt::to_float(pmt::dict_ref(metadata, pmt::mp("duration"), pmt::PMT_NIL));
-            metadata = pmt::dict_delete(metadata, pmt::mp("duration"));
+
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__DURATION)) {
+            float duration = pmt::to_float(
+                pmt::dict_ref(metadata, PMTCONSTSTR__DURATION, pmt::PMT_NIL));
+            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__DURATION);
             metadata = pmt::dict_add(
-                metadata, pmt::mp("duration"), pmt::from_float(duration - offset));
+                metadata, PMTCONSTSTR__DURATION, pmt::from_float(duration - offset));
             // printf("decreased duration by %f\n", offset);
         }
     }
@@ -136,7 +148,7 @@ void pdu_align_impl::update_time_metadata(pmt::pmt_t& metadata, int start_idx)
 void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
 {
     if (!pmt::is_pair(pdu)) {
-        printf("WARNING: PDU is not a pair, dropping\n");
+        GR_LOG_DEBUG(d_logger, "WARNING: PDU is not a pair, dropping");
         return;
     }
 
@@ -144,7 +156,7 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
     pmt::pmt_t pdu_data = pmt::cdr(pdu);
 
     if (!pmt::is_u8vector(pdu_data)) {
-        printf("WARNING: PDU not u8vector, dropping\n");
+        GR_LOG_DEBUG(d_logger, "WARNING: PDU not u8vector, dropping");
         return;
     }
 
@@ -178,7 +190,7 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
                 update_time_metadata(metadata, start_idx);
                 pmt::pmt_t data_vec =
                     pmt::init_u8vector(data_len - start_idx, data + start_idx);
-                message_port_pub(pmt::mp("pdu_out"), pmt::cons(metadata, data_vec));
+                message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(metadata, data_vec));
                 return;
             }
         }

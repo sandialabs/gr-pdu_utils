@@ -55,10 +55,10 @@ public:
     /*!
      * \brief Return a shared_ptr to a new instance of pdu_utils::pdu_fine_time_measure.
      *
-     * @param pre_burst_time -
-     * @param post_burst_time -
+     * @param pre_burst_time - Unit: sec
+     * @param post_burst_time - Unit: sec
      * @param average_width -
-     * @param buffer_percent -
+     * @param buffer_percent - Range[0..100]
      */
     static sptr make(float pre_burst_time,
                      float post_burst_time,

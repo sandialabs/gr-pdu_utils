@@ -43,6 +43,7 @@ GR_PYTHON_INSTALL(
 include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-pdu_utils)
+set(GR_TEST_LIBRARY_DIRS /usr/local/lib64)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
 GR_ADD_TEST(qa_tags_to_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tags_to_pdu.py)
 GR_ADD_TEST(qa_take_skip_to_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_take_skip_to_pdu.py)
@@ -75,3 +76,6 @@ GR_ADD_TEST(qa_sandia_message_debug ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_
 GR_ADD_TEST(qa_pdu_quadrature_demod_cf ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_quadrature_demod_cf.py)
 GR_ADD_TEST(qa_pdu_clock_recovery ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_clock_recovery.py)
 GR_ADD_TEST(qa_pdu_align ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_align.py)
+GR_ADD_TEST(qa_pdu_fine_time_measure ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_fine_time_measure.py)
+GR_ADD_TEST(qa_pdu_fir_filter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_fir_filter.py)
+GR_ADD_TEST(qa_pdu_range_filter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_range_filter.py)

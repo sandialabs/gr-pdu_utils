@@ -74,6 +74,8 @@ static const pmt::pmt_t PMTCONSTSTR__SAMP_RATE = pmt::mp("sample_rate");
 static const pmt::pmt_t PMTCONSTSTR__SYM_RATE = pmt::mp("symbol_rate");
 
 static const pmt::pmt_t PMTCONSTSTR__BURST_TIME = pmt::mp("burst_time");
+static const pmt::pmt_t PMTCONSTSTR__START_TIME = pmt::mp("start_time");
+static const pmt::pmt_t PMTCONSTSTR__START_TIME_OFFSET = pmt::mp("start_time_offset");
 static const pmt::pmt_t PMTCONSTSTR__TX_TIME = pmt::mp("tx_time");
 static const pmt::pmt_t PMTCONSTSTR__TX_SOB = pmt::mp("tx_sob");
 static const pmt::pmt_t PMTCONSTSTR__TX_EOB = pmt::mp("tx_eob");
@@ -81,6 +83,7 @@ static const pmt::pmt_t PMTCONSTSTR__PDU_NUM = pmt::mp("pdu_num");
 static const pmt::pmt_t PMTCONSTSTR__TIME_TYPE = pmt::mp("time_type");
 static const pmt::pmt_t PMTCONSTSTR__UHD_TIME_TUPLE = pmt::mp("uhd_time_tuple");
 static const pmt::pmt_t PMTCONSTSTR__WALL_CLOCK_TIME = pmt::mp("wall_clock_time");
+static const pmt::pmt_t PMTCONSTSTR__DURATION = pmt::mp("duration");
 
 // enumerate command port commands:
 static const pmt::pmt_t PMTCONSTSTR__SET_TRIGGER_KEY =

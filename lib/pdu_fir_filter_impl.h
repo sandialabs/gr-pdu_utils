@@ -37,7 +37,7 @@ private:
     filter::kernel::fir_filter_ccf d_fir_ccf;
     int d_decimation;
     std::vector<gr_complex> d_tmp;
-
+    size_t 		d_pad;
 public:
     /**
      * Constructor

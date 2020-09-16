@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). 
-# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains 
+# Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
+# Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
 # certain rights in this software.
 #
 # This is free software; you can redistribute it and/or modify
@@ -27,38 +27,62 @@ from gnuradio import blocks
 import pmt
 import time
 
+
 class qa_message_counter (gr_unittest.TestCase):
 
-    def setUp (self):
-        self.tb = gr.top_block ()
-        self.strobe = blocks.message_strobe(pmt.PMT_NIL, 25)
-        self.ctr = pdu_utils.message_counter(pmt.intern("counter"))
-        self.tb.msg_connect((self.strobe, 'strobe'), (self.ctr, 'msg'))
+    def setUp(self):
+        self.tb = gr.top_block()
+        self.emitter = pdu_utils.message_emitter()
+        self.ctr = pdu_utils.message_counter("counter")
+        self.tb.msg_connect((self.emitter, 'msg'), (self.ctr, 'msg'))
 
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_001_5x_pass (self):
-        
+    def test_001_5x_pass(self):
 
         self.tb.start()
-        time.sleep(.135)
+        for x in range(5):
+            time.sleep(.001)
+            self.emitter.emit()
+        time.sleep(.01)
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(5, self.ctr.get_ctr())
+        self.assertEqual(5, self.ctr.get_ctr())
 
+    def test_002_rst_3x_pass(self):
 
-    def test_002_rst_3x_pass (self):
-       
         self.tb.start()
-        time.sleep(.06)
+        for x in range(5):
+            time.sleep(.001)
+            self.emitter.emit()
+        time.sleep(.1)
+        self.assertEqual(5, self.ctr.get_ctr())
+
         self.ctr.reset()
-        time.sleep(.075)
+        self.assertEqual(0, self.ctr.get_ctr())
+
+        for x in range(3):
+            time.sleep(.001)
+            self.emitter.emit()
+        time.sleep(.1)
+
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(3, self.ctr.get_ctr())
+        self.assertEqual(3, self.ctr.get_ctr())
+
+    def test_003_get_name(self):
+        '''
+        tests get_name function
+        '''
+
+        print('test_003_get_name() - name is ', self.ctr.get_name())
+        self.assertEqual('counter', self.ctr.get_name())
+
+        self.ctr = pdu_utils.message_counter("BoBo")
+        self.assertEqual('BoBo', self.ctr.get_name())
 
 
 if __name__ == '__main__':

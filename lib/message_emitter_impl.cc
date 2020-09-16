@@ -61,7 +61,7 @@ message_emitter_impl::~message_emitter_impl() {}
 bool message_emitter_impl::stop()
 {
     GR_LOG_INFO(d_logger, boost::format("Message emitter sent %d messages") % d_n_msgs);
-
+    
     return true;
 }
 

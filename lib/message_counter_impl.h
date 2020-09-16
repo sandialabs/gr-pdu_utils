@@ -35,7 +35,7 @@ class message_counter_impl : public message_counter
 {
 private:
     uint64_t d_ctr;
-    pmt::pmt_t d_name;
+    std::string d_name;
 
 public:
     /**
@@ -43,7 +43,7 @@ public:
      *
      * @param name - name of counter
      */
-    message_counter_impl(pmt::pmt_t name);
+    message_counter_impl(std::string name);
 
     /**
      * deconstructor
@@ -71,6 +71,13 @@ public:
      * @return uint64_t - counter value.
      */
     virtual uint64_t get_ctr() { return d_ctr; }
+
+    /**
+     * returns the counter name
+     *
+     * @return pmt::pmt_t
+     */
+    virtual std::string get_name(void) { return d_name; }
 
 }; // end class message_counter_impl
 
