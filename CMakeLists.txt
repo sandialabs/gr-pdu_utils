@@ -146,10 +146,10 @@ if(ENABLE_PYTHON)
   message(STATUS "PYTHON components are enabled")
   add_subdirectory(swig)
   add_subdirectory(python)
+  add_subdirectory(grc)
 else(ENABLE_PYTHON)
   message(STATUS "PYTHON components are disabled")
 endif(ENABLE_PYTHON)
-add_subdirectory(grc)
 
 ########################################################################
 # Variables replaced when configuring the package config files
