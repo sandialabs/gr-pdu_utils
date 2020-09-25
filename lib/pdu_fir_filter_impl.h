@@ -25,14 +25,19 @@ private:
     int d_decimation;
     std::vector<gr_complex> d_tmp;
     size_t 		d_pad;
+    bool d_pad_for_filter;
+    std::vector<gr_complex> d_ctmp;
+    std::vector<float> d_ftmp;
 public:
     /**
      * Constructor
      *
      * @param decimation - decimation factor to apply
      * @param taps - FIR taps
+     * @param pad_for_filter - option to avoid filter tap loss in size
      */
-    pdu_fir_filter_impl(int decimation, const std::vector<float> taps);
+    pdu_fir_filter_impl(int decimation, const std::vector<float> taps,
+                        bool pad_for_filter=false);
 
     /**
      * Deconstructor
@@ -58,6 +63,13 @@ public:
      * @param decimation - decimation factor
      */
     void set_decimation(int decimation) { d_decimation = decimation; }
+
+    /**
+     * Set Pad for Filter
+     *
+     * @param pad_for_filter - option to avoid filter tap loss in size
+     */
+    void set_pad_for_filter(bool pad_for_filter) { d_pad_for_filter = pad_for_filter; }
 };
 
 } // namespace pdu_utils

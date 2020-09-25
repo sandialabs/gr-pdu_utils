@@ -33,8 +33,10 @@ public:
      *
      * @param decimation - decimation factor to apply
      * @param taps - FIR taps
+     * @param pad_for_filter - option to avoid filter tap loss in size
      */
-    static sptr make(int decimation, const std::vector<float> taps);
+    static sptr make(int decimation, const std::vector<float> taps,
+                     bool pad_for_filter=false);
 
     /**
      * Set FIR taps
@@ -49,6 +51,13 @@ public:
      * @param decimation - decimation factor
      */
     virtual void set_decimation(int decimation) = 0;
+
+    /**
+     * Set Pad for Filter
+     *
+     * @param pad_for_filter - option to avoid filter tap loss in size
+     */
+    virtual void set_pad_for_filter(bool pad_for_filter) = 0;
 };
 
 } // namespace pdu_utils
