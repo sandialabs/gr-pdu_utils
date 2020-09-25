@@ -1,23 +1,10 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
- * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
- * certain rights in this software.
+ * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+ * retains certain rights in this software.
  *
- * This is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef INCLUDED_PDU_UTILS_PDU_FIR_FILTER_IMPL_H
@@ -36,20 +23,16 @@ private:
     filter::kernel::fir_filter_fff d_fir_fff;
     filter::kernel::fir_filter_ccf d_fir_ccf;
     int d_decimation;
-    bool d_pad_for_filter;
-    std::vector<gr_complex> d_ctmp;
-    std::vector<float> d_ftmp;
-
+    std::vector<gr_complex> d_tmp;
+    size_t 		d_pad;
 public:
     /**
      * Constructor
      *
      * @param decimation - decimation factor to apply
      * @param taps - FIR taps
-     * @param pad_for_filter - option to avoid filter tap loss in size
      */
-    pdu_fir_filter_impl(int decimation, const std::vector<float> taps,
-                        bool pad_for_filter=false);
+    pdu_fir_filter_impl(int decimation, const std::vector<float> taps);
 
     /**
      * Deconstructor
@@ -75,13 +58,6 @@ public:
      * @param decimation - decimation factor
      */
     void set_decimation(int decimation) { d_decimation = decimation; }
-
-    /**
-     * Set Pad for Filter
-     *
-     * @param pad_for_filter - option to avoid filter tap loss in size
-     */
-    void set_pad_for_filter(bool pad_for_filter) { d_pad_for_filter = pad_for_filter; }
 };
 
 } // namespace pdu_utils

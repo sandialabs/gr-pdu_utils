@@ -1,24 +1,12 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
- * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
- * certain rights in this software.
+ * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+ * retains certain rights in this software.
  *
- * This is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -29,7 +17,7 @@
 namespace gr {
 namespace pdu_utils {
 
-message_counter::sptr message_counter::make(pmt::pmt_t name)
+message_counter::sptr message_counter::make(std::string name)
 {
     return gnuradio::get_initial_sptr(new message_counter_impl(name));
 }
@@ -39,7 +27,7 @@ message_counter::sptr message_counter::make(pmt::pmt_t name)
  *
  * @param name - name of counter
  */
-message_counter_impl::message_counter_impl(pmt::pmt_t name)
+message_counter_impl::message_counter_impl(std::string name)
     : gr::block(
           "message_counter", io_signature::make(0, 0, 0), io_signature::make(0, 0, 0)),
       d_name(name),

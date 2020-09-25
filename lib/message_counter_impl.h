@@ -1,23 +1,10 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
- * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
- * certain rights in this software.
+ * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+ * retains certain rights in this software.
  *
- * This is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_COUNTER_IMPL_H
@@ -35,7 +22,7 @@ class message_counter_impl : public message_counter
 {
 private:
     uint64_t d_ctr;
-    pmt::pmt_t d_name;
+    std::string d_name;
 
 public:
     /**
@@ -43,7 +30,7 @@ public:
      *
      * @param name - name of counter
      */
-    message_counter_impl(pmt::pmt_t name);
+    message_counter_impl(std::string name);
 
     /**
      * deconstructor
@@ -71,6 +58,13 @@ public:
      * @return uint64_t - counter value.
      */
     virtual uint64_t get_ctr() { return d_ctr; }
+
+    /**
+     * returns the counter name
+     *
+     * @return pmt::pmt_t
+     */
+    virtual std::string get_name(void) { return d_name; }
 
 }; // end class message_counter_impl
 

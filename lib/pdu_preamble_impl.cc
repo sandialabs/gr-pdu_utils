@@ -1,23 +1,10 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
- * Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains
- * certain rights in this software.
+ * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+ * retains certain rights in this software.
  *
- * This is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifdef HAVE_CONFIG_H
@@ -112,6 +99,9 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
         return;
     }
 
+    GR_LOG_NOTICE(d_logger, boost::format("NRZ Mode %d") % d_nrz);
+
+
     const std::vector<uint8_t> data_in = pmt::u8vector_elements(v_data);
     std::vector<float> out; // output
     out.clear();
@@ -119,22 +109,20 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
                 (v_len * d_interp));
     out.insert(out.end(), d_zeros.begin(), d_zeros.end());
     out.insert(out.end(), d_preamble_interp.begin(), d_preamble_interp.end());
-    if (d_interp == 1) {
-        out.insert(out.end(), data_in.begin(), data_in.end());
-    } else {
-        for (int ii = 0; ii < data_in.size(); ii++) {
-            if (d_nrz) {
-                float x = (data_in[ii] > 0) ? 1.0 : -1.0;
-                for (int jj = 0; jj < d_interp; jj++) {
-                    out.push_back(x);
-                }
-            } else {
-                for (int jj = 0; jj < d_interp; jj++) {
-                    out.push_back(data_in[ii]);
-                }
+
+    for (int ii = 0; ii < data_in.size(); ii++) {
+        if (d_nrz) {
+            float x = (data_in[ii] > 0) ? 1.0 : -1.0;
+            for (int jj = 0; jj < d_interp; jj++) {
+                out.push_back(x);
+            }
+        } else {
+            for (int jj = 0; jj < d_interp; jj++) {
+                out.push_back(data_in[ii]);
             }
         }
     }
+
     out.insert(out.end(), d_tail_interp.begin(), d_tail_interp.end());
     out.insert(out.end(), d_zeros.begin(), d_zeros.end());
 

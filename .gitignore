@@ -13,6 +13,8 @@
 # Temp VI files #
 #################
 *~
+*.swp
+*.bak
 
 # Packages #
 ############
@@ -44,14 +46,14 @@ ehthumbs.db
 Thumbs.db
 
 # build files #
-######################
+###############
 build
 build/*
 
 # unit test files #
+###################
 .unittests
 .unittests/*
-*.swp
 
 /.cproject
 /.project
