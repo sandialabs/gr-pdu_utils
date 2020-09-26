@@ -34,7 +34,8 @@ pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float
       d_fir_ccf(1, taps),
       d_decimation(decimation)
 {
- 
+    set_taps(taps);
+
     // to avoid memory access issues within the filterNdec function of gnuradio
     // pad the input at the front and back based on the volk alignemt
     d_pad = volk_get_alignment() / sizeof(float);
@@ -52,6 +53,8 @@ pdu_fir_filter_impl::~pdu_fir_filter_impl() {}
 
 void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
 {
+    gr::thread::scoped_lock guard(d_mutex);
+
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
         GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-pair)");
@@ -66,76 +69,106 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
         return;
     }
 
-    // if there's a sample rate tag, update it
-    if (pmt::dict_has_key(metadata, pmt::mp("sample_rate"))) {
-        double sample_rate =
-            pmt::to_double(pmt::dict_ref(metadata, pmt::mp("sample_rate"), pmt::PMT_NIL));
-        sample_rate /= d_decimation;
-        metadata = pmt::dict_delete(metadata, pmt::mp("sample_rate"));
-        metadata = pmt::dict_add(
-            metadata, pmt::mp("sample_rate"), pmt::from_double(sample_rate));
+    /*
+     * Update Metadata Dictionary As Required:
+     *
+     * If decimation is 1 and our taps are odd, we do not need to update any dictionary
+     * keys - check this first to avoid unnecessary dictionary references as this
+     * operation can be expensive for large dictionaries.
+     */
+    if ((d_decimation != 1) || d_even_num_taps) {
+        // we need a sample_rate key to update either field
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__SAMP_RATE)) {
+            double sample_rate = pmt::to_double(
+                pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::PMT_NIL));
+            if ((d_decimation != 1)) {
+                sample_rate /= d_decimation;
+                metadata = pmt::dict_add(
+                    metadata, PMTCONSTSTR__SAMP_RATE, pmt::from_double(sample_rate));
+            }
+            // if we need to adjust the start time due to an even number of taps, do so
+            if (d_even_num_taps && pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME)) {
+                double start_time = pmt::to_double(
+                    pmt::dict_ref(metadata, PMTCONSTSTR__START_TIME, pmt::PMT_NIL));
+                start_time -= 0.5 / sample_rate;
+                metadata = pmt::dict_add(
+                    metadata, PMTCONSTSTR__START_TIME, pmt::from_double(start_time));
+            }
+        }
     }
-   
-    if (pmt::is_f32vector(pdu_data)) {
-        const std::vector<float> d_in_p = pmt::f32vector_elements(pdu_data);
-        if (d_in_p.size() <= d_fir_fff.ntaps()) { 
-         // not enough data to process
-         return;
-        } 
-        std::vector<float> d_in(d_in_p.size()+2*d_pad);
-        d_in.insert(d_in.begin()+d_pad,d_in_p.begin(),d_in_p.end());
-        
 
-        std::vector<float> d_out;
-        d_out.resize((d_in_p.size() - d_fir_fff.ntaps() + 1) / d_decimation);
+    /*
+     * Perform FIR Filtering
+     *
+     * This is done with compensation for group delay; for odd numbers of taps the output
+     * remains aligned with the input, and for even numbers of taps a half sample is added
+     * to the output before and after the input data resulting in the length increasing by
+     * one, and the first output sample being a half sample early relative to the first
+     * sample in the input.
+     *
+     * Padding (d_pad) is included as a workaround for a bug in upstream FIR filter
+     * kernels (see: https://github.com/gnuradio/gnuradio/issues/3393) and does not affect
+     * timing or alignment.
+     */
+    size_t vlen_in;
+    if (pmt::is_f32vector(pdu_data)) {
+        const float* d_in_p = pmt::f32vector_elements(pdu_data, vlen_in);
+        if (vlen_in <= d_fir_fff.ntaps()) {
+            // not enough data to process
+            return;
+        }
+        size_t vlen_out(d_even_num_taps ? vlen_in + 1 : vlen_in);
+
+        std::vector<float> d_in(vlen_in + 2 * d_pad + 2 * d_group_delay_offset, 0);
+        d_in.insert(
+            d_in.begin() + d_pad + d_group_delay_offset, d_in_p, d_in_p + vlen_in);
+        std::vector<float> d_out(vlen_out / d_decimation);
 
         // do FIR filtering
-        d_fir_fff.filterNdec(d_out.data(), d_in.data()+d_pad, d_out.size(), d_decimation);
+        d_fir_fff.filterNdec(
+            d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
 
         message_port_pub(
             PMTCONSTSTR__PDU_OUT,
             (pmt::cons(metadata, pmt::init_f32vector(d_out.size(), d_out.data()))));
-    } else if (pmt::is_c32vector(pdu_data)) {
 
-        const std::vector<gr_complex> d_in_p = pmt::c32vector_elements(pdu_data);
-        if (d_in_p.size() <= d_fir_ccf.ntaps()) { 
-         // not enough data to process
-         return;
-        } 
-        std::vector<gr_complex> d_in(d_in_p.size()+2*d_pad);
-        d_in.insert(d_in.begin()+d_pad,d_in_p.begin(),d_in_p.end());
-#if 0
-        if (d_tmp.size() < d_in.size() + 20) {
-            d_tmp.resize(d_in.size() + 200);
-            memset(&d_tmp[0], 0, sizeof(gr_complex) * 10);
-            memset(&d_tmp[d_in.size() - 10], 0, sizeof(gr_complex) * 10);
+    } else if (pmt::is_c32vector(pdu_data)) {
+        const gr_complex* d_in_p = pmt::c32vector_elements(pdu_data, vlen_in);
+        if (vlen_in <= d_fir_ccf.ntaps()) {
+            // not enough data to process
+            return;
         }
-        memcpy(&d_tmp[0] + 10, &d_in[0], sizeof(gr_complex) * d_in.size());
-#endif
-        std::vector<gr_complex> d_out;
-        d_out.resize((d_in_p.size() - d_fir_ccf.ntaps() + 1) / d_decimation);
+        size_t vlen_out(d_even_num_taps ? vlen_in + 1 : vlen_in);
+
+        std::vector<gr_complex> d_in(vlen_in + 2 * d_pad + 2 * d_group_delay_offset, 0);
+        d_in.insert(
+            d_in.begin() + d_pad + d_group_delay_offset, d_in_p, d_in_p + vlen_in);
+        std::vector<gr_complex> d_out(vlen_out / d_decimation);
 
         // do FIR filtering
-        d_fir_ccf.filterNdec(d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
+        d_fir_ccf.filterNdec(
+            d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
 
         message_port_pub(
             PMTCONSTSTR__PDU_OUT,
             (pmt::cons(metadata, pmt::init_c32vector(d_out.size(), d_out.data()))));
+
     } else if (pmt::is_u8vector(pdu_data)) {
+        const uint8_t* d_in_p = pmt::u8vector_elements(pdu_data, vlen_in);
+        if (vlen_in <= d_fir_fff.ntaps()) {
+            // not enough data to process
+            return;
+        }
+        size_t vlen_out(d_even_num_taps ? vlen_in + 1 : vlen_in);
 
-        const std::vector<uint8_t> d_in_byte = pmt::u8vector_elements(pdu_data);
-        if (d_in_byte.size() <= d_fir_fff.ntaps()) { 
-         // not enough data to process
-         return; 
-	} 
-        std::vector<float> d_in(d_in_byte.size()+2*d_pad);
-        d_in.insert(d_in.begin()+d_pad,d_in_byte.begin(),d_in_byte.end());
-
-        std::vector<float> d_out;
-        d_out.resize((d_in_byte.size() - d_fir_fff.ntaps() + 1) / d_decimation);
+        std::vector<float> d_in(vlen_in + 2 * d_pad + 2 * d_group_delay_offset, 0);
+        d_in.insert(
+            d_in.begin() + d_pad + d_group_delay_offset, d_in_p, d_in_p + vlen_in);
+        std::vector<float> d_out(vlen_out / d_decimation);
 
         // do FIR filtering
-        d_fir_fff.filterNdec(d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
+        d_fir_fff.filterNdec(
+            d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
 
         std::vector<uint8_t> d_out_byte(d_out.begin(), d_out.end());
         message_port_pub(
@@ -148,5 +181,25 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
     }
 }
 
+void pdu_fir_filter_impl::set_taps(std::vector<float> taps)
+{
+    gr::thread::scoped_lock guard(d_mutex);
+
+    size_t tap_len = taps.size();
+    d_fir_fff.set_taps(taps);
+    d_fir_ccf.set_taps(taps);
+
+    if (tap_len % 2) {
+        d_group_delay_offset = (tap_len - 1) / 2;
+        d_even_num_taps = false;
+    } else {
+        d_group_delay_offset = (tap_len) / 2;
+        d_even_num_taps = true;
+        GR_LOG_WARN(d_logger,
+                    "PERFORMANCE IMPACT: Even number of taps requires inefficient manual "
+                    "adjustiment of burst time");
+    }
+}
+
 } /* namespace pdu_utils */
-} /* namespace gr */
+} // namespace gr
