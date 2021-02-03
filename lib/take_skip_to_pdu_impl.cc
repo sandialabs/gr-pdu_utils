@@ -53,7 +53,7 @@ take_skip_to_pdu_impl<T>::take_skip_to_pdu_impl(uint32_t take, uint32_t skip)
 
     d_vector.clear();
     d_meta_dict = pmt::make_dict();
-    this->message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    this->message_port_register_out(PMTCONSTSTR__pdu_out());
 
     GR_LOG_INFO(this->d_logger, "Starting Take Skip PDU Generator!");
 }
@@ -72,12 +72,12 @@ template <class T>
 void take_skip_to_pdu_impl<T>::publish_message()
 {
     d_meta_dict = pmt::dict_add(
-        d_meta_dict, pmt::intern("pdu_num"), pmt::from_uint64(d_burst_counter));
+        d_meta_dict, PMTCONSTSTR__pdu_num(), pmt::from_uint64(d_burst_counter));
     // std::cout << "CPP: sending burst number " << d_burst_counter << " of length " <<
     // d_vector.size() << std::endl;
 
     // publish mesage
-    this->message_port_pub(PMTCONSTSTR__PDU_OUT,
+    this->message_port_pub(PMTCONSTSTR__pdu_out(),
                            pmt::cons(d_meta_dict, this->init_data(d_vector)));
 
     // prepare for next burst

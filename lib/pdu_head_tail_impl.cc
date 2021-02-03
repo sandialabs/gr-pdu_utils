@@ -56,11 +56,11 @@ pdu_head_tail_impl::pdu_head_tail_impl(uint32_t input_type,
         throw std::invalid_argument("unknown mode");
     }
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_head_tail_impl::handle_pdu, this, _1));
-    message_port_register_out(PMTCONSTSTR__HEAD);
-    message_port_register_out(PMTCONSTSTR__TAIL);
+    message_port_register_out(PMTCONSTSTR__head());
+    message_port_register_out(PMTCONSTSTR__tail());
 
     reset();
 }
@@ -211,10 +211,10 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         }
 
         message_port_pub(
-            PMTCONSTSTR__HEAD,
+            PMTCONSTSTR__head(),
             (pmt::cons(meta, pmt::init_f32vector(d_histsize * d_length, d_head_f))));
         message_port_pub(
-            PMTCONSTSTR__TAIL,
+            PMTCONSTSTR__tail(),
             (pmt::cons(meta, pmt::init_f32vector(d_histsize * d_length, d_tail_f))));
 
     } else {
@@ -252,10 +252,10 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         */
 
         message_port_pub(
-            PMTCONSTSTR__HEAD,
+            PMTCONSTSTR__head(),
             (pmt::cons(meta, pmt::init_u8vector(d_histsize * d_length, d_head))));
         message_port_pub(
-            PMTCONSTSTR__TAIL,
+            PMTCONSTSTR__tail(),
             (pmt::cons(meta, pmt::init_u8vector(d_histsize * d_length, d_tail))));
     }
 }

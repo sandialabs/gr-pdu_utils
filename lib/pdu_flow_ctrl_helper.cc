@@ -26,7 +26,7 @@ pdu_flow_ctrl_helper::pdu_flow_ctrl_helper(std::vector<gr::basic_block_sptr> blo
         int len = pmt::length(ports);
         for (int i = 0; i < len; i++) {
             pmt::pmt_t port = pmt::vector_ref(ports, i);
-            if (!pmt::eq(port, SYSTEM_PORT)) {
+            if (!pmt::eq(port, PMTCONSTSTR__system())) {
                 bp.ports.push_back(port);
             }
         }

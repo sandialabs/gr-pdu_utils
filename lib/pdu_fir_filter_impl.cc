@@ -40,9 +40,9 @@ pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float
     // pad the input at the front and back based on the volk alignemt
     d_pad = volk_get_alignment() / sizeof(float);
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_fir_filter_impl::handle_pdu, this, _1));
 }
 
@@ -78,21 +78,21 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
      */
     if ((d_decimation != 1) || d_even_num_taps) {
         // we need a sample_rate key to update either field
-        if (pmt::dict_has_key(metadata, PMTCONSTSTR__SAMP_RATE)) {
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__sample_rate())) {
             double sample_rate = pmt::to_double(
-                pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::PMT_NIL));
+                pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
             if ((d_decimation != 1)) {
                 sample_rate /= d_decimation;
                 metadata = pmt::dict_add(
-                    metadata, PMTCONSTSTR__SAMP_RATE, pmt::from_double(sample_rate));
+                    metadata, PMTCONSTSTR__sample_rate(), pmt::from_double(sample_rate));
             }
             // if we need to adjust the start time due to an even number of taps, do so
-            if (d_even_num_taps && pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME)) {
+            if (d_even_num_taps && pmt::dict_has_key(metadata, PMTCONSTSTR__start_time())) {
                 double start_time = pmt::to_double(
-                    pmt::dict_ref(metadata, PMTCONSTSTR__START_TIME, pmt::PMT_NIL));
+                    pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
                 start_time -= 0.5 / sample_rate;
                 metadata = pmt::dict_add(
-                    metadata, PMTCONSTSTR__START_TIME, pmt::from_double(start_time));
+                    metadata, PMTCONSTSTR__start_time(), pmt::from_double(start_time));
             }
         }
     }
@@ -129,7 +129,7 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
             d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
 
         message_port_pub(
-            PMTCONSTSTR__PDU_OUT,
+            PMTCONSTSTR__pdu_out(),
             (pmt::cons(metadata, pmt::init_f32vector(d_out.size(), d_out.data()))));
 
     } else if (pmt::is_c32vector(pdu_data)) {
@@ -150,7 +150,7 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
             d_out.data(), d_in.data() + d_pad, d_out.size(), d_decimation);
 
         message_port_pub(
-            PMTCONSTSTR__PDU_OUT,
+            PMTCONSTSTR__pdu_out(),
             (pmt::cons(metadata, pmt::init_c32vector(d_out.size(), d_out.data()))));
 
     } else if (pmt::is_u8vector(pdu_data)) {
@@ -172,7 +172,7 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
 
         std::vector<uint8_t> d_out_byte(d_out.begin(), d_out.end());
         message_port_pub(
-            PMTCONSTSTR__PDU_OUT,
+            PMTCONSTSTR__pdu_out(),
             (pmt::cons(metadata,
                        pmt::init_u8vector(d_out_byte.size(), d_out_byte.data()))));
     } else {

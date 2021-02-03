@@ -44,6 +44,7 @@
 #include "pdu_utils/pdu_complex_to_mag2.h"
 #include "pdu_utils/sandia_message_debug.h"
 #include "pdu_utils/pdu_quadrature_demod_cf.h"
+#include "pdu_utils/pdu_rotate.h"
 
 %}
 
@@ -150,3 +151,5 @@ GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_complex_to_mag2);
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, sandia_message_debug);
 %include "pdu_utils/pdu_quadrature_demod_cf.h"
 GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_quadrature_demod_cf);
+%include "pdu_utils/pdu_rotate.h"
+GR_SWIG_BLOCK_MAGIC2(pdu_utils, pdu_rotate);

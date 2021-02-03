@@ -35,9 +35,9 @@ pdu_quadrature_demod_cf_impl::pdu_quadrature_demod_cf_impl(float sensitivity)
                 gr::io_signature::make(0, 0, 0)),
       d_sensitivity(sensitivity)
 {
-    message_port_register_in(pmt::mp("cpdus"));
-    message_port_register_out(pmt::mp("fpdus"));
-    set_msg_handler(pmt::mp("cpdus"),
+    message_port_register_in(PMTCONSTSTR__cpdus());
+    message_port_register_out(PMTCONSTSTR__fpdus());
+    set_msg_handler(PMTCONSTSTR__cpdus(),
                     boost::bind(&pdu_quadrature_demod_cf_impl::handle_pdu, this, _1));
 }
 
@@ -65,7 +65,7 @@ void pdu_quadrature_demod_cf_impl::handle_pdu(pmt::pmt_t pdu)
 
     pmt::pmt_t pdu_vector = pmt::init_f32vector(burst_size, out);
     pmt::pmt_t out_msg = pmt::cons(pmt::car(pdu), pdu_vector);
-    message_port_pub(pmt::mp("fpdus"), out_msg);
+    message_port_pub(PMTCONSTSTR__fpdus(), out_msg);
 }
 
 } /* namespace pdu_utils */

@@ -1,0 +1,27 @@
+id: pdu_utils_pdu_rotate
+label: PDU Rotate
+category: '[Sandia]/PDU Utilities/'
+
+templates:
+  imports: import pdu_utils
+  make: pdu_utils.pdu_rotate(${phase_inc})
+  callbacks:
+  - set_phase_inc(${phase_inc})
+
+parameters:
+-   id: phase_inc
+    label: Phase Inc
+    dtype: float
+    default: '0'
+
+inputs:
+-   domain: message
+    id: pdu_in
+    optional: true
+
+outputs:
+-   domain: message
+    id: pdu_out
+    optional: true
+
+file_format: 1

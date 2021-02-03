@@ -33,10 +33,10 @@ pdu_length_filter_impl::pdu_length_filter_impl(uint32_t length, bool drop_long)
       d_n_passed(0),
       d_n_blocked(0)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_length_filter_impl::handle_pdu, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -79,7 +79,7 @@ void pdu_length_filter_impl::handle_pdu(pmt::pmt_t pdu)
         return;
     }
     d_n_passed++;
-    message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+    message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
 }
 
 } /* namespace pdu_utils */

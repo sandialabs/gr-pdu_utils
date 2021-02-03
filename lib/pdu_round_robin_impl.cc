@@ -34,8 +34,8 @@ pdu_round_robin_impl::pdu_round_robin_impl(int num_outputs)
       d_counter(0)
 {
     // inputs
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_round_robin_impl::pdu_handler, this, _1));
 
     // outputs

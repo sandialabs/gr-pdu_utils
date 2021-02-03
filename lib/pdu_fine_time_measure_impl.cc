@@ -42,9 +42,9 @@ pdu_fine_time_measure_impl::pdu_fine_time_measure_impl(float pre_burst_time,
       d_average_size(average_width),
       d_buffer_percent(buffer_percent / 100.0)
 {
-    message_port_register_in(PMT_PDU_IN);
-    message_port_register_out(PMT_PDU_OUT);
-    set_msg_handler(PMT_PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_fine_time_measure_impl::pdu_handler, this, _1));
 }
 
@@ -72,15 +72,15 @@ void pdu_fine_time_measure_impl::pdu_handler(pmt::pmt_t pdu)
         GR_LOG_WARN(d_logger, "PDU data not complex, dropping");
         return;
     }
-    /*pmt::pmt_t time_pmt = pmt::dict_ref(metadata, pmt::mp("start_time"), pmt::PMT_NIL);
+    /*pmt::pmt_t time_pmt = pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL);
     uint64_t seconds = pmt::to_uint64(pmt::tuple_ref(time_pmt, 0));
     double frac_seconds = pmt::to_double(pmt::tuple_ref(time_pmt, 1));*/
 
     double start_time =
-        pmt::to_double(pmt::dict_ref(metadata, PMT_START_TIME, pmt::PMT_NIL));
+        pmt::to_double(pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
     float sample_rate =
-        pmt::to_float(pmt::dict_ref(metadata, PMT_SAMPLE_RATE, pmt::PMT_NIL));
-    float duration = pmt::to_float(pmt::dict_ref(metadata, PMT_DURATION, pmt::PMT_NIL));
+        pmt::to_float(pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
+    float duration = pmt::to_float(pmt::dict_ref(metadata, PMTCONSTSTR__duration(), pmt::PMT_NIL));
 
     // Divide the burst into pre-noise/burst/post_noise
     // This is, in a way, an SNR calculation
@@ -157,14 +157,14 @@ void pdu_fine_time_measure_impl::pdu_handler(pmt::pmt_t pdu)
 
     // Offset our burst time and remove samples from the beginning.
     metadata = pmt::dict_add(metadata,
-                             PMT_START_TIME,
+                             PMTCONSTSTR__start_time(),
                              pmt::from_double(start_time + double(start) / sample_rate));
     metadata = pmt::dict_add(
-        metadata, PMT_DURATION, pmt::from_float(duration - float(start) / sample_rate));
-    // metadata = pmt::dict_add(metadata, pmt::mp("burst_time"),
+        metadata, PMTCONSTSTR__duration(), pmt::from_float(duration - float(start) / sample_rate));
+    // metadata = pmt::dict_add(metadata, PMTCONSTSTR__burst_time(),
     // pmt::make_tuple(pmt::from_uint64(seconds), pmt::from_double(frac_seconds)));
     pmt::pmt_t pdu_vector = pmt::init_c32vector(burst_size - start, burst + start);
-    message_port_pub(PMT_PDU_OUT, pmt::cons(metadata, pdu_vector));
+    message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, pdu_vector));
 }
 
 

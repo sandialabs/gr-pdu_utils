@@ -79,9 +79,9 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
     }
 
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_align_impl::pdu_handler, this, _1));
 }
 
@@ -93,40 +93,40 @@ pdu_align_impl::~pdu_align_impl() {}
 void pdu_align_impl::update_time_metadata(pmt::pmt_t& metadata, int start_idx)
 {
     // if the pmt has a start_time or duration field to udpate
-    if (pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME) ||
-        pmt::dict_has_key(metadata, PMTCONSTSTR__DURATION)) {
+    if (pmt::dict_has_key(metadata, PMTCONSTSTR__start_time()) ||
+        pmt::dict_has_key(metadata, PMTCONSTSTR__duration())) {
         // get the sample rate (or symbol rate)
         float samp_rate;
 
-        if (pmt::dict_has_key(metadata, PMTCONSTSTR__SAMP_RATE)) {
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__sample_rate())) {
             samp_rate = pmt::to_float(
-                pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::PMT_NIL));
-        } else if (pmt::dict_has_key(metadata, PMTCONSTSTR__SYM_RATE)) {
+                pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
+        } else if (pmt::dict_has_key(metadata, PMTCONSTSTR__symbol_rate())) {
             samp_rate = pmt::to_float(
-                pmt::dict_ref(metadata, PMTCONSTSTR__SYM_RATE, pmt::PMT_NIL));
+                pmt::dict_ref(metadata, PMTCONSTSTR__symbol_rate(), pmt::PMT_NIL));
         } else {
             return;
         }
         // update the fields
         float offset = start_idx / samp_rate;
 
-        if (pmt::dict_has_key(metadata, PMTCONSTSTR__START_TIME)) {
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__start_time())) {
             double start_time = pmt::to_double(
-                pmt::dict_ref(metadata, PMTCONSTSTR__START_TIME, pmt::PMT_NIL));
-            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__START_TIME);
+                pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
+            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__start_time());
             metadata = pmt::dict_add(
-                metadata, PMTCONSTSTR__START_TIME, pmt::from_double(start_time + offset));
+                metadata, PMTCONSTSTR__start_time(), pmt::from_double(start_time + offset));
             metadata = pmt::dict_add(
-                metadata, PMTCONSTSTR__START_TIME_OFFSET, pmt::from_double(offset));
+                metadata, PMTCONSTSTR__start_time_offset(), pmt::from_double(offset));
             // printf("incremented start time by %f\n", offset);
         }
 
-        if (pmt::dict_has_key(metadata, PMTCONSTSTR__DURATION)) {
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__duration())) {
             float duration = pmt::to_float(
-                pmt::dict_ref(metadata, PMTCONSTSTR__DURATION, pmt::PMT_NIL));
-            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__DURATION);
+                pmt::dict_ref(metadata, PMTCONSTSTR__duration(), pmt::PMT_NIL));
+            metadata = pmt::dict_delete(metadata, PMTCONSTSTR__duration());
             metadata = pmt::dict_add(
-                metadata, PMTCONSTSTR__DURATION, pmt::from_float(duration - offset));
+                metadata, PMTCONSTSTR__duration(), pmt::from_float(duration - offset));
             // printf("decreased duration by %f\n", offset);
         }
     }
@@ -177,7 +177,7 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
                 update_time_metadata(metadata, start_idx);
                 pmt::pmt_t data_vec =
                     pmt::init_u8vector(data_len - start_idx, data + start_idx);
-                message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(metadata, data_vec));
+                message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
                 return;
             }
         }
@@ -185,9 +185,9 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
 
     // syncword not found - what should we do?
     if (d_mode == ALIGN_FORWARD) {
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+        message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
     } else if (d_mode == ALIGN_EMPTY) {
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(metadata, pmt::init_u8vector(0, {})));
     }
 

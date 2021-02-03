@@ -54,7 +54,7 @@ tags_to_pdu_impl<T>::tags_to_pdu_impl(pmt::pmt_t start_tag,
                      gr::io_signature::make(0, 0, 0)),
       d_sob_tag_key(start_tag),
       d_eob_tag_key(end_tag),
-      d_time_tag_key(PMTCONSTSTR__RX_TIME),
+      d_time_tag_key(PMTCONSTSTR__rx_time()),
       d_max_pdu_size(max_pdu_size),
       d_samp_rate(samp_rate),
       d_prepend(prepend),
@@ -80,11 +80,11 @@ tags_to_pdu_impl<T>::tags_to_pdu_impl(pmt::pmt_t start_tag,
     // d_prepend.clear();
     // d_prepend.insert(d_prepend.end(), prepend.begin(), prepend.end());
 
-    this->message_port_register_in(PMTCONSTSTR__CONF);
-    this->set_msg_handler(PMTCONSTSTR__CONF,
+    this->message_port_register_in(PMTCONSTSTR__conf());
+    this->set_msg_handler(PMTCONSTSTR__conf(),
                           boost::bind(&tags_to_pdu_impl<T>::handle_ctrl_msg, this, _1));
-    this->message_port_register_out(PMTCONSTSTR__PDU_OUT);
-    this->message_port_register_out(PMTCONSTSTR__DETECTS);
+    this->message_port_register_out(PMTCONSTSTR__pdu_out());
+    this->message_port_register_out(PMTCONSTSTR__detects());
 }
 
 /*
@@ -117,9 +117,9 @@ void tags_to_pdu_impl<T>::handle_ctrl_msg(pmt::pmt_t ctrl_msg)
     // pmt::dict_keys(ctrl_msg) << std::endl;
 
     // check dict for EOB offset command
-    if (pmt::dict_has_key(ctrl_msg, PMTCONSTSTR__EOB_OFFSET)) {
+    if (pmt::dict_has_key(ctrl_msg, PMTCONSTSTR__eob_offset())) {
         uint32_t new_eob_offset = pmt::to_uint64(pmt::dict_ref(
-            ctrl_msg, PMTCONSTSTR__EOB_OFFSET, pmt::from_uint64(d_eob_offset)));
+            ctrl_msg, PMTCONSTSTR__eob_offset(), pmt::from_uint64(d_eob_offset)));
         set_eob_parameters(d_eob_alignment, new_eob_offset);
         GR_LOG_NOTICE(
             this->d_logger,
@@ -128,9 +128,9 @@ void tags_to_pdu_impl<T>::handle_ctrl_msg(pmt::pmt_t ctrl_msg)
     }
 
     // check dict for EOB alignment command
-    if (pmt::dict_has_key(ctrl_msg, PMTCONSTSTR__EOB_ALIGNMENT)) {
+    if (pmt::dict_has_key(ctrl_msg, PMTCONSTSTR__eob_alignment())) {
         uint32_t new_eob_alignment = pmt::to_uint64(pmt::dict_ref(
-            ctrl_msg, PMTCONSTSTR__EOB_ALIGNMENT, pmt::from_uint64(d_eob_alignment)));
+            ctrl_msg, PMTCONSTSTR__eob_alignment(), pmt::from_uint64(d_eob_alignment)));
         if (new_eob_alignment > 0) {
             set_eob_parameters(new_eob_alignment, d_eob_offset);
             GR_LOG_NOTICE(
@@ -171,23 +171,23 @@ void tags_to_pdu_impl<T>::publish_message()
     }
     pmt::pmt_t time_tuple =
         pmt::make_tuple(pmt::from_uint64(int_seconds), pmt::from_double(frac_seconds));
-    d_meta_dict = pmt::dict_add(d_meta_dict, PMTCONSTSTR__BURST_TIME, time_tuple);
+    d_meta_dict = pmt::dict_add(d_meta_dict, PMTCONSTSTR__burst_time(), time_tuple);
     d_meta_dict =
         pmt::dict_add(d_meta_dict,
-                      PMTCONSTSTR__TIME_TYPE,
-                      PMTCONSTSTR__UHD_TIME_TUPLE); // TODO: remove, no longer necessary?
+                      PMTCONSTSTR__time_type(),
+                      PMTCONSTSTR__uhd_time_tuple()); // TODO: remove, no longer necessary?
     d_meta_dict = pmt::dict_add(
-        d_meta_dict, PMTCONSTSTR__PDU_NUM, pmt::from_uint64(d_burst_counter));
+        d_meta_dict, PMTCONSTSTR__pdu_num(), pmt::from_uint64(d_burst_counter));
     if (d_wall_clock_time) {
         double t_now((boost::get_system_time() - d_epoch).total_microseconds() /
                      1000000.0);
         d_meta_dict = pmt::dict_add(
-            d_meta_dict, PMTCONSTSTR__WALL_CLOCK_TIME, pmt::from_double(t_now));
+            d_meta_dict, PMTCONSTSTR__wall_clock_time(), pmt::from_double(t_now));
     }
     // std::cout << "CPP: sending burst number " << d_burst_counter << " of length " <<
     // d_vector.size() << " at time " << t_now << std::endl;
     if (d_vector.size() > d_tail_size)
-        this->message_port_pub(PMTCONSTSTR__PDU_OUT,
+        this->message_port_pub(PMTCONSTSTR__pdu_out(),
                                pmt::cons(d_meta_dict, init_data(d_vector)));
 
     // prepare for next burst
@@ -313,7 +313,7 @@ int tags_to_pdu_impl<T>::work(int noutput_items,
             d_triggered = true;
 
             if (d_pub_sobs) {
-                this->message_port_pub(PMTCONSTSTR__DETECTS,
+                this->message_port_pub(PMTCONSTSTR__detects(),
                                        pmt::from_uint64(d_sob_tag_offset));
             }
 

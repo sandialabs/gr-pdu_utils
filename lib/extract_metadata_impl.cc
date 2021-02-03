@@ -32,10 +32,10 @@ extract_metadata_impl::extract_metadata_impl(pmt::pmt_t key, float scale, float 
       d_scale(scale),
       d_offset(offset)
 {
-    message_port_register_in(PMTCONSTSTR__DICT);
-    set_msg_handler(PMTCONSTSTR__DICT,
+    message_port_register_in(PMTCONSTSTR__dict());
+    set_msg_handler(PMTCONSTSTR__dict(),
                     boost::bind(&extract_metadata_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__MSG);
+    message_port_register_out(PMTCONSTSTR__msg());
 }
 
 /*
@@ -108,7 +108,7 @@ void extract_metadata_impl::handle_msg(pmt::pmt_t msg)
             }
         }
 
-        message_port_pub(PMTCONSTSTR__MSG, pmt::cons(d_key, value));
+        message_port_pub(PMTCONSTSTR__msg(), pmt::cons(d_key, value));
     }
 }
 

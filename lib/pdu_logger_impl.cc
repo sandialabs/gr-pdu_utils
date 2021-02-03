@@ -32,8 +32,8 @@ pdu_logger_impl::pdu_logger_impl(std::string logfile)
       d_logfile(logfile),
       d_burstnum(0)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_logger_impl::handle_pdu, this, _1));
 }
 

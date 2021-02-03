@@ -51,10 +51,10 @@ pdu_pfb_resamp_impl<T, S>::pdu_pfb_resamp_impl(const std::vector<S> taps,
     //   boost::format("started pdu pfb resampler with %d taps") %
     //   int(d_taps.size()));
 
-    this->message_port_register_in(PMTCONSTSTR__PDU_IN);
-    this->set_msg_handler(PMTCONSTSTR__PDU_IN,
+    this->message_port_register_in(PMTCONSTSTR__pdu_in());
+    this->set_msg_handler(PMTCONSTSTR__pdu_in(),
                           boost::bind(&pdu_pfb_resamp_impl<T, S>::handle_pdu, this, _1));
-    this->message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    this->message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*group_delay
@@ -125,17 +125,17 @@ void pdu_pfb_resamp_impl<T, S>::handle_pdu(pmt::pmt_t pdu)
 
         int n_out = d_pfb->filter(d_out, d_in, nitems + start, num_read);
 
-        if (pmt::dict_has_key(meta, pmt::mp("sample_rate"))) {
+        if (pmt::dict_has_key(meta, PMTCONSTSTR__sample_rate())) {
             double sample_rate =
-                pmt::to_double(pmt::dict_ref(meta, pmt::mp("sample_rate"), pmt::PMT_NIL));
+                pmt::to_double(pmt::dict_ref(meta, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
             sample_rate *= d_resamp_rate;
-            meta = pmt::dict_delete(meta, pmt::mp("sample_rate"));
+            meta = pmt::dict_delete(meta, PMTCONSTSTR__sample_rate());
             meta = pmt::dict_add(
-                meta, pmt::mp("sample_rate"), pmt::from_double(sample_rate));
+                meta, PMTCONSTSTR__sample_rate(), pmt::from_double(sample_rate));
         }
 
         // publish message
-        this->message_port_pub(PMTCONSTSTR__PDU_OUT,
+        this->message_port_pub(PMTCONSTSTR__pdu_out(),
                                pmt::cons(meta, this->init_data(d_out, n_out)));
 
     } else {

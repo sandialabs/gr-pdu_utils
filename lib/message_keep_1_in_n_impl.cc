@@ -37,10 +37,10 @@ message_keep_1_in_n_impl::message_keep_1_in_n_impl(uint32_t n)
         throw std::invalid_argument("Message Keep 1 in N: n cannot be zero!");
     }
 
-    message_port_register_in(PMTCONSTSTR__IN);
-    set_msg_handler(PMTCONSTSTR__IN,
+    message_port_register_in(PMTCONSTSTR__in());
+    set_msg_handler(PMTCONSTSTR__in(),
                     boost::bind(&message_keep_1_in_n_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__OUT);
+    message_port_register_out(PMTCONSTSTR__out());
 }
 
 /*
@@ -57,7 +57,7 @@ void message_keep_1_in_n_impl::handle_msg(pmt::pmt_t msg)
 
     d_ctr++;
     if (d_ctr >= d_n) {
-        message_port_pub(PMTCONSTSTR__OUT, msg);
+        message_port_pub(PMTCONSTSTR__out(), msg);
         d_ctr = 0;
     }
 }

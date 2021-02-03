@@ -30,13 +30,13 @@ pdu_set_m_impl::pdu_set_m_impl(pmt::pmt_t k, pmt::pmt_t v)
       d_k(k),
       d_v(v)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_set_m_impl::handle_msg, this, _1));
-    message_port_register_in(PMTCONSTSTR__CTRL);
-    set_msg_handler(PMTCONSTSTR__CTRL,
+    message_port_register_in(PMTCONSTSTR__ctrl());
+    set_msg_handler(PMTCONSTSTR__ctrl(),
                     boost::bind(&pdu_set_m_impl::handle_ctrl_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -65,14 +65,14 @@ void pdu_set_m_impl::handle_ctrl_msg(pmt::pmt_t msg)
     gr::thread::scoped_lock l(d_setlock);
 
     if (pmt::is_pair(msg)) {
-        if (pmt::eqv(pmt::car(msg), pmt::mp("val"))) {
+        if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__val())) {
             GR_LOG_NOTICE(d_logger, boost::format("value is %1%") % val());
-        } else if (pmt::eqv(pmt::car(msg), pmt::mp("key"))) {
+        } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__key())) {
             GR_LOG_NOTICE(d_logger, boost::format("key is %1%") % key());
-        } else if (pmt::eqv(pmt::car(msg), pmt::mp("set_val"))) {
+        } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__set_val())) {
             set_val(pmt::cdr(msg));
             GR_LOG_NOTICE(d_logger, boost::format("value set to %1%") % val());
-        } else if (pmt::eqv(pmt::car(msg), pmt::mp("set_key"))) {
+        } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__set_key())) {
             set_key(pmt::cdr(msg));
             GR_LOG_DEBUG(d_logger, boost::format("key set to %1%") % key());
         } else {
@@ -101,7 +101,7 @@ void pdu_set_m_impl::handle_msg(pmt::pmt_t pdu)
 
     if (pmt::is_dict(meta)) {
         meta = pmt::dict_add(meta, d_k, d_v);
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(meta, pmt::cdr(pdu)));
+        message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(meta, pmt::cdr(pdu)));
     } else {
         GR_LOG_WARN(d_logger, "received malformed PDU");
     }

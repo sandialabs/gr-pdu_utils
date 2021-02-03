@@ -63,15 +63,15 @@ pdu_clock_recovery_impl::pdu_clock_recovery_impl(bool binary_slice,
 {
 
     // setup ports
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
     if (d_debug) {
-        message_port_register_out(PMTCONSTSTR__DEBUG);
-        message_port_register_out(PMTCONSTSTR__ZEROX);
-        message_port_register_out(PMTCONSTSTR__WINDOW);
+        message_port_register_out(PMTCONSTSTR__debug());
+        message_port_register_out(PMTCONSTSTR__zeroX());
+        message_port_register_out(PMTCONSTSTR__window());
     }
 
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_clock_recovery_impl::pdu_handler, this, _1));
 
     init_fast_sinc();
@@ -275,7 +275,7 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
     pmt::pmt_t metadata = pmt::car(pdu);
     pmt::pmt_t pdu_data = pmt::cdr(pdu);
     pmt::pmt_t pmt_samp_rate =
-        pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::get_PMT_NIL());
+        pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::get_PMT_NIL());
     float samp_rate = pmt::to_float(pmt_samp_rate);
     size_t length; // stores length of f32vector
     const float* data = pmt::f32vector_elements(pdu_data, length);
@@ -288,9 +288,9 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
     memset(fft_in, 0, sizeof(float) * fftsize);
     if (d_debug) {
         d_burst_id = 0;
-        if (pmt::dict_has_key(metadata, PMTCONSTSTR__BURST_ID)) {
+        if (pmt::dict_has_key(metadata, PMTCONSTSTR__burst_id())) {
             pmt::pmt_t id =
-                pmt::dict_ref(metadata, PMTCONSTSTR__BURST_ID, pmt::get_PMT_NIL());
+                pmt::dict_ref(metadata, PMTCONSTSTR__burst_id(), pmt::get_PMT_NIL());
             if (pmt::is_uint64(id)) {
                 d_burst_id = pmt::to_uint64(id);
             }
@@ -328,14 +328,14 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
 
     genSincWaveform(zero_crossings, length, fft_in, fftsize);
     if (d_debug) {
-        message_port_pub(PMTCONSTSTR__ZEROX, pmt::init_f32vector(fftsize, fft_in));
+        message_port_pub(PMTCONSTSTR__zeroX(), pmt::init_f32vector(fftsize, fft_in));
     }
 
     // apply gaussian window
     volk_32f_x2_multiply_32f(fft_in, fft_in, d_windows[fftpower], fftsize);
     if (d_debug) {
-        message_port_pub(PMTCONSTSTR__WINDOW, pmt::init_f32vector(fftsize, fft_in));
-        // message_port_pub( PMTCONSTSTR__WINDOW, pmt::init_f32vector( fftsize,
+        message_port_pub(PMTCONSTSTR__window(), pmt::init_f32vector(fftsize, fft_in));
+        // message_port_pub( PMTCONSTSTR__window(), pmt::init_f32vector( fftsize,
         // d_windows[fftpower] ) );
     }
 
@@ -345,7 +345,7 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
     gr_complex* fft_out = d_ffts[fftpower]->get_outbuf();
     volk_32fc_magnitude_squared_32f(d_mags, fft_out, fftsize);
     if (d_debug) {
-        message_port_pub(PMTCONSTSTR__DEBUG, pmt::init_f32vector(fftsize, d_mags));
+        message_port_pub(PMTCONSTSTR__debug(), pmt::init_f32vector(fftsize, d_mags));
     }
 
 
@@ -381,11 +381,11 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
     }
 
     // ship it!
-    metadata = pmt::dict_delete(metadata, PMTCONSTSTR__SAMP_RATE);
+    metadata = pmt::dict_delete(metadata, PMTCONSTSTR__sample_rate());
     metadata = pmt::dict_add(
-        metadata, PMTCONSTSTR__SYM_RATE, pmt::from_float(symbol_freq * samp_rate));
+        metadata, PMTCONSTSTR__symbol_rate(), pmt::from_float(symbol_freq * samp_rate));
 
-    message_port_pub(PMTCONSTSTR__PDU_OUT, pmt::cons(metadata, data_vec));
+    message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
 
     return;
 } // end pdu_handler
@@ -444,7 +444,7 @@ bool pdu_clock_recovery_impl::inputCheck(pmt::pmt_t pdu)
     }
 
     pmt::pmt_t pmt_samp_rate =
-        pmt::dict_ref(metadata, PMTCONSTSTR__SAMP_RATE, pmt::get_PMT_NIL());
+        pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::get_PMT_NIL());
     if (pmt_samp_rate == pmt::get_PMT_NIL() || !pmt::is_number(pmt_samp_rate)) {
         GR_LOG_WARN(d_logger, "no sample rate, dropping\n");
         return false;

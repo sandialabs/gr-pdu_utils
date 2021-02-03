@@ -48,10 +48,10 @@ pdu_gmsk_fc_impl::pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> t
         d_log_ramp.push_back(std::pow(10, ((float)i - 50.0) / 10.0));
     }
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_gmsk_fc_impl::handle_pdu, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -130,7 +130,7 @@ void pdu_gmsk_fc_impl::handle_pdu(pmt::pmt_t pdu)
         }
 
         message_port_pub(
-            PMTCONSTSTR__PDU_OUT,
+            PMTCONSTSTR__pdu_out(),
             (pmt::cons(meta, pmt::init_c32vector(v_len, (const gr_complex*)&mod[0]))));
         d_phase = 0;
 

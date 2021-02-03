@@ -13,6 +13,7 @@ from gnuradio import blocks
 import pdu_utils_swig as pdu_utils
 import pmt
 import time
+import numpy as np
 
 
 class qa_pdu_fir_filter (gr_unittest.TestCase):
@@ -432,7 +433,10 @@ class qa_pdu_fir_filter (gr_unittest.TestCase):
         #print("data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0)))))
         #print
 
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        self.assertTrue(pmt.equal(pmt.car(self.debug.get_message(0)), e_meta))
+        v_diff = np.abs(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0))) - np.array(e_data)) / e_data
+        print("Maximum error is", np.max(v_diff))
+        self.assertTrue(np.max(v_diff) < 0.0001)
 
     def test_005_c32(self):
         '''
@@ -465,7 +469,11 @@ class qa_pdu_fir_filter (gr_unittest.TestCase):
         #print("data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0)))))
         #print
 
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        self.assertTrue(pmt.equal(pmt.car(self.debug.get_message(0)), e_meta))
+        v_diff = np.abs(pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0))) - np.array(e_data)) / np.abs(e_data)
+        print("Maximum error is", np.max(v_diff))
+        self.assertTrue(np.max(v_diff) < 0.00001)
+
 
     def test_005_u8(self):
         '''
@@ -500,7 +508,7 @@ class qa_pdu_fir_filter (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
-    def test_005_f32(self):
+    def test_006_f32(self):
         '''
         float input data, complicated input, decimation, and filtering
         '''
@@ -545,8 +553,11 @@ class qa_pdu_fir_filter (gr_unittest.TestCase):
         #print("data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0)))))
         #print
 
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
-
+        self.assertTrue(pmt.equal(pmt.car(self.debug.get_message(0)), e_meta))
+        v_diff = np.abs(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0))) - np.array(e_data)) / e_data
+        print("Maximum error is", np.max(v_diff))
+        self.assertTrue(np.max(v_diff) < 0.0001)
+        
     def test_006_c32(self):
         '''
         complex input data, complicated input, decimation, and filtering
@@ -578,7 +589,10 @@ class qa_pdu_fir_filter (gr_unittest.TestCase):
         #print("data got:      " + repr(pmt.to_python(pmt.cdr(self.debug.get_message(0)))))
         #print
 
-        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+        self.assertTrue(pmt.equal(pmt.car(self.debug.get_message(0)), e_meta))
+        v_diff = np.abs(pmt.c32vector_elements(pmt.cdr(self.debug.get_message(0))) - np.array(e_data)) / np.abs(e_data)
+        print("Maximum error is", np.max(v_diff))
+        self.assertTrue(np.max(v_diff) < 0.0001)
 
     def test_006_u8(self):
         '''

@@ -31,10 +31,10 @@ message_gate_impl::message_gate_impl(bool enabled)
       d_n_blocked(0),
       d_n_passed(0)
 {
-    message_port_register_in(PMTCONSTSTR__IN);
-    set_msg_handler(PMTCONSTSTR__IN,
+    message_port_register_in(PMTCONSTSTR__in());
+    set_msg_handler(PMTCONSTSTR__in(),
                     boost::bind(&message_gate_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__OUT);
+    message_port_register_out(PMTCONSTSTR__out());
 }
 
 /*
@@ -117,7 +117,7 @@ void message_gate_impl::handle_msg(pmt::pmt_t msg)
 
     if (d_enabled) {
         d_n_passed++;
-        message_port_pub(PMTCONSTSTR__OUT, msg);
+        message_port_pub(PMTCONSTSTR__out(), msg);
     } else {
         d_n_blocked++;
     }

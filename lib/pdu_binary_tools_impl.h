@@ -24,6 +24,8 @@ private:
     void handle_msg_slice(pmt::pmt_t pdu);
     void handle_msg_endian8(pmt::pmt_t pdu);
     void handle_msg_passthrough(pmt::pmt_t pdu);
+    void handle_msg_manchester_encode(pmt::pmt_t pdu);
+    void handle_msg_manchester_decode(pmt::pmt_t pdu);
 
 
 public:

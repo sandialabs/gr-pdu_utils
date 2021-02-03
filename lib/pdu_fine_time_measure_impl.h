@@ -10,6 +10,7 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 
+#include <pdu_utils/constants.h>
 #include <pdu_utils/pdu_fine_time_measure.h>
 
 namespace gr {
@@ -25,13 +26,6 @@ private:
     float d_buffer_percent;
 
     void pdu_handler(pmt::pmt_t pdu);
-
-    // PMT declarations
-    const pmt::pmt_t PMT_START_TIME = pmt::mp("start_time");
-    const pmt::pmt_t PMT_SAMPLE_RATE = pmt::mp("sample_rate");
-    const pmt::pmt_t PMT_DURATION = pmt::mp("duration");
-    const pmt::pmt_t PMT_PDU_IN = pmt::mp("pdu_in");
-    const pmt::pmt_t PMT_PDU_OUT = pmt::mp("pdu_out");
 
 public:
     /**

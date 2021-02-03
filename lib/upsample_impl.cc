@@ -34,10 +34,10 @@ upsample_impl::upsample_impl(uint32_t n, bool repeat)
     } else {
         throw std::invalid_argument("pdu_utils upsample: ERROR! n must be >= 1!\n");
     }
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&upsample_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -58,7 +58,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
 
     // if the repquested repetition is 1, just re-publish the message
     if (d_n == 1) {
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+        message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
         return;
     }
 
@@ -75,7 +75,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
 
     // if the input length is zero, just re-publish the message
     if (v_len == 0) {
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+        message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
         return;
 
     } else if (pmt::is_u8vector(v_data)) {
@@ -95,7 +95,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u8vector(output.size(), output)));
 
     } else if (pmt::is_s8vector(v_data)) {
@@ -115,7 +115,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_s8vector(output.size(), output)));
 
     } else if (pmt::is_u16vector(v_data)) {
@@ -135,7 +135,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u16vector(output.size(), output)));
 
     } else if (pmt::is_s16vector(v_data)) {
@@ -155,7 +155,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_s16vector(output.size(), output)));
 
     } else if (pmt::is_u32vector(v_data)) {
@@ -175,7 +175,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u32vector(output.size(), output)));
 
     } else if (pmt::is_s32vector(v_data)) {
@@ -195,7 +195,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_s32vector(output.size(), output)));
 
     } else if (pmt::is_u64vector(v_data) || pmt::is_s64vector(v_data)) {
@@ -215,7 +215,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u64vector(output.size(), output)));
 
     } else if (pmt::is_s64vector(v_data)) {
@@ -235,7 +235,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_s64vector(output.size(), output)));
 
     } else if (pmt::is_f32vector(v_data)) {
@@ -255,7 +255,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_f32vector(output.size(), output)));
 
     } else if (pmt::is_f64vector(v_data)) {
@@ -275,7 +275,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_f64vector(output.size(), output)));
 
     } else if (pmt::is_c32vector(v_data)) {
@@ -295,7 +295,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
                 output[ii * d_n] = in_data[ii];
             }
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_c32vector(output.size(), output)));
     } else if (pmt::is_c64vector(v_data)) {
         // TODO: support this...

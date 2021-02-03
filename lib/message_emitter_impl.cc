@@ -31,10 +31,10 @@ message_emitter_impl::message_emitter_impl(pmt::pmt_t msg)
       d_msg(msg),
       d_n_msgs(0)
 {
-    message_port_register_in(PMTCONSTSTR__EMIT);
-    set_msg_handler(PMTCONSTSTR__EMIT,
+    message_port_register_in(PMTCONSTSTR__emit());
+    set_msg_handler(PMTCONSTSTR__emit(),
                     boost::bind(&message_emitter_impl::emit, this, _1));
-    message_port_register_out(PMTCONSTSTR__MSG);
+    message_port_register_out(PMTCONSTSTR__msg());
 }
 
 /*
@@ -72,7 +72,7 @@ void message_emitter_impl::setup_rpc()
 void message_emitter_impl::emit()
 {
     d_n_msgs++;
-    message_port_pub(PMTCONSTSTR__MSG, d_msg);
+    message_port_pub(PMTCONSTSTR__msg(), d_msg);
 }
 
 void message_emitter_impl::emit(pmt::pmt_t msg)
@@ -82,9 +82,9 @@ void message_emitter_impl::emit(pmt::pmt_t msg)
     d_n_msgs++;
     /* if the emitter argument is PMT_NIL, send the stored message*/
     if (pmt::eqv(msg, pmt::PMT_NIL)) {
-        message_port_pub(PMTCONSTSTR__MSG, d_msg);
+        message_port_pub(PMTCONSTSTR__msg(), d_msg);
     } else {
-        message_port_pub(PMTCONSTSTR__MSG, msg);
+        message_port_pub(PMTCONSTSTR__msg(), msg);
     }
 }
 

@@ -8,8 +8,8 @@ parameters:
 -   id: mode
     label: Mode
     dtype: enum
-    options: ['0', '1', '2', '3', '4']
-    option_labels: [Bit Flip, To NRZ, From NRZ, Slice, Endian Swap]
+    options: ['0', '1', '2', '3', '4','5','6']
+    option_labels: [Bit Flip, To NRZ, From NRZ, Slice, Endian Swap, Manchester Encode, Manchester Decode]
 
 inputs:
 -   domain: message

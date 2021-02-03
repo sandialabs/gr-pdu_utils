@@ -51,6 +51,8 @@ list(APPEND pdu_utils_sources
     pdu_to_bursts_impl.cc
     sandia_message_debug_impl.cc
     pdu_quadrature_demod_cf_impl.cc
+    constants.cc
+    pdu_rotate_impl.cc
 )
 
 set(pdu_utils_sources "${pdu_utils_sources}" PARENT_SCOPE)

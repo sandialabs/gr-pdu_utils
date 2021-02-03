@@ -54,7 +54,7 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
                      gr::io_signature::make(0, 0, 0)),
       d_trigger_key(trigger_key),
       d_arming_key(arming_key),
-      d_time_tag_key(PMTCONSTSTR__RX_TIME),
+      d_time_tag_key(PMTCONSTSTR__rx_time()),
       d_fire_at_will(false),
       d_armed(false),
       d_message(message),
@@ -86,11 +86,11 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
                         pmt::symbol_to_string(arming_key));
     }
 
-    this->message_port_register_in(PMTCONSTSTR__CTRL);
+    this->message_port_register_in(PMTCONSTSTR__ctrl());
     this->set_msg_handler(
-        PMTCONSTSTR__CTRL,
+        PMTCONSTSTR__ctrl(),
         boost::bind(&tag_message_trigger_impl<T>::control_input, this, _1));
-    this->message_port_register_out(PMTCONSTSTR__MSG);
+    this->message_port_register_out(PMTCONSTSTR__msg());
 }
 
 /*
@@ -112,25 +112,25 @@ void tag_message_trigger_impl<T>::control_input(pmt::pmt_t msg)
     pmt::pmt_t command = pmt::car(msg);
     pmt::pmt_t cmd_args = pmt::cdr(msg);
 
-    if (pmt::eqv(command, PMTCONSTSTR__SET_TRIGGER_KEY)) {
+    if (pmt::eqv(command, PMTCONSTSTR__set_trigger_tag())) {
         // command args: {trigger key}
         set_trigger_key(cmd_args);
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_ARMING_KEY)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_arming_tag())) {
         // command args: {arming key}
         set_arming_key(cmd_args);
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_MESSAGE)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_message())) {
         // command args: {pdu message}
         set_message(cmd_args);
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_DELAYS)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_delays())) {
         // command args: {delay_secs}
         set_delay_time(pmt::to_double(cmd_args));
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_TX_LIMIT)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_tx_limit())) {
         // command args: {limit}
         set_tx_limit(pmt::to_uint64(cmd_args));
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_HOLDOFF)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_holdoff())) {
         // command args: {holdoff}
         set_holdoff(pmt::to_uint64(cmd_args));
-    } else if (pmt::eqv(command, PMTCONSTSTR__SET_ARMED)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__set_armed())) {
         // command args: {arming_offset}
         d_armed = true;
         if (pmt::eqv(cmd_args, pmt::PMT_NIL)) {
@@ -139,20 +139,20 @@ void tag_message_trigger_impl<T>::control_input(pmt::pmt_t msg)
         } else {
             d_disarm_offset = pmt::to_uint64(cmd_args) + d_holdoff;
         }
-    } else if (pmt::eqv(command, PMTCONSTSTR__TRIGGER_NOW)) {
+    } else if (pmt::eqv(command, PMTCONSTSTR__trigger_now())) {
         // if the argument is PMT_NIL send the configured message, otherwise send the args
         if (pmt::eqv(cmd_args, pmt::PMT_NIL)) {
             // in timed pdu mode, send an untimed pdu assuming the message is a uniform
             // vector (TODO: WHY??)
             if (d_tpdu_mode) {
-                this->message_port_pub(PMTCONSTSTR__MSG,
+                this->message_port_pub(PMTCONSTSTR__msg(),
                                        pmt::cons(pmt::make_dict(), pmt::cdr(d_message)));
                 // in normal mode, send the message
             } else {
-                this->message_port_pub(PMTCONSTSTR__MSG, d_message);
+                this->message_port_pub(PMTCONSTSTR__msg(), d_message);
             }
         } else {
-            this->message_port_pub(PMTCONSTSTR__MSG, cmd_args);
+            this->message_port_pub(PMTCONSTSTR__msg(), cmd_args);
         }
         d_last_trigger_offset = this->nitems_read(0);
     }
@@ -219,7 +219,7 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
 
                     // if we are triggered and are in normal mode, send just the msg
                     if (!d_tpdu_mode) {
-                        this->message_port_pub(PMTCONSTSTR__MSG, d_message);
+                        this->message_port_pub(PMTCONSTSTR__msg(), d_message);
                         d_last_trigger_offset = trigger_offset;
 
                         // triggered in timed PDU mode
@@ -255,8 +255,8 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
                                             pmt::from_double(frac_seconds));
                         pmt::pmt_t dict = pmt::car(d_message);
                         pmt::pmt_t vector = pmt::cdr(d_message);
-                        dict = pmt::dict_add(dict, pmt::mp("tx_time"), burst_time_tuple);
-                        this->message_port_pub(PMTCONSTSTR__MSG, pmt::cons(dict, vector));
+                        dict = pmt::dict_add(dict, PMTCONSTSTR__tx_time(), burst_time_tuple);
+                        this->message_port_pub(PMTCONSTSTR__msg(), pmt::cons(dict, vector));
                         d_last_trigger_offset = trigger_offset;
                     }
 

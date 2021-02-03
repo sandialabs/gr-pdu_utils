@@ -29,6 +29,10 @@ namespace pdu_utils {
  * Slice mode: negative values map to 0, positive values map to 1
  * Endian Swap mode: read a bit stream and flip the bit order on 8 byte boundaries so that
  * the byte order is preserved, but each byte is endian-swapped
+ * Manchester Encode: Encode each each positive bit as a high to low transittion, and each
+ * low bit as a high to low transition.  Accepts both uint8_t and float data, outputs the
+ * same data type. Manchester Decode: Transition from low to high decodes to a 0 and from
+ * high to low as a 1.  Accepts both uint8_t and float data types, outputs uint8_t.
  */
 class PDU_UTILS_API pdu_binary_tools : virtual public gr::sync_block
 {
@@ -43,7 +47,15 @@ public:
     static sptr make(uint8_t mode);
 
     // Enum for mode setting in this block
-    enum Modes { BIT_FLIP = 0, TO_NRZ, FROM_NRZ, SLICE, ENDIAN_SWAP8 };
+    enum Modes {
+        BIT_FLIP = 0,
+        TO_NRZ,
+        FROM_NRZ,
+        SLICE,
+        ENDIAN_SWAP8,
+        MANCHESTER_ENCODE,
+        MANCHESTER_DECODE
+    };
 };
 
 } // namespace pdu_utils

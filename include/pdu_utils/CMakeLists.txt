@@ -54,5 +54,6 @@ install(FILES
     tags_to_pdu.h
     take_skip_to_pdu.h
     pdu_quadrature_demod_cf.h
-    sandia_message_debug.h DESTINATION include/pdu_utils
+    sandia_message_debug.h
+    pdu_rotate.h DESTINATION include/pdu_utils
 )

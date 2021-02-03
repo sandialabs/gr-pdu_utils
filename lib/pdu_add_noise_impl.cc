@@ -37,10 +37,10 @@ pdu_add_noise_impl::pdu_add_noise_impl(
 {
     set_noise_dist(dist);
     set_noise_level(noise_level);
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_add_noise_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -75,7 +75,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
                 (input[ii] + (((get_rand_samp() + 1) / 2) * d_noise_level)) * d_scale +
                 d_offset);
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          (pmt::cons(meta, pmt::init_u8vector(v_len, out))));
 
     } else if (pmt::is_f32vector(v_data)) {
@@ -88,7 +88,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
             out[ii] =
                 (input[ii] + (get_rand_samp() * d_noise_level)) * d_scale + d_offset;
         }
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          (pmt::cons(meta, pmt::init_f32vector(v_len, out))));
 
     } else if (pmt::is_c32vector(v_data)) {
@@ -104,7 +104,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
                          d_offset);
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          (pmt::cons(meta, pmt::init_c32vector(v_len, out))));
 
     } else {

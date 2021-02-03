@@ -148,6 +148,102 @@ class qa_pdu_binary_tools (gr_unittest.TestCase):
 
         self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
 
+    def test_manchester_encode(self):
+        self.dut = pdu_utils.pdu_binary_tools(5) #MANCHESTER_ENCODE
+        self.connectUp()
+
+        i_vec = pmt.init_u8vector(8, [1, 1, 0, 0, 1, 0, 1, 0])
+        e_vec = pmt.init_u8vector(16, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1])
+        in_pdu = pmt.cons(pmt.make_dict(), i_vec)
+        e_pdu = pmt.cons(pmt.make_dict(), e_vec)
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        print("test manchester encode:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+
+    def test_manchester_encode_nrz(self):
+        self.dut = pdu_utils.pdu_binary_tools(5) #MANCHESTER_ENCODE
+        self.connectUp()
+
+        i_vec = pmt.init_f32vector(8, [1, 1, -1, -1, 1, -1, 1, -1])
+        e_vec = pmt.init_f32vector(16, [1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1])
+        in_pdu = pmt.cons(pmt.make_dict(), i_vec)
+        e_pdu = pmt.cons(pmt.make_dict(), e_vec)
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        print("test manchester encode nrz:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))))
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+
+    def test_manchester_decode(self):
+        self.dut = pdu_utils.pdu_binary_tools(6) #MANCHESTER_DECODE
+        self.connectUp()
+
+        i_vec = pmt.init_u8vector(16, [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1])
+        e_vec = pmt.init_u8vector(8, [1, 1, 0, 0, 1, 0, 1, 0])
+        in_pdu = pmt.cons(pmt.make_dict(), i_vec)
+        e_pdu = pmt.cons(pmt.make_dict(), e_vec)
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        print("test manchester decode:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.u8vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.u8vector_elements(pmt.cdr(self.debug.get_message(0)))))
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+
+    def test_manchester_decode_nrz(self):
+        self.dut = pdu_utils.pdu_binary_tools(6) #MANCHESTER_DECODE
+        self.connectUp()
+
+        i_vec = pmt.init_f32vector(16, [1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1])
+        e_vec = pmt.init_f32vector(8, [1, 1, -1, -1, 1, -1, 1, -1])
+        in_pdu = pmt.cons(pmt.make_dict(), i_vec)
+        e_pdu = pmt.cons(pmt.make_dict(), e_vec)
+
+        self.tb.start()
+        time.sleep(.001)
+        self.emitter.emit(in_pdu)
+        time.sleep(.01)
+        self.tb.stop()
+        self.tb.wait()
+
+        print("test manchester decode nrz:")
+        print("pdu expected: " + repr(pmt.car(e_pdu)))
+        print("pdu got:      " + repr(pmt.car(self.debug.get_message(0))))
+        print("data expected: " + repr(pmt.f32vector_elements(pmt.cdr(e_pdu))))
+        print("data got:      " + repr(pmt.f32vector_elements(pmt.cdr(self.debug.get_message(0)))))
+
+        self.assertTrue(pmt.equal(self.debug.get_message(0), e_pdu))
+
 
 if __name__ == '__main__':
     gr_unittest.run(qa_pdu_binary_tools)

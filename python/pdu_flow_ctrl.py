@@ -45,9 +45,9 @@ class pdu_flow_ctrl(gr.basic_block):
         self.n_dropped = 0
         self.verbose = verbose
 
-        self.message_port_register_in(pdu_utils.PMTCONSTSTR__PDU_IN)
-        self.message_port_register_out(pdu_utils.PMTCONSTSTR__PDU_OUT)
-        self.set_msg_handler(pdu_utils.PMTCONSTSTR__PDU_IN, self.pdu_handler)
+        self.message_port_register_in(pdu_utils.PMTCONSTSTR__pdu_in())
+        self.message_port_register_out(pdu_utils.PMTCONSTSTR__pdu_out())
+        self.set_msg_handler(pdu_utils.PMTCONSTSTR__pdu_in(), self.pdu_handler)
 
     def start(self):
         # build the helper
@@ -74,7 +74,7 @@ class pdu_flow_ctrl(gr.basic_block):
     def pdu_handler(self, pdu):
         # if the max number of allowed messages is greater than the current max number of messages
         if self.helper.max_nmsgs() < self.max_nmsgs:
-            self.message_port_pub(pdu_utils.PMTCONSTSTR__PDU_OUT, pdu)
+            self.message_port_pub(pdu_utils.PMTCONSTSTR__pdu_out(), pdu)
         else:
             self.n_dropped += 1
             if self.verbose:

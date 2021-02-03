@@ -33,8 +33,8 @@ message_counter_impl::message_counter_impl(std::string name)
       d_name(name),
       d_ctr(0)
 {
-    message_port_register_in(PMTCONSTSTR__MSG);
-    set_msg_handler(PMTCONSTSTR__MSG,
+    message_port_register_in(PMTCONSTSTR__msg());
+    set_msg_handler(PMTCONSTSTR__msg(),
                     boost::bind(&message_counter_impl::handle_msg, this, _1));
 }
 

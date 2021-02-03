@@ -60,10 +60,10 @@ pdu_preamble_impl::pdu_preamble_impl(const std::vector<uint8_t> preamble,
     set_interp(interp);
     set_zero_pad(d_zero_pad);
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_preamble_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 } // end constructor
 
 /*
@@ -99,8 +99,6 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
         return;
     }
 
-    GR_LOG_NOTICE(d_logger, boost::format("NRZ Mode %d") % d_nrz);
-
 
     const std::vector<uint8_t> data_in = pmt::u8vector_elements(v_data);
     std::vector<float> out; // output
@@ -129,7 +127,7 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
     // std::cout << "PREAMBLE!: ["; for (int ii = 0; ii < out.size()-1; ii++)  std::cout
     // << out[ii] << ", "; std::cout << out.back() << "]" << std::endl;
 
-    message_port_pub(PMTCONSTSTR__PDU_OUT,
+    message_port_pub(PMTCONSTSTR__pdu_out(),
                      pmt::cons(meta, pmt::init_f32vector(out.size(), out)));
 }
 

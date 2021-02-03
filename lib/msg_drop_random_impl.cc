@@ -34,10 +34,10 @@ msg_drop_random_impl::msg_drop_random_impl(float p_drop, uint64_t seed)
       d_p_drop(p_drop),
       d_rng(seed)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&msg_drop_random_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -61,7 +61,7 @@ void msg_drop_random_impl::handle_msg(pmt::pmt_t msg)
     d_msg_ctr++;
     if (d_rng.ran1() > d_p_drop) {
         d_pass_ctr++;
-        message_port_pub(PMTCONSTSTR__PDU_OUT, msg);
+        message_port_pub(PMTCONSTSTR__pdu_out(), msg);
     } else {
         d_drop_ctr++;
     }

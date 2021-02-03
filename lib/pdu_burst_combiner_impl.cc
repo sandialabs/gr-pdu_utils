@@ -12,6 +12,7 @@
 #endif
 
 #include "pdu_burst_combiner_impl.h"
+#include "pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
 
 #include <gnuradio/blocks/pdu.h>
@@ -37,10 +38,10 @@ pdu_burst_combiner_impl::pdu_burst_combiner_impl()
 
     reset_state();
 
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_burst_combiner_impl::handle_pdu, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
 /*
@@ -81,7 +82,7 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
     // get the burst index, or a (0, 0) tuple if not present (regular burst)
     pmt::pmt_t burst_index =
         pmt::dict_ref(meta,
-                      pmt::intern("burst_index"),
+                      PMTCONSTSTR__burst_index(),
                       pmt::cons(pmt::from_uint64(0), pmt::from_uint64(0)));
     uint64_t x = pmt::to_uint64(pmt::car(burst_index));
     uint64_t y = pmt::to_uint64(pmt::cdr(burst_index));
@@ -113,7 +114,7 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
                              d_data.size());
 
             message_port_pub(
-                PMTCONSTSTR__PDU_OUT,
+                PMTCONSTSTR__pdu_out(),
                 pmt::cons(
                     d_burst0_metadata,
                     pmt::init_c32vector(d_data.size(), (const gr_complex*)&d_data[0])));
@@ -142,7 +143,7 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
             }
         } else {
             // this is the first and only burst, send it as is
-            message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+            message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
             reset_state();
         }
     }

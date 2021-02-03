@@ -11,6 +11,7 @@
 #define INCLUDED_PDU_UTILS_PDU_FLOW_CTRL_HELPER_H
 
 #include <gnuradio/basic_block.h>
+#include <pdu_utils/constants.h>
 #include <pdu_utils/api.h>
 
 namespace gr {
@@ -47,7 +48,6 @@ private:
     };
 
     std::vector<block_port> d_blocks;
-    const pmt::pmt_t SYSTEM_PORT = pmt::mp("system");
 };
 
 } // namespace pdu_utils

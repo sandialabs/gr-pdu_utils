@@ -38,9 +38,9 @@ pdu_range_filter_impl::pdu_range_filter_impl(pmt::pmt_t key,
       d_max(max),
       d_invert(invert)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_range_filter_impl::pdu_handler, this, _1));
 }
 
@@ -77,7 +77,7 @@ void pdu_range_filter_impl::pdu_handler(pmt::pmt_t pdu)
     }
 
     if (output) {
-        message_port_pub(PMTCONSTSTR__PDU_OUT, pdu);
+        message_port_pub(PMTCONSTSTR__pdu_out(), pdu);
     }
 }
 

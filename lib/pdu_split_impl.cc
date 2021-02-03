@@ -29,11 +29,11 @@ pdu_split_impl::pdu_split_impl(bool pass_empty_data)
     : gr::block("pdu_split", io_signature::make(0, 0, 0), io_signature::make(0, 0, 0)),
       d_pass_empty_data(pass_empty_data)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pdu_split_impl::handle_pdu, this, _1));
-    message_port_register_out(PMTCONSTSTR__DICT);
-    message_port_register_out(PMTCONSTSTR__DATA);
+    message_port_register_out(PMTCONSTSTR__dict());
+    message_port_register_out(PMTCONSTSTR__data());
 }
 
 /*
@@ -54,12 +54,12 @@ void pdu_split_impl::handle_pdu(pmt::pmt_t pdu)
     pmt::pmt_t v_data = pmt::cdr(pdu);
 
     if ((!pmt::equal(meta, pmt::PMT_NIL)) | d_pass_empty_data) {
-        message_port_pub(PMTCONSTSTR__DICT, pmt::car(pdu));
+        message_port_pub(PMTCONSTSTR__dict(), pmt::car(pdu));
     }
 
     if (pmt::is_uniform_vector(v_data)) {
         if (pmt::length(v_data) | d_pass_empty_data) {
-            message_port_pub(PMTCONSTSTR__DATA, pmt::cdr(pdu));
+            message_port_pub(PMTCONSTSTR__data(), pmt::cdr(pdu));
         }
     }
 }

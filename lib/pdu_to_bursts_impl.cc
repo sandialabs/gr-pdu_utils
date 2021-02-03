@@ -75,8 +75,8 @@ pdu_to_bursts_impl<T>::pdu_to_bursts_impl(uint32_t early_burst_behavior,
         d_early_burst_err = true;
     }
 
-    this->message_port_register_in(PMTCONSTSTR__BURSTS);
-    this->set_msg_handler(PMTCONSTSTR__BURSTS,
+    this->message_port_register_in(PMTCONSTSTR__bursts());
+    this->set_msg_handler(PMTCONSTSTR__bursts(),
                           boost::bind(&pdu_to_bursts_impl<T>::store_pdu, this, _1));
 }
 
@@ -190,7 +190,7 @@ uint32_t pdu_to_bursts_impl<T>::queue_data()
         }
         pmt::pmt_t pdu2 = d_pdu_queue.front();
         pmt::pmt_t meta2 = pmt::car(pdu2);
-        if (pmt::dict_has_key(meta2, PMTCONSTSTR__TX_TIME)) {
+        if (pmt::dict_has_key(meta2, PMTCONSTSTR__tx_time())) {
             // the next PDU is timed, so we will handle that on the next call
             done = true;
         } else {
@@ -213,7 +213,7 @@ uint32_t pdu_to_bursts_impl<T>::queue_data()
     d_tag_sob = true;
 
     // if the burst is timed, calculate the time tag
-    pmt::pmt_t pmt_time = pmt::dict_ref(meta, PMTCONSTSTR__TX_TIME, pmt::PMT_NIL);
+    pmt::pmt_t pmt_time = pmt::dict_ref(meta, PMTCONSTSTR__tx_time(), pmt::PMT_NIL);
     // TODO: is this level of checking warranted? what is the impact?
     if (pmt::is_tuple(pmt_time) && pmt::length(pmt_time) >= 2 &&
         pmt::is_uint64(pmt::tuple_ref(pmt_time, 0)) &&
@@ -261,7 +261,7 @@ int pdu_to_bursts_impl<T>::work(int noutput_items,
 
     // data_remaining is not zero so go ahead and update
     if (d_tag_sob) {
-        this->add_item_tag(0, this->nitems_written(0), PMTCONSTSTR__TX_SOB, pmt::PMT_T);
+        this->add_item_tag(0, this->nitems_written(0), PMTCONSTSTR__tx_sob(), pmt::PMT_T);
         // std::cout << "tagging SOB on sample " << (this->nitems_written(0)) <<
         // std::endl;
         d_tag_sob = false;
@@ -269,7 +269,7 @@ int pdu_to_bursts_impl<T>::work(int noutput_items,
         // if there is a time tag waiting, use it then reset the time tag
         if (!pmt::eqv(d_time_tag, pmt::PMT_NIL)) {
             this->add_item_tag(
-                0, this->nitems_written(0), PMTCONSTSTR__TX_TIME, d_time_tag);
+                0, this->nitems_written(0), PMTCONSTSTR__tx_time(), d_time_tag);
             d_time_tag = pmt::PMT_NIL;
         }
     }
@@ -282,7 +282,7 @@ int pdu_to_bursts_impl<T>::work(int noutput_items,
         // tag last item "tx_eob, True"
         this->add_item_tag(0,
                            this->nitems_written(0) + data_remaining - 1,
-                           PMTCONSTSTR__TX_EOB,
+                           PMTCONSTSTR__tx_eob(),
                            pmt::PMT_T);
         // std::cout << "tagging EOB on sample " << (this->nitems_written(0) +
         // data_remaining - 1) << std::endl;

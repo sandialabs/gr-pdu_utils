@@ -30,10 +30,10 @@ pack_unpack_impl::pack_unpack_impl(uint32_t mode, uint32_t bit_order)
       d_mode(mode),
       d_bit_order(bit_order)
 {
-    message_port_register_in(PMTCONSTSTR__PDU_IN);
-    set_msg_handler(PMTCONSTSTR__PDU_IN,
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
                     boost::bind(&pack_unpack_impl::handle_msg, this, _1));
-    message_port_register_out(PMTCONSTSTR__PDU_OUT);
+    message_port_register_out(PMTCONSTSTR__pdu_out());
 
     if (d_mode == MODE_UNPACK_BYTE) {
         GR_LOG_INFO(d_logger, "PDU Pack/Unpack instantiated in UNPACK BYTE mode");
@@ -101,7 +101,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
             }
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
@@ -152,7 +152,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
             }
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
@@ -174,7 +174,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
             out.push_back(bitreverse[data[ii]]);
         }
 
-        message_port_pub(PMTCONSTSTR__PDU_OUT,
+        message_port_pub(PMTCONSTSTR__pdu_out(),
                          pmt::cons(meta, pmt::init_u8vector(out.size(), out)));
 
 
