@@ -24,7 +24,7 @@ FIND_LIBRARY(
           /usr/lib64
           )
 
-include("${CMAKE_CURRENT_LIST_DIR}/gnuradio-pdu_utilsTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/pdu_utilsTarget.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(PDU_UTILS DEFAULT_MSG PDU_UTILS_LIBRARIES PDU_UTILS_INCLUDE_DIRS)

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -27,14 +27,14 @@ typename tags_to_pdu<T>::sptr tags_to_pdu<T>::make(pmt::pmt_t start_tag,
                                                    uint32_t tail_size,
                                                    double start_time)
 {
-    return gnuradio::get_initial_sptr(new tags_to_pdu_impl<T>(start_tag,
-                                                              end_tag,
-                                                              max_pdu_size,
-                                                              samp_rate,
-                                                              prepend,
-                                                              pub_sobs,
-                                                              tail_size,
-                                                              start_time));
+    return gnuradio::make_block_sptr<tags_to_pdu_impl<T>>(start_tag,
+                                                          end_tag,
+                                                          max_pdu_size,
+                                                          samp_rate,
+                                                          prepend,
+                                                          pub_sobs,
+                                                          tail_size,
+                                                          start_time);
 }
 
 /*
@@ -82,7 +82,7 @@ tags_to_pdu_impl<T>::tags_to_pdu_impl(pmt::pmt_t start_tag,
 
     this->message_port_register_in(PMTCONSTSTR__conf());
     this->set_msg_handler(PMTCONSTSTR__conf(),
-                          boost::bind(&tags_to_pdu_impl<T>::handle_ctrl_msg, this, _1));
+                          [this](pmt::pmt_t msg) { this->handle_ctrl_msg(msg); });
     this->message_port_register_out(PMTCONSTSTR__pdu_out());
     this->message_port_register_out(PMTCONSTSTR__detects());
 }
@@ -172,10 +172,10 @@ void tags_to_pdu_impl<T>::publish_message()
     pmt::pmt_t time_tuple =
         pmt::make_tuple(pmt::from_uint64(int_seconds), pmt::from_double(frac_seconds));
     d_meta_dict = pmt::dict_add(d_meta_dict, PMTCONSTSTR__burst_time(), time_tuple);
-    d_meta_dict =
-        pmt::dict_add(d_meta_dict,
-                      PMTCONSTSTR__time_type(),
-                      PMTCONSTSTR__uhd_time_tuple()); // TODO: remove, no longer necessary?
+    d_meta_dict = pmt::dict_add(
+        d_meta_dict,
+        PMTCONSTSTR__time_type(),
+        PMTCONSTSTR__uhd_time_tuple()); // TODO: remove, no longer necessary?
     d_meta_dict = pmt::dict_add(
         d_meta_dict, PMTCONSTSTR__pdu_num(), pmt::from_uint64(d_burst_counter));
     if (d_wall_clock_time) {

@@ -4,6 +4,7 @@
 # This file is a part of gr-pdu_utils
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
+#
 
 ########################################################################
 # Include python install macros
@@ -12,6 +13,8 @@ include(GrPython)
 if(NOT PYTHONINTERP_FOUND)
     return()
 endif()
+
+add_subdirectory(bindings)
 
 ########################################################################
 # Install python sources
@@ -60,7 +63,6 @@ GR_ADD_TEST(qa_pdu_downsample ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/q
 GR_ADD_TEST(qa_pdu_round_robin ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_round_robin.py)
 GR_ADD_TEST(qa_pdu_complex_to_mag2 ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_complex_to_mag2.py)
 GR_ADD_TEST(qa_pdu_pfb_resamp ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_pfb_resamp.py)
-GR_ADD_TEST(qa_sandia_message_debug ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_sandia_message_debug.py)
 GR_ADD_TEST(qa_pdu_quadrature_demod_cf ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_quadrature_demod_cf.py)
 GR_ADD_TEST(qa_pdu_clock_recovery ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_clock_recovery.py)
 GR_ADD_TEST(qa_pdu_align ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_align.py)

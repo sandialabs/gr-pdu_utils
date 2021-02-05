@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -13,6 +13,7 @@
 
 #include "pdu_fine_time_measure_impl.h"
 #include <gnuradio/io_signature.h>
+#include <pdu_utils/constants.h>
 #include <volk/volk.h>
 
 namespace gr {
@@ -23,8 +24,8 @@ pdu_fine_time_measure::sptr pdu_fine_time_measure::make(float pre_burst_time,
                                                         size_t average_width,
                                                         float buffer_percent)
 {
-    return gnuradio::get_initial_sptr(new pdu_fine_time_measure_impl(
-        pre_burst_time, post_burst_time, average_width, buffer_percent));
+    return gnuradio::make_block_sptr<pdu_fine_time_measure_impl>(
+        pre_burst_time, post_burst_time, average_width, buffer_percent);
 }
 
 /*
@@ -45,7 +46,7 @@ pdu_fine_time_measure_impl::pdu_fine_time_measure_impl(float pre_burst_time,
     message_port_register_in(PMTCONSTSTR__pdu_in());
     message_port_register_out(PMTCONSTSTR__pdu_out());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_fine_time_measure_impl::pdu_handler, this, _1));
+                    [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 }
 
 /*
@@ -72,15 +73,16 @@ void pdu_fine_time_measure_impl::pdu_handler(pmt::pmt_t pdu)
         GR_LOG_WARN(d_logger, "PDU data not complex, dropping");
         return;
     }
-    /*pmt::pmt_t time_pmt = pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL);
-    uint64_t seconds = pmt::to_uint64(pmt::tuple_ref(time_pmt, 0));
+    /*pmt::pmt_t time_pmt = pmt::dict_ref(metadata, PMTCONSTSTR__start_time(),
+    pmt::PMT_NIL); uint64_t seconds = pmt::to_uint64(pmt::tuple_ref(time_pmt, 0));
     double frac_seconds = pmt::to_double(pmt::tuple_ref(time_pmt, 1));*/
 
     double start_time =
         pmt::to_double(pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
     float sample_rate =
         pmt::to_float(pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
-    float duration = pmt::to_float(pmt::dict_ref(metadata, PMTCONSTSTR__duration(), pmt::PMT_NIL));
+    float duration =
+        pmt::to_float(pmt::dict_ref(metadata, PMTCONSTSTR__duration(), pmt::PMT_NIL));
 
     // Divide the burst into pre-noise/burst/post_noise
     // This is, in a way, an SNR calculation
@@ -159,8 +161,9 @@ void pdu_fine_time_measure_impl::pdu_handler(pmt::pmt_t pdu)
     metadata = pmt::dict_add(metadata,
                              PMTCONSTSTR__start_time(),
                              pmt::from_double(start_time + double(start) / sample_rate));
-    metadata = pmt::dict_add(
-        metadata, PMTCONSTSTR__duration(), pmt::from_float(duration - float(start) / sample_rate));
+    metadata = pmt::dict_add(metadata,
+                             PMTCONSTSTR__duration(),
+                             pmt::from_float(duration - float(start) / sample_rate));
     // metadata = pmt::dict_add(metadata, PMTCONSTSTR__burst_time(),
     // pmt::make_tuple(pmt::from_uint64(seconds), pmt::from_double(frac_seconds)));
     pmt::pmt_t pdu_vector = pmt::init_c32vector(burst_size - start, burst + start);

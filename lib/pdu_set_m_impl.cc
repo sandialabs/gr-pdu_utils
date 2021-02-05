@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 pdu_set_m::sptr pdu_set_m::make(pmt::pmt_t k, pmt::pmt_t v)
 {
-    return gnuradio::get_initial_sptr(new pdu_set_m_impl(k, v));
+    return gnuradio::make_block_sptr<pdu_set_m_impl>(k, v);
 }
 
 /*
@@ -32,10 +32,10 @@ pdu_set_m_impl::pdu_set_m_impl(pmt::pmt_t k, pmt::pmt_t v)
 {
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_set_m_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
     message_port_register_in(PMTCONSTSTR__ctrl());
     set_msg_handler(PMTCONSTSTR__ctrl(),
-                    boost::bind(&pdu_set_m_impl::handle_ctrl_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_ctrl_msg(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 

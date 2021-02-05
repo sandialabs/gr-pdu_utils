@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -23,8 +23,8 @@ template <class T, class S>
 typename pdu_pfb_resamp<T, S>::sptr
 pdu_pfb_resamp<T, S>::make(const std::vector<S> taps, int n_filters, float resamp_rate)
 {
-    return gnuradio::get_initial_sptr(
-        new pdu_pfb_resamp_impl<T, S>(taps, n_filters, resamp_rate));
+    return gnuradio::make_block_sptr<pdu_pfb_resamp_impl<T, S>>(
+        taps, n_filters, resamp_rate);
 }
 
 /*
@@ -53,7 +53,7 @@ pdu_pfb_resamp_impl<T, S>::pdu_pfb_resamp_impl(const std::vector<S> taps,
 
     this->message_port_register_in(PMTCONSTSTR__pdu_in());
     this->set_msg_handler(PMTCONSTSTR__pdu_in(),
-                          boost::bind(&pdu_pfb_resamp_impl<T, S>::handle_pdu, this, _1));
+                          [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
     this->message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 
@@ -126,8 +126,8 @@ void pdu_pfb_resamp_impl<T, S>::handle_pdu(pmt::pmt_t pdu)
         int n_out = d_pfb->filter(d_out, d_in, nitems + start, num_read);
 
         if (pmt::dict_has_key(meta, PMTCONSTSTR__sample_rate())) {
-            double sample_rate =
-                pmt::to_double(pmt::dict_ref(meta, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
+            double sample_rate = pmt::to_double(
+                pmt::dict_ref(meta, PMTCONSTSTR__sample_rate(), pmt::PMT_NIL));
             sample_rate *= d_resamp_rate;
             meta = pmt::dict_delete(meta, PMTCONSTSTR__sample_rate());
             meta = pmt::dict_add(
@@ -156,56 +156,62 @@ template <>
 pfb_filter_kernel<float, float>::pfb_filter_kernel(std::vector<float> ktaps,
                                                    int n_filters)
 {
+    namespace ph = std::placeholders;
+
     // instantiate correct kernel
     d_pfb_fff = new gr::filter::kernel::pfb_arb_resampler_fff(1, ktaps, n_filters);
 
     // bind methods
     group_delay =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_fff::group_delay, d_pfb_fff);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_fff::group_delay, d_pfb_fff);
     set_taps =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_fff::set_taps, d_pfb_fff, _1);
-    taps = boost::bind(&gr::filter::kernel::pfb_arb_resampler_fff::taps, d_pfb_fff);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_fff::set_taps, d_pfb_fff, ph::_1);
+    taps = std::bind(&gr::filter::kernel::pfb_arb_resampler_fff::taps, d_pfb_fff);
     set_rate =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_fff::set_rate, d_pfb_fff, _1);
-    filter = boost::bind(
-        &gr::filter::kernel::pfb_arb_resampler_fff::filter, d_pfb_fff, _1, _2, _3, _4);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_fff::set_rate, d_pfb_fff, ph::_1);
+    filter = std::bind(
+        &gr::filter::kernel::pfb_arb_resampler_fff::filter, d_pfb_fff, ph::_1, ph::_2, ph::_3, ph::_4);
 }
 
 template <>
 pfb_filter_kernel<gr_complex, float>::pfb_filter_kernel(std::vector<float> ktaps,
                                                         int n_filters)
 {
+    namespace ph = std::placeholders;
+
     // instantiate correct kernel
     d_pfb_ccf = new gr::filter::kernel::pfb_arb_resampler_ccf(1, ktaps, n_filters);
     // bind methods
     group_delay =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::group_delay, d_pfb_ccf);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::group_delay, d_pfb_ccf);
     set_taps =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::set_taps, d_pfb_ccf, _1);
-    taps = boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::taps, d_pfb_ccf);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::set_taps, d_pfb_ccf, ph::_1);
+    taps = std::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::taps, d_pfb_ccf);
     set_rate =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::set_rate, d_pfb_ccf, _1);
-    filter = boost::bind(
-        &gr::filter::kernel::pfb_arb_resampler_ccf::filter, d_pfb_ccf, _1, _2, _3, _4);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccf::set_rate, d_pfb_ccf, ph::_1);
+    filter = std::bind(
+        &gr::filter::kernel::pfb_arb_resampler_ccf::filter, d_pfb_ccf, ph::_1, ph::_2, ph::_3, ph::_4);
 }
 
 template <>
 pfb_filter_kernel<gr_complex, gr_complex>::pfb_filter_kernel(
     std::vector<gr_complex> ktaps, int n_filters)
 {
+    namespace ph = std::placeholders;
+
     // instantiate correct kernel
     d_pfb_ccc = new gr::filter::kernel::pfb_arb_resampler_ccc(1, ktaps, n_filters);
 
     // bind methods
     group_delay =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::group_delay, d_pfb_ccc);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::group_delay, d_pfb_ccc);
     set_taps =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::set_taps, d_pfb_ccc, _1);
-    taps = boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::taps, d_pfb_ccc);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::set_taps, d_pfb_ccc, ph::_1);
+    taps = std::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::taps, d_pfb_ccc);
     set_rate =
-        boost::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::set_rate, d_pfb_ccc, _1);
-    filter = boost::bind(
-        &gr::filter::kernel::pfb_arb_resampler_ccc::filter, d_pfb_ccc, _1, _2, _3, _4);
+        std::bind(&gr::filter::kernel::pfb_arb_resampler_ccc::set_rate, d_pfb_ccc, ph::_1);
+    filter = std::bind(
+        &gr::filter::kernel::pfb_arb_resampler_ccc::filter, d_pfb_ccc, ph::_1, ph::_2, ph::_3, ph::_4);
 }
 
 // only support float and gr_complex

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -28,7 +28,7 @@ namespace pdu_utils {
 class PDU_UTILS_API pdu_preamble : virtual public gr::block
 {
 public:
-    typedef boost::shared_ptr<pdu_preamble> sptr;
+    typedef std::shared_ptr<pdu_preamble> sptr;
 
     /**
      * Creates a pdu_preamble and returns a shared pointer

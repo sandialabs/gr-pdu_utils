@@ -4,18 +4,13 @@
 # This file is a part of gr-pdu_utils
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-########################################################################
-# Invoke macro to generate various sources and headers
-########################################################################
-include(GrMiscUtils)
+#
 
 ########################################################################
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND pdu_utils_sources
-    ${generated_sources}
     pdu_gmsk_fc_impl.cc
     pdu_set_m_impl.cc
     pdu_burst_combiner_impl.cc
@@ -49,7 +44,6 @@ list(APPEND pdu_utils_sources
     pdu_fine_time_measure_impl.cc
     pdu_complex_to_mag2_impl.cc
     pdu_to_bursts_impl.cc
-    sandia_message_debug_impl.cc
     pdu_quadrature_demod_cf_impl.cc
     constants.cc
     pdu_rotate_impl.cc

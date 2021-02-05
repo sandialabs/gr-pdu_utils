@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -12,6 +12,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
+#include <pdu_utils/constants.h>
 #include <pdu_utils/pdu_flow_ctrl_helper.h>
 
 namespace gr {

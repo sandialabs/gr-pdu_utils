@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -17,26 +17,22 @@
 namespace gr {
 namespace pdu_utils {
 
-static const uint32_t BIT_ORDER_MSB_FIRST = 0;
-static const uint32_t BIT_ORDER_LSB_FIRST = 1;
-
-// TODO: Change these to enums?
-static const uint32_t MODE_UNPACK_BYTE = 0;
-static const uint32_t MODE_PACK_BYTE = 1;
-static const uint32_t MODE_BITSWAP_BYTE = 2;
-
-// TODO: Change these to enums?
-static const uint32_t INPUTTYPE_UNPACKED_BYTE = 0;
-static const uint32_t INPUTTYPE_PACKED_BYTE = 1;
-static const uint32_t INPUTTYPE_FLOAT = 1;
-
-static const uint32_t EARLY_BURST_BEHAVIOR__APPEND = 0;
-static const uint32_t EARLY_BURST_BEHAVIOR__DROP = 1;
-static const uint32_t EARLY_BURST_BEHAVIOR__BALK = 2;
+enum bit_order { BIT_ORDER_MSB_FIRST = 0, BIT_ORDER_LSB_FIRST = 1 };
+enum pack_unpack_mode { MODE_UNPACK_BYTE = 0, MODE_PACK_BYTE = 1, MODE_BITSWAP_BYTE = 2 };
+enum input_type {
+    INPUTTYPE_UNPACKED_BYTE = 0,
+    INPUTTYPE_PACKED_BYTE = 1,
+    INPUTTYPE_FLOAT = 1
+};
+enum early_burst_behavior {
+    EARLY_BURST_BEHAVIOR__APPEND = 0,
+    EARLY_BURST_BEHAVIOR__DROP = 1,
+    EARLY_BURST_BEHAVIOR__BALK = 2
+};
 
 // static const PMT interned string getters
 // TODO: many of these are only used in one block. they really belong there
-// unless they are truly namespace scoped for some reason 
+// unless they are truly namespace scoped for some reason
 PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__msg();
 PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__in();
 PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__out();
@@ -89,12 +85,8 @@ PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__trigger_now();
 PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__system();
 PDU_UTILS_API const pmt::pmt_t PMTCONSTSTR__phase_inc();
 
-static const uint32_t MODE_MESSAGE = 0;
-static const uint32_t MODE_TIMED_PDU = 1;
 
-static const uint64_t TX_UNLIMITED = 0xFFFFFFFFFFFFFFFF; // = -1
-static const uint64_t TX_OFF = 0;                        // no transmissions
-
+enum message_trigger_mode : uint64_t { TX_UNLIMITED = 0xFFFFFFFFFFFFFFFF, TX_OFF = 0 };
 
 // noise generation distributions
 enum noise_dist { UNIFORM = 0, GAUSSIAN = 1 };

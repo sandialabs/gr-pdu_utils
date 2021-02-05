@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -10,7 +10,6 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 
-#include <pdu_utils/constants.h>
 #include <pdu_utils/pdu_fine_time_measure.h>
 
 namespace gr {

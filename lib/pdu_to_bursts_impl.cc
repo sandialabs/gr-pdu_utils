@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -24,8 +24,8 @@ template <class T>
 typename pdu_to_bursts<T>::sptr pdu_to_bursts<T>::make(uint32_t early_burst_behavior,
                                                        uint32_t max_queue_size)
 {
-    return gnuradio::get_initial_sptr(
-        new pdu_to_bursts_impl<T>(early_burst_behavior, max_queue_size));
+    return gnuradio::make_block_sptr<pdu_to_bursts_impl<T>>(early_burst_behavior,
+                                                            max_queue_size);
 }
 
 /* BEHAVIOR OF SUCCESSIVE BURSTS
@@ -77,7 +77,7 @@ pdu_to_bursts_impl<T>::pdu_to_bursts_impl(uint32_t early_burst_behavior,
 
     this->message_port_register_in(PMTCONSTSTR__bursts());
     this->set_msg_handler(PMTCONSTSTR__bursts(),
-                          boost::bind(&pdu_to_bursts_impl<T>::store_pdu, this, _1));
+                          [this](pmt::pmt_t msg) { this->store_pdu(msg); });
 }
 
 /*

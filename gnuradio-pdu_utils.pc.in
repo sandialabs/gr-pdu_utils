@@ -3,8 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: gr-pdu_utils38
-Description: GNURadio OOT toolset for PDU-based processing (Maint 3.8)
+Name: gr-pdu_utils
+Description: GNURadio OOT toolset for PDU-based processing (3.9 API)
 Requires: gnuradio-runtime
 Version: @LIBVER@
 Libs: -L${libdir}

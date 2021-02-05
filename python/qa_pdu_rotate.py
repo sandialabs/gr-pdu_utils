@@ -1,27 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2021 gr-pdu_utils author.
+# Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
+# (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
+# retains certain rights in this software.
 #
-# This is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3, or (at your option)
-# any later version.
-#
-# This software is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this software; see the file COPYING.  If not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street,
-# Boston, MA 02110-1301, USA.
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 
+try:
+    import pdu_utils
+except ImportError:
+    import os
+    import sys
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    sys.path.append(os.path.join(dirname, "bindings"))
+    import pdu_utils
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-import pdu_utils_swig as pdu_utils
 import numpy as np
 import time
 import pmt

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 
 pdu_binary_tools::sptr pdu_binary_tools::make(uint8_t mode)
 {
-    return gnuradio::get_initial_sptr(new pdu_binary_tools_impl(mode));
+    return gnuradio::make_block_sptr<pdu_binary_tools_impl>(mode);
 }
 
 /*
@@ -46,55 +46,52 @@ pdu_binary_tools_impl::pdu_binary_tools_impl(uint8_t mode)
     switch (mode) {
     case pdu_binary_tools::BIT_FLIP: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in BIT FLIP mode");
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_bit_flip, this, _1));
+        set_msg_handler(PMTCONSTSTR__pdu_in(),
+                        [this](pmt::pmt_t msg) { this->handle_msg_bit_flip(msg); });
         break;
     }
     case pdu_binary_tools::TO_NRZ: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in TO NRZ mode");
         set_msg_handler(PMTCONSTSTR__pdu_in(),
-                        boost::bind(&pdu_binary_tools_impl::handle_msg_to_nrz, this, _1));
+                        [this](pmt::pmt_t msg) { this->handle_msg_to_nrz(msg); });
         break;
     }
     case pdu_binary_tools::FROM_NRZ: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in FROM NRZ mode");
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_from_nrz, this, _1));
+        set_msg_handler(PMTCONSTSTR__pdu_in(),
+                        [this](pmt::pmt_t msg) { this->handle_msg_from_nrz(msg); });
         break;
     }
     case pdu_binary_tools::SLICE: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in SLICE mode");
         set_msg_handler(PMTCONSTSTR__pdu_in(),
-                        boost::bind(&pdu_binary_tools_impl::handle_msg_slice, this, _1));
+                        [this](pmt::pmt_t msg) { this->handle_msg_slice(msg); });
         break;
     }
     case pdu_binary_tools::ENDIAN_SWAP8: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in ENDIAN_SWAP8 mode");
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_endian8, this, _1));
+        set_msg_handler(PMTCONSTSTR__pdu_in(),
+                        [this](pmt::pmt_t msg) { this->handle_msg_endian8(msg); });
         break;
     }
     case pdu_binary_tools::MANCHESTER_ENCODE: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in MANCHESTER_ENCODE mode");
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_manchester_encode, this, _1));
+        set_msg_handler(PMTCONSTSTR__pdu_in(), [this](pmt::pmt_t msg) {
+            this->handle_msg_manchester_encode(msg);
+        });
         break;
     }
     case pdu_binary_tools::MANCHESTER_DECODE: {
         GR_LOG_DEBUG(d_logger, "pdu binary tools in MANCHESTER_DECODE mode");
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_manchester_decode, this, _1));
+        set_msg_handler(PMTCONSTSTR__pdu_in(), [this](pmt::pmt_t msg) {
+            this->handle_msg_manchester_decode(msg);
+        });
         break;
     }
     default: {
-        set_msg_handler(
-            PMTCONSTSTR__pdu_in(),
-            boost::bind(&pdu_binary_tools_impl::handle_msg_passthrough, this, _1));
+        GR_LOG_DEBUG(d_logger, "pdu binary tools in PASSTHROUGH mode");
+        set_msg_handler(PMTCONSTSTR__pdu_in(),
+                        [this](pmt::pmt_t msg) { this->handle_msg_passthrough(msg); });
     }
     }
 }

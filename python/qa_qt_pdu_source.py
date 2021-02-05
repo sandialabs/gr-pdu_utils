@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+# Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
 # (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
 # retains certain rights in this software.
 #
@@ -10,7 +10,15 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-from qt_pdu_source import qt_pdu_source
+try:
+    from pdu_utils import extract_metadata
+except ImportError:
+    import os
+    import sys
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    sys.path.append(os.path.join(dirname, "bindings"))
+    from pdu_utils import extract_metadata
+
 
 class qa_qt_pdu_source (gr_unittest.TestCase):
 

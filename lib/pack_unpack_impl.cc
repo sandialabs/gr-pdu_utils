@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 pack_unpack::sptr pack_unpack::make(uint32_t mode, uint32_t bit_order)
 {
-    return gnuradio::get_initial_sptr(new pack_unpack_impl(mode, bit_order));
+    return gnuradio::make_block_sptr<pack_unpack_impl>(mode, bit_order);
 }
 
 /*
@@ -32,7 +32,7 @@ pack_unpack_impl::pack_unpack_impl(uint32_t mode, uint32_t bit_order)
 {
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pack_unpack_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 
     if (d_mode == MODE_UNPACK_BYTE) {

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -27,14 +27,14 @@ typename tag_message_trigger<T>::sptr tag_message_trigger<T>::make(pmt::pmt_t tr
                                                                    double delay_time,
                                                                    bool tpdu_mode)
 {
-    return gnuradio::get_initial_sptr(new tag_message_trigger_impl<T>(trigger_key,
-                                                                      arming_key,
-                                                                      message,
-                                                                      holdoff,
-                                                                      samp_rate,
-                                                                      start_time,
-                                                                      delay_time,
-                                                                      tpdu_mode));
+    return gnuradio::make_block_sptr<tag_message_trigger_impl<T>>(trigger_key,
+                                                                  arming_key,
+                                                                  message,
+                                                                  holdoff,
+                                                                  samp_rate,
+                                                                  start_time,
+                                                                  delay_time,
+                                                                  tpdu_mode);
 }
 
 /*
@@ -87,9 +87,8 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
     }
 
     this->message_port_register_in(PMTCONSTSTR__ctrl());
-    this->set_msg_handler(
-        PMTCONSTSTR__ctrl(),
-        boost::bind(&tag_message_trigger_impl<T>::control_input, this, _1));
+    this->set_msg_handler(PMTCONSTSTR__ctrl(),
+                          [this](pmt::pmt_t msg) { this->control_input(msg); });
     this->message_port_register_out(PMTCONSTSTR__msg());
 }
 
@@ -255,8 +254,10 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
                                             pmt::from_double(frac_seconds));
                         pmt::pmt_t dict = pmt::car(d_message);
                         pmt::pmt_t vector = pmt::cdr(d_message);
-                        dict = pmt::dict_add(dict, PMTCONSTSTR__tx_time(), burst_time_tuple);
-                        this->message_port_pub(PMTCONSTSTR__msg(), pmt::cons(dict, vector));
+                        dict =
+                            pmt::dict_add(dict, PMTCONSTSTR__tx_time(), burst_time_tuple);
+                        this->message_port_pub(PMTCONSTSTR__msg(),
+                                               pmt::cons(dict, vector));
                         d_last_trigger_offset = trigger_offset;
                     }
 

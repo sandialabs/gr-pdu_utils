@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -22,7 +22,7 @@ namespace pdu_utils {
 template <class T>
 typename take_skip_to_pdu<T>::sptr take_skip_to_pdu<T>::make(uint32_t take, uint32_t skip)
 {
-    return gnuradio::get_initial_sptr(new take_skip_to_pdu_impl<T>(take, skip));
+    return gnuradio::make_block_sptr<take_skip_to_pdu_impl<T>>(take, skip);
 }
 
 /*

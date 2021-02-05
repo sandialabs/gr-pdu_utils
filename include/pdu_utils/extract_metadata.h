@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -29,7 +29,7 @@ namespace pdu_utils {
 class PDU_UTILS_API extract_metadata : virtual public gr::block
 {
 public:
-    typedef boost::shared_ptr<extract_metadata> sptr;
+    typedef std::shared_ptr<extract_metadata> sptr;
 
     /*!
      * \brief Return a shared_ptr to a new instance of pdu_utils::extract_metadata.

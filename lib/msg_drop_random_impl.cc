@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 msg_drop_random::sptr msg_drop_random::make(float p_drop, uint64_t seed)
 {
-    return gnuradio::get_initial_sptr(new msg_drop_random_impl(p_drop, seed));
+    return gnuradio::make_block_sptr<msg_drop_random_impl>(p_drop, seed);
 }
 
 /*
@@ -36,7 +36,7 @@ msg_drop_random_impl::msg_drop_random_impl(float p_drop, uint64_t seed)
 {
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&msg_drop_random_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 

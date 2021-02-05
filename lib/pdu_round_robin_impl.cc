@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 
 pdu_round_robin::sptr pdu_round_robin::make(int num_outputs)
 {
-    return gnuradio::get_initial_sptr(new pdu_round_robin_impl(num_outputs));
+    return gnuradio::make_block_sptr<pdu_round_robin_impl>(num_outputs);
 }
 
 /*
@@ -36,7 +36,7 @@ pdu_round_robin_impl::pdu_round_robin_impl(int num_outputs)
     // inputs
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_round_robin_impl::pdu_handler, this, _1));
+                    [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 
     // outputs
     for (size_t i = 0; i < d_num_outputs; i++) {

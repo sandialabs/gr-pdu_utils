@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 pdu_length_filter::sptr pdu_length_filter::make(uint32_t length, bool drop_long)
 {
-    return gnuradio::get_initial_sptr(new pdu_length_filter_impl(length, drop_long));
+    return gnuradio::make_block_sptr<pdu_length_filter_impl>(length, drop_long);
 }
 
 /*
@@ -35,7 +35,7 @@ pdu_length_filter_impl::pdu_length_filter_impl(uint32_t length, bool drop_long)
 {
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_length_filter_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 

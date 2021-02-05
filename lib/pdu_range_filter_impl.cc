@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 pdu_range_filter::sptr
 pdu_range_filter::make(pmt::pmt_t key, double min, double max, bool invert)
 {
-    return gnuradio::get_initial_sptr(new pdu_range_filter_impl(key, min, max, invert));
+    return gnuradio::make_block_sptr<pdu_range_filter_impl>(key, min, max, invert);
 }
 
 /*
@@ -41,7 +41,7 @@ pdu_range_filter_impl::pdu_range_filter_impl(pmt::pmt_t key,
     message_port_register_in(PMTCONSTSTR__pdu_in());
     message_port_register_out(PMTCONSTSTR__pdu_out());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_range_filter_impl::pdu_handler, this, _1));
+                    [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 }
 
 /*

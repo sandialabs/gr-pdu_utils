@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -11,13 +11,12 @@
 #define INCLUDED_PDU_UTILS_PDU_FLOW_CTRL_HELPER_H
 
 #include <gnuradio/basic_block.h>
-#include <pdu_utils/constants.h>
 #include <pdu_utils/api.h>
 
 namespace gr {
 namespace pdu_utils {
 
-typedef boost::weak_ptr<gr::basic_block> basic_block_wptr;
+typedef std::weak_ptr<gr::basic_block> basic_block_wptr;
 
 /*!
  * \brief Convenience functions for watching the number of messages waiting

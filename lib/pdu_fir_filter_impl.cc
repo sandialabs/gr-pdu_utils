@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 
 pdu_fir_filter::sptr pdu_fir_filter::make(int decimation, const std::vector<float> taps)
 {
-    return gnuradio::get_initial_sptr(new pdu_fir_filter_impl(decimation, taps));
+    return gnuradio::make_block_sptr<pdu_fir_filter_impl>(decimation, taps);
 }
 
 /*
@@ -30,8 +30,8 @@ pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float
     : gr::block("pdu_fir_filter",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
-      d_fir_fff(1, taps),
-      d_fir_ccf(1, taps),
+      d_fir_fff(taps),
+      d_fir_ccf(taps),
       d_decimation(decimation)
 {
     set_taps(taps);
@@ -43,7 +43,7 @@ pdu_fir_filter_impl::pdu_fir_filter_impl(int decimation, const std::vector<float
     message_port_register_in(PMTCONSTSTR__pdu_in());
     message_port_register_out(PMTCONSTSTR__pdu_out());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_fir_filter_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
 }
 
 /*
@@ -87,7 +87,8 @@ void pdu_fir_filter_impl::handle_pdu(pmt::pmt_t pdu)
                     metadata, PMTCONSTSTR__sample_rate(), pmt::from_double(sample_rate));
             }
             // if we need to adjust the start time due to an even number of taps, do so
-            if (d_even_num_taps && pmt::dict_has_key(metadata, PMTCONSTSTR__start_time())) {
+            if (d_even_num_taps &&
+                pmt::dict_has_key(metadata, PMTCONSTSTR__start_time())) {
                 double start_time = pmt::to_double(
                     pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
                 start_time -= 0.5 / sample_rate;
@@ -202,4 +203,4 @@ void pdu_fir_filter_impl::set_taps(std::vector<float> taps)
 }
 
 } /* namespace pdu_utils */
-} // namespace gr
+} /* namespace gr */

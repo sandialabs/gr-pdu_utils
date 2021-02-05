@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 extract_metadata::sptr extract_metadata::make(pmt::pmt_t key, float scale, float offset)
 {
-    return gnuradio::get_initial_sptr(new extract_metadata_impl(key, scale, offset));
+    return gnuradio::make_block_sptr<extract_metadata_impl>(key, scale, offset);
 }
 
 /*
@@ -34,7 +34,7 @@ extract_metadata_impl::extract_metadata_impl(pmt::pmt_t key, float scale, float 
 {
     message_port_register_in(PMTCONSTSTR__dict());
     set_msg_handler(PMTCONSTSTR__dict(),
-                    boost::bind(&extract_metadata_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
     message_port_register_out(PMTCONSTSTR__msg());
 }
 
@@ -50,15 +50,14 @@ extract_metadata_impl::~extract_metadata_impl() {}
  */
 void extract_metadata_impl::handle_msg(pmt::pmt_t msg)
 {
-    // is_pair() will pass both dictionaries and pairs (possible PDUs...)
-    if (!pmt::is_pair(msg)) {
-        return;
-    }
+    pmt::pmt_t dict;
 
-    try {
-        // Will fail if msg is not a dictionary or PDU (dict/pmt pair)
-        pmt::pmt_t x = pmt::dict_keys(msg);
-    } catch (const pmt::wrong_type& e) {
+    if (pmt::is_dict(msg)) {
+        dict = msg;
+    } else if (pmt::is_pdu(msg)) {
+        dict = pmt::car(msg);
+    } else {
+        // if not a dict or a pdu, drop the message
         return;
     }
 

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 message_counter::sptr message_counter::make(std::string name)
 {
-    return gnuradio::get_initial_sptr(new message_counter_impl(name));
+    return gnuradio::make_block_sptr<message_counter_impl>(name);
 }
 
 /**
@@ -35,7 +35,7 @@ message_counter_impl::message_counter_impl(std::string name)
 {
     message_port_register_in(PMTCONSTSTR__msg());
     set_msg_handler(PMTCONSTSTR__msg(),
-                    boost::bind(&message_counter_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
 }
 
 /**

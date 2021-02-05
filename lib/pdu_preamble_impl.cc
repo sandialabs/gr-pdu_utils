@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -33,8 +33,8 @@ pdu_preamble::sptr pdu_preamble::make(const std::vector<uint8_t> preamble,
                                       uint32_t zero_pad,
                                       bool nrz)
 {
-    return gnuradio::get_initial_sptr(
-        new pdu_preamble_impl(preamble, tail, interp, zero_pad, nrz));
+    return gnuradio::make_block_sptr<pdu_preamble_impl>(
+        preamble, tail, interp, zero_pad, nrz);
 }
 
 /**
@@ -62,7 +62,7 @@ pdu_preamble_impl::pdu_preamble_impl(const std::vector<uint8_t> preamble,
 
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_preamble_impl::handle_msg, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 } // end constructor
 

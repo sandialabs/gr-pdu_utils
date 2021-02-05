@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -14,6 +14,7 @@
 #include "pdu_quadrature_demod_cf_impl.h"
 #include <gnuradio/io_signature.h>
 #include <gnuradio/math.h>
+#include <pdu_utils/constants.h>
 
 #include <inttypes.h>
 #include <volk/volk.h>
@@ -23,7 +24,7 @@ namespace pdu_utils {
 
 pdu_quadrature_demod_cf::sptr pdu_quadrature_demod_cf::make(float sensitivity)
 {
-    return gnuradio::get_initial_sptr(new pdu_quadrature_demod_cf_impl(sensitivity));
+    return gnuradio::make_block_sptr<pdu_quadrature_demod_cf_impl>(sensitivity);
 }
 
 /*
@@ -38,7 +39,7 @@ pdu_quadrature_demod_cf_impl::pdu_quadrature_demod_cf_impl(float sensitivity)
     message_port_register_in(PMTCONSTSTR__cpdus());
     message_port_register_out(PMTCONSTSTR__fpdus());
     set_msg_handler(PMTCONSTSTR__cpdus(),
-                    boost::bind(&pdu_quadrature_demod_cf_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
 }
 
 /*

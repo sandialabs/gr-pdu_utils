@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 
 pdu_downsample::sptr pdu_downsample::make(int decimation, int phase)
 {
-    return gnuradio::get_initial_sptr(new pdu_downsample_impl(decimation, phase));
+    return gnuradio::make_block_sptr<pdu_downsample_impl>(decimation, phase);
 }
 
 /*
@@ -35,10 +35,10 @@ pdu_downsample_impl::pdu_downsample_impl(int decimation, int phase)
 {
 
     // register message ports
-    message_port_register_in( PMTCONSTSTR__pdu_in() );
-    message_port_register_out( PMTCONSTSTR__pdu_out() );
-    set_msg_handler( PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_downsample_impl::handle_msg, this, _1));
+    message_port_register_in(PMTCONSTSTR__pdu_in());
+    message_port_register_out(PMTCONSTSTR__pdu_out());
+    set_msg_handler(PMTCONSTSTR__pdu_in(),
+                    [this](pmt::pmt_t msg) { this->handle_msg(msg); });
 }
 
 /*

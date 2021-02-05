@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -22,8 +22,7 @@ namespace pdu_utils {
 pdu_align::sptr
 pdu_align::make(std::string syncwords, int threshold, int offset, align_modes mode)
 {
-    return gnuradio::get_initial_sptr(
-        new pdu_align_impl(syncwords, threshold, offset, mode));
+    return gnuradio::make_block_sptr<pdu_align_impl>(syncwords, threshold, offset, mode);
 }
 
 /*
@@ -82,7 +81,7 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
     message_port_register_in(PMTCONSTSTR__pdu_in());
     message_port_register_out(PMTCONSTSTR__pdu_out());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_align_impl::pdu_handler, this, _1));
+                    [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 }
 
 /*
@@ -114,8 +113,9 @@ void pdu_align_impl::update_time_metadata(pmt::pmt_t& metadata, int start_idx)
             double start_time = pmt::to_double(
                 pmt::dict_ref(metadata, PMTCONSTSTR__start_time(), pmt::PMT_NIL));
             metadata = pmt::dict_delete(metadata, PMTCONSTSTR__start_time());
-            metadata = pmt::dict_add(
-                metadata, PMTCONSTSTR__start_time(), pmt::from_double(start_time + offset));
+            metadata = pmt::dict_add(metadata,
+                                     PMTCONSTSTR__start_time(),
+                                     pmt::from_double(start_time + offset));
             metadata = pmt::dict_add(
                 metadata, PMTCONSTSTR__start_time_offset(), pmt::from_double(offset));
             // printf("incremented start time by %f\n", offset);

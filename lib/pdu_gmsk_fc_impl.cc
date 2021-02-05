@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -14,8 +14,8 @@
 #include "pdu_gmsk_fc_impl.h"
 #include <gnuradio/io_signature.h>
 
-#include <gnuradio/blocks/pdu.h>
 #include <gnuradio/fxpt.h>
+#include <pdu_utils/constants.h>
 #include <cmath>
 
 
@@ -24,7 +24,7 @@ namespace pdu_utils {
 
 pdu_gmsk_fc::sptr pdu_gmsk_fc::make(float sensitivity, const std::vector<float> taps)
 {
-    return gnuradio::get_initial_sptr(new pdu_gmsk_fc_impl(sensitivity, taps));
+    return gnuradio::make_block_sptr<pdu_gmsk_fc_impl>(sensitivity, taps);
 }
 
 /*
@@ -38,7 +38,7 @@ pdu_gmsk_fc_impl::pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> t
       d_sensitivity(sensitivity),
       d_taps(taps)
 {
-    d_fir = new filter::kernel::fir_filter_fff(1, taps);
+    d_fir = new filter::kernel::fir_filter_fff(taps);
 
 
     // table of a log-ramp for scaling bursts
@@ -50,7 +50,7 @@ pdu_gmsk_fc_impl::pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> t
 
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_gmsk_fc_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
     message_port_register_out(PMTCONSTSTR__pdu_out());
 }
 

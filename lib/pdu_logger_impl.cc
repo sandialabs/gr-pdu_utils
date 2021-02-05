@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -20,7 +20,7 @@ namespace pdu_utils {
 
 pdu_logger::sptr pdu_logger::make(std::string logfile)
 {
-    return gnuradio::get_initial_sptr(new pdu_logger_impl(logfile));
+    return gnuradio::make_block_sptr<pdu_logger_impl>(logfile);
 }
 
 /*
@@ -34,7 +34,7 @@ pdu_logger_impl::pdu_logger_impl(std::string logfile)
 {
     message_port_register_in(PMTCONSTSTR__pdu_in());
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_logger_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
 }
 
 /*

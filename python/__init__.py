@@ -10,15 +10,15 @@
 This is the GNU Radio PDU_UTILS module. Place your Python package
 description here (python/__init__.py).
 '''
-from __future__ import unicode_literals
+import os
 
-# import swig generated symbols into the pdu_utils namespace
+# import pybind11 generated symbols into the pdu_utils namespace
 try:
-    # this might fail if the module is python-only
-    from .pdu_utils_swig import *
-except ImportError as e:
-    print("Import Error: {}".format(e))
-    pass
+    from .pdu_utils_python import *
+except ImportError:
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    __path__.append(os.path.join(dirname, "bindings"))
+    from .pdu_utils_python import *
 
 # import any pure python here
 from .pdu_flow_ctrl import pdu_flow_ctrl

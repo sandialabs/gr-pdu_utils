@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -19,7 +19,7 @@ namespace pdu_utils {
 
 message_emitter::sptr message_emitter::make(pmt::pmt_t msg)
 {
-    return gnuradio::get_initial_sptr(new message_emitter_impl(msg));
+    return gnuradio::make_block_sptr<message_emitter_impl>(msg);
 }
 
 /*
@@ -32,8 +32,7 @@ message_emitter_impl::message_emitter_impl(pmt::pmt_t msg)
       d_n_msgs(0)
 {
     message_port_register_in(PMTCONSTSTR__emit());
-    set_msg_handler(PMTCONSTSTR__emit(),
-                    boost::bind(&message_emitter_impl::emit, this, _1));
+    set_msg_handler(PMTCONSTSTR__emit(), [this](pmt::pmt_t msg) { this->emit(msg); });
     message_port_register_out(PMTCONSTSTR__msg());
 }
 
@@ -49,7 +48,7 @@ message_emitter_impl::~message_emitter_impl() {}
 bool message_emitter_impl::stop()
 {
     GR_LOG_INFO(d_logger, boost::format("Message emitter sent %d messages") % d_n_msgs);
-    
+
     return true;
 }
 

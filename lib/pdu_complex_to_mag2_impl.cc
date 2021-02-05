@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -13,6 +13,7 @@
 
 #include "pdu_complex_to_mag2_impl.h"
 #include <gnuradio/io_signature.h>
+#include <pdu_utils/constants.h>
 
 #include <volk/volk.h>
 
@@ -21,7 +22,7 @@ namespace pdu_utils {
 
 pdu_complex_to_mag2::sptr pdu_complex_to_mag2::make()
 {
-    return gnuradio::get_initial_sptr(new pdu_complex_to_mag2_impl());
+    return gnuradio::make_block_sptr<pdu_complex_to_mag2_impl>();
 }
 
 /*
@@ -35,7 +36,7 @@ pdu_complex_to_mag2_impl::pdu_complex_to_mag2_impl()
     message_port_register_in(PMTCONSTSTR__cpdus());
     message_port_register_out(PMTCONSTSTR__fpdus());
     set_msg_handler(PMTCONSTSTR__cpdus(),
-                    boost::bind(&pdu_complex_to_mag2_impl::handle_pdu, this, _1));
+                    [this](pmt::pmt_t msg) { this->handle_pdu(msg); });
 }
 
 /*

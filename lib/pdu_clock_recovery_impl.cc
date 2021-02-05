@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2018, 2019, 2020 National Technology & Engineering Solutions of Sandia, LLC
+ * Copyright 2018-2021 National Technology & Engineering Solutions of Sandia, LLC
  * (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government
  * retains certain rights in this software.
  *
@@ -35,8 +35,7 @@ namespace pdu_utils {
 pdu_clock_recovery::sptr
 pdu_clock_recovery::make(bool binary_slice, bool debug, window_type type)
 {
-    return gnuradio::get_initial_sptr(
-        new pdu_clock_recovery_impl(binary_slice, debug, type));
+    return gnuradio::make_block_sptr<pdu_clock_recovery_impl>(binary_slice, debug, type);
 }
 
 /**
@@ -70,9 +69,8 @@ pdu_clock_recovery_impl::pdu_clock_recovery_impl(bool binary_slice,
         message_port_register_out(PMTCONSTSTR__zeroX());
         message_port_register_out(PMTCONSTSTR__window());
     }
-
     set_msg_handler(PMTCONSTSTR__pdu_in(),
-                    boost::bind(&pdu_clock_recovery_impl::pdu_handler, this, _1));
+                    [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 
     init_fast_sinc();
     fft_setup(15);
