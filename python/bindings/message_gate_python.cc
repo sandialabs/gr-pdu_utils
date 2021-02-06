@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(message_gate.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(587a32cf01364c3b251d7480332329ad)                     */
+/* BINDTOOL_HEADER_FILE_HASH(2136ab474d8acdb615fe814896870313)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -37,6 +37,9 @@ void bind_message_gate(py::module& m)
         m, "message_gate", D(message_gate))
 
         .def(py::init(&message_gate::make), py::arg("enabled"), D(message_gate, make))
+
+
+        .def("reset", &message_gate::reset, D(message_gate, reset))
 
 
         .def("get_n_passed", &message_gate::get_n_passed, D(message_gate, get_n_passed))

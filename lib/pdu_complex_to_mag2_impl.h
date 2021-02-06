@@ -18,25 +18,12 @@ namespace pdu_utils {
 class pdu_complex_to_mag2_impl : public pdu_complex_to_mag2
 {
 private:
-    // Nothing to declare in this block.
+    void handle_pdu(pmt::pmt_t pdu);
 
 public:
-    /**
-     * Constructor
-     */
     pdu_complex_to_mag2_impl();
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_complex_to_mag2_impl();
-
-    // Where all the action really happens
-    int work(int noutput_items,
-             gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
-
-    void handle_pdu(pmt::pmt_t pdu);
+    ~pdu_complex_to_mag2_impl() override;
 };
 
 } // namespace pdu_utils

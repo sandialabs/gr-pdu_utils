@@ -33,37 +33,16 @@ private:
     std::vector<float> d_head_f;
     std::vector<float> d_tail_f;
 
-public:
-    /**
-     * Constructor
-     *
-     * @param input_type -
-     * @param length -
-     * @param histsize -
-     */
-    pdu_head_tail_impl(uint32_t input_type, uint32_t length, uint32_t histsize);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_head_tail_impl();
-
     void handle_pdu(pmt::pmt_t pdu);
 
-    /**
-     * Set Length
-     *
-     * @param length -
-     */
-    void set_length(uint32_t length);
+public:
+    pdu_head_tail_impl(uint32_t input_type, uint32_t length, uint32_t histsize);
 
-    /**
-     * Set Histogram size
-     *
-     * @param histsize -
-     */
-    void set_histsize(uint32_t histsize);
-    void set_space_bytes(bool spacebytes);
+    ~pdu_head_tail_impl() override;
+
+    void set_length(uint32_t length) override;
+    void set_histsize(uint32_t histsize) override;
+    void set_space_bytes(bool spacebytes) override;
 };
 
 } // namespace pdu_utils

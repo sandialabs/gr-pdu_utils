@@ -25,20 +25,12 @@ private:
     void write_data_c(const gr_complex* data, size_t len, char* name, int num);
     void write_data_f(const float* data, size_t len, char* name, int num);
 
+    void handle_pdu(pmt::pmt_t pdu);
+
 public:
-    /**
-     * constructor
-     *
-     * @param logfile - Filename to write to
-     */
     pdu_logger_impl(std::string logfile);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_logger_impl();
-
-    void handle_pdu(pmt::pmt_t pdu);
+    ~pdu_logger_impl() override;
 };
 
 } // namespace pdu_utils

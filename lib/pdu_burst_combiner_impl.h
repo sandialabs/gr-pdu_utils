@@ -24,19 +24,12 @@ private:
     uint32_t d_burst_count;
 
     void reset_state(void);
+    void handle_pdu(pmt::pmt_t pdu);
 
 public:
-    /**
-     * Constructor
-     */
     pdu_burst_combiner_impl();
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_burst_combiner_impl();
-
-    void handle_pdu(pmt::pmt_t pdu);
+    ~pdu_burst_combiner_impl() override;
 };
 
 } // namespace pdu_utils

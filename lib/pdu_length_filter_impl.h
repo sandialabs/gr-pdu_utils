@@ -24,23 +24,13 @@ private:
     uint64_t d_n_passed;
     uint64_t d_n_blocked;
 
+    void handle_pdu(pmt::pmt_t pdu);
+
 public:
-    /**
-     * Constructor
-     *
-     * @param length - length of data threshold
-     * @param drop_long - true to drop PDUs with >length, false to drop PDUs with <length
-     */
     pdu_length_filter_impl(uint32_t length, bool drop_long);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_length_filter_impl();
-
-    bool stop(); // overloaded for print output
-
-    void handle_pdu(pmt::pmt_t pdu);
+    ~pdu_length_filter_impl() override;
+    bool stop() override; // overloaded for print output
 };
 
 } // namespace pdu_utils

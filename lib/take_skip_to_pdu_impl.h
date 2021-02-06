@@ -51,26 +51,17 @@ private:
     void publish_message(void);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param take - size of PDUs to generate
-     * @param skip - number of samples to skip between takes
-     */
     take_skip_to_pdu_impl(uint32_t take, uint32_t skip);
 
-    /**
-     * Destructor
-     */
-    ~take_skip_to_pdu_impl();
+    ~take_skip_to_pdu_impl() override;
 
-    void set_take(uint32_t take);
-    void set_skip(uint32_t skip);
+    void set_take(uint32_t take) override;
+    void set_skip(uint32_t skip) override;
 
     // Where all the action really happens
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

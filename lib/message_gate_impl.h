@@ -23,52 +23,25 @@ private:
     uint64_t d_n_passed;
     uint64_t d_n_blocked;
 
-public:
-    /**
-     * Constructor
+    /*!
+     * \brief Message handler for input messages
      *
-     * @param enabled - true to pass messages
+     * \param msg Any PMT message passed from the scheduler's message handling.
      */
-    message_gate_impl(bool enabled);
-
-    /**
-     * Deconstructor
-     */
-    ~message_gate_impl();
-    bool stop();      // overloaded for print output
-    void setup_rpc(); // enable controlport
-
     void handle_msg(pmt::pmt_t msg);
 
-    void reset(void);
+public:
+    message_gate_impl(bool enabled);
 
-    /**
-     * Set gate state
-     *
-     * @param enabled - true to pass messages
-     */
-    void set_enabled(bool enabled);
+    ~message_gate_impl() override;
+    bool stop() override;      // overloaded for print output
+    void setup_rpc() override; // enable controlport
 
-    /**
-     * Returns enable status
-     *
-     * @return bool - true when messages passed
-     */
-    bool get_enabled(void) { return d_enabled; }
-
-    /**
-     * Return count of passed messages
-     *
-     * @return uint64_t
-     */
-    uint64_t get_n_passed(void) { return d_n_passed; }
-
-    /**
-     * Return count of blocked messages
-     *
-     * @return uint64_t
-     */
-    uint64_t get_n_blocked(void) { return d_n_blocked; }
+    void reset(void) override;
+    void set_enabled(bool enabled) override;
+    bool get_enabled(void) override { return d_enabled; }
+    uint64_t get_n_passed(void) override { return d_n_passed; }
+    uint64_t get_n_blocked(void) override { return d_n_blocked; }
 };
 
 } // namespace pdu_utils

@@ -31,3 +31,6 @@ static const char* __doc_gr_pdu_utils_pdu_head_tail_set_length = R"doc()doc";
 
 
 static const char* __doc_gr_pdu_utils_pdu_head_tail_set_histsize = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_head_tail_set_space_bytes = R"doc()doc";

@@ -23,64 +23,24 @@ private:
     float d_scale;
     float d_offset;
 
-public:
-    /**
-     * Constructor
+    /*!
+     * \brief Message handler for input messages
      *
-     * @param key - dict key to look for
-     * @param scale - scale factor to apply to number values
-     * @param offset - offset to apply to number values.
+     * \param msg Dict PMT or PDU message passed from the scheduler's message handling.
      */
+    void handle_msg(pmt::pmt_t msg);
+
+public:
     extract_metadata_impl(pmt::pmt_t key, float scale, float offset);
 
-    /**
-     * Deconstructor
-     */
-    ~extract_metadata_impl();
+    ~extract_metadata_impl() override;
 
-    void handle_msg(pmt::pmt_t);
-
-    /**
-     * Set dict key to look for
-     *
-     * @param key - pmt key
-     */
-    void set_key(pmt::pmt_t key);
-
-    /**
-     * Set scale factor for number values
-     *
-     * @param scale - scale factor
-     */
-    void set_scale(float scale);
-
-    /**
-     * Set Offset for number values
-     *
-     * @param offset - offset value
-     */
-    void set_offset(float offset);
-
-    /**
-     * Returns current key value
-     *
-     * @return pmt::pmt_t
-     */
-    pmt::pmt_t get_key(void) { return d_key; }
-
-    /**
-     * Returns current scale value
-     *
-     * @return float
-     */
-    float get_scale(void) { return d_scale; }
-
-    /**
-     * Returns current offset value
-     *
-     * @return float
-     */
-    float get_offset(void) { return d_offset; }
+    void set_key(pmt::pmt_t key) override;
+    void set_scale(float scale) override;
+    void set_offset(float offset) override;
+    pmt::pmt_t get_key(void) override { return d_key; }
+    float get_scale(void) override { return d_scale; }
+    float get_offset(void) override { return d_offset; }
 };
 
 } // namespace pdu_utils

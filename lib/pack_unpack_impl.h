@@ -43,35 +43,20 @@ private:
     uint32_t d_mode;
     uint32_t d_bit_order;
 
-public:
-    /**
-     * Constructor
+    /*!
+     * \brief PDU handler for input PDU data
      *
-     * @param mode - operation mode, MODE_UNPACK_BYTE, MODE_PACK_BYTE, MODE_BITSWAP_BYTE
-     * @param bit_order - BIT_ORDER_LSB_FIRST, BIT_ORDER_MSB_FIRST
+     * \param pdu A U8 type PDU passed from the scheduler's message handling.
      */
-    pack_unpack_impl(uint32_t mode, uint32_t bit_order);
-
-    /**
-     * Deconstructor
-     */
-    ~pack_unpack_impl();
-
     void handle_msg(pmt::pmt_t pdu);
 
-    /**
-     * Sets Mode
-     *
-     * @param mode - MODE_UNPACK_BYTE, MODE_PACK_BYTE, MODE_BITSWAP_BYTE
-     */
-    void set_mode(uint32_t mode);
+public:
+    pack_unpack_impl(uint32_t mode, uint32_t bit_order);
 
-    /**
-     * Sets order mode
-     *
-     * @param order - BIT_ORDER_LSB_FIRST, BIT_ORDER_MSB_FIRST
-     */
-    void set_bit_order(uint32_t order);
+    ~pack_unpack_impl() override;
+
+    void set_mode(uint32_t mode) override;
+    void set_bit_order(uint32_t order) override;
 };
 
 } // namespace pdu_utils

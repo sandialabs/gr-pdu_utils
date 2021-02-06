@@ -21,19 +21,12 @@ class pdu_split_impl : public pdu_split
 private:
     bool d_pass_empty_data;
 
-public:
-    /**
-     * Constructor
-     *
-     * @param pass_empty_data - true to pass empty vectors
-     */
-    pdu_split_impl(bool pass_empty_data);
-    /**
-     * Deconstructor
-     */
-    ~pdu_split_impl();
-
     void handle_pdu(pmt::pmt_t pdu);
+
+public:
+    pdu_split_impl(bool pass_empty_data);
+
+    ~pdu_split_impl() override;
 };
 
 } // namespace pdu_utils

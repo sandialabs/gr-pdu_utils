@@ -45,7 +45,7 @@ class qa_msg_drop_random (gr_unittest.TestCase):
             #time.sleep(.00001)
             self.emitter.emit(self.in_msg)
 
-        time.sleep(.1)
+        time.sleep(0.1)
         self.tb.stop()
         self.tb.wait()
 
@@ -62,7 +62,7 @@ class qa_msg_drop_random (gr_unittest.TestCase):
             #time.sleep(.00001)
             self.emitter.emit(self.in_msg)
 
-        time.sleep(.1)
+        time.sleep(0.1)
         self.tb.stop()
         self.tb.wait()
 
@@ -79,7 +79,7 @@ class qa_msg_drop_random (gr_unittest.TestCase):
             #time.sleep(.00001)
             self.emitter.emit(self.in_msg)
 
-        time.sleep(.1)
+        time.sleep(0.1)
         self.tb.stop()
         self.tb.wait()
 

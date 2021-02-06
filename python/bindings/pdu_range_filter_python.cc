@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(pdu_range_filter.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(85e297031e4b75a328d058c2466659d7)                     */
+/* BINDTOOL_HEADER_FILE_HASH(74b58e265a383c604a65a3bc93c48a2d)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -46,6 +46,29 @@ void bind_pdu_range_filter(py::module& m)
              py::arg("invert"),
              D(pdu_range_filter, make))
 
+
+        .def("set_key",
+             &pdu_range_filter::set_key,
+             py::arg("key"),
+             D(pdu_range_filter, set_key))
+
+
+        .def("set_min",
+             &pdu_range_filter::set_min,
+             py::arg("min"),
+             D(pdu_range_filter, set_min))
+
+
+        .def("set_max",
+             &pdu_range_filter::set_max,
+             py::arg("max"),
+             D(pdu_range_filter, set_max))
+
+
+        .def("set_inversion",
+             &pdu_range_filter::set_inversion,
+             py::arg("invert"),
+             D(pdu_range_filter, set_inversion))
 
         ;
 }

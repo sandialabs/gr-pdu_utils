@@ -27,6 +27,9 @@ static const char* __doc_gr_pdu_utils_message_gate_message_gate_1 = R"doc()doc";
 static const char* __doc_gr_pdu_utils_message_gate_make = R"doc()doc";
 
 
+static const char* __doc_gr_pdu_utils_message_gate_reset = R"doc()doc";
+
+
 static const char* __doc_gr_pdu_utils_message_gate_get_n_passed = R"doc()doc";
 
 

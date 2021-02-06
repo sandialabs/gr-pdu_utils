@@ -29,35 +29,15 @@ private:
     bool d_even_num_taps;
     gr::thread::mutex d_mutex;
 
-
-public:
-    /**
-     * Constructor
-     *
-     * @param decimation - decimation factor to apply
-     * @param taps - FIR taps
-     */
-    pdu_fir_filter_impl(int decimation, const std::vector<float> taps);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_fir_filter_impl();
-
     void handle_pdu(pmt::pmt_t pdu);
 
-    /**
-     * Set FIR taps
-     *
-     * @param taps - FIR taps
-     */
-    void set_taps(std::vector<float> taps);
-    /**
-     * Set Decimation factor
-     *
-     * @param decimation - decimation factor
-     */
-    void set_decimation(int decimation) { d_decimation = decimation; }
+public:
+    pdu_fir_filter_impl(int decimation, const std::vector<float> taps);
+
+    ~pdu_fir_filter_impl() override;
+
+    void set_taps(std::vector<float> taps) override;
+    void set_decimation(int decimation) override { d_decimation = decimation; }
 };
 
 } // namespace pdu_utils

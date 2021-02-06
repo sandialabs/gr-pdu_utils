@@ -34,35 +34,19 @@ private:
     std::vector<T> d_data;
 
     uint32_t queue_data(void);
-
-public:
-    /**
-     * Set Max Queue size
-     *
-     * @param size -
-     */
-    void set_max_queue_size(uint32_t size) { d_max_queue_size = size; }
-
     void store_pdu(pmt::pmt_t pdu);
 
-    /**
-     * Constructor
-     *
-     * @param early_burst_behavior - EARLY_BURST_BEHAVIOR__APPEND,
-     * EARLY_BURST_BEHAVIOR__DROP
-     * @param max_queue_size - max number of PDUs to queue
-     */
+public:
     pdu_to_bursts_impl(uint32_t early_burst_behavior, uint32_t max_queue_size = 64);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_to_bursts_impl();
+    ~pdu_to_bursts_impl() override;
+
+    void set_max_queue_size(uint32_t size) override { d_max_queue_size = size; }
 
     // Where all the action really happens
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

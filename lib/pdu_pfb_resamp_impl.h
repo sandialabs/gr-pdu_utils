@@ -60,30 +60,14 @@ private:
     float d_resamp_rate;
 
     void resize_arrays(size_t newSize);
-
-public:
-    /**
-     * Constructor
-     *
-     * @param taps -
-     * @param n_filters -
-     * @param resamp_rate -
-     */
-    pdu_pfb_resamp_impl(const std::vector<S> taps, int n_filters, float resamp_rate);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_pfb_resamp_impl();
-
     void handle_pdu(pmt::pmt_t pdu);
 
-    /**
-     * Set taps
-     *
-     * @param taps -
-     */
-    void set_taps(std::vector<S> taps) { d_pfb->set_taps(taps); }
+public:
+    pdu_pfb_resamp_impl(const std::vector<S> taps, int n_filters, float resamp_rate);
+
+    ~pdu_pfb_resamp_impl() override;
+
+    void set_taps(std::vector<S> taps) override { d_pfb->set_taps(taps); }
 };
 
 } // namespace pdu_utils

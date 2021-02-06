@@ -27,22 +27,12 @@ private:
     void pdu_handler(pmt::pmt_t pdu);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param pre_burst_time -
-     * @param post_burst_time -
-     * @param average_width -
-     * @param buffer_percent -
-     */
     pdu_fine_time_measure_impl(float pre_burst_time,
                                float post_burst_time,
                                size_t average_width,
                                float buffer_percent);
-    /**
-     * Deconstructor
-     */
-    ~pdu_fine_time_measure_impl();
+
+    ~pdu_fine_time_measure_impl() override;
 };
 
 } // namespace pdu_utils

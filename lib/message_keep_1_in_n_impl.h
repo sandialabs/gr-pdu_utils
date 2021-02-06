@@ -22,34 +22,20 @@ private:
     uint32_t d_n;
     uint32_t d_ctr;
 
-public:
-    /**
-     * Constructor
+    /*!
+     * \brief Message handler for input messages
      *
-     * @param n - Sets N
+     * \param msg Any PMT message passed from the scheduler's message handling.
      */
-    message_keep_1_in_n_impl(uint32_t n);
-
-    /**
-     * DeconstructorS
-     */
-    ~message_keep_1_in_n_impl();
-
     void handle_msg(pmt::pmt_t msg);
 
-    /**
-     * Sets N value
-     *
-     * @param n -
-     */
-    void set_n(uint32_t n);
+public:
+    message_keep_1_in_n_impl(uint32_t n);
 
-    /**
-     * Returns N value
-     *
-     * @return uint32_t
-     */
-    uint32_t get_n(void) { return d_n; }
+    ~message_keep_1_in_n_impl() override;
+
+    void set_n(uint32_t n) override;
+    uint32_t get_n(void) override { return d_n; }
 };
 
 } // namespace pdu_utils

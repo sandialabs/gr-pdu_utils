@@ -52,6 +52,13 @@ public:
      * @param histsize -
      */
     virtual void set_histsize(uint32_t histsize) = 0;
+
+    /**
+     * Set whether to space out bytes or not
+     *
+     * @param spacebytes - insert space between bytes?
+     */
+    virtual void set_space_bytes(bool spacebytes) = 0;
 };
 
 } // namespace pdu_utils

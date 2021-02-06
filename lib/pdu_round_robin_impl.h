@@ -26,17 +26,9 @@ private:
     void pdu_handler(pmt::pmt_t pdu);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param num_outputs - number of output ports
-     */
     pdu_round_robin_impl(int num_outputs);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_round_robin_impl();
+    ~pdu_round_robin_impl() override;
 };
 
 } // namespace pdu_utils

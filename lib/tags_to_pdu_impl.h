@@ -70,20 +70,9 @@ private:
     void publish_message(void);
     void set_known_time_offset(uint64_t, double, uint64_t);
 
+    void handle_ctrl_msg(pmt::pmt_t ctrl_msg);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param start_tag -
-     * @param end_tag -
-     * @param max_pdu_size -
-     * @param samp_rate -
-     * @param prepend -
-     * @param pub_sobs -
-     * @param tail_size -
-     * @param start_time -
-     */
     tags_to_pdu_impl(pmt::pmt_t start_tag,
                      pmt::pmt_t end_tag,
                      uint32_t max_pdu_size,
@@ -93,33 +82,27 @@ public:
                      uint32_t tail_size,
                      double start_time);
 
-    /**
-     * Deconstructor
-     */
-    ~tags_to_pdu_impl();
+    ~tags_to_pdu_impl() override;
 
     // public callbacks
-    void set_start_tag(pmt::pmt_t);
-    void set_end_tag(pmt::pmt_t);
-    void set_time_tag_key(pmt::pmt_t);
-    void set_samp_rate(double);
-    void set_start_time(double);
-    void set_prepend(std::vector<T>);
-    void set_tail_size(uint32_t);
-    void set_max_pdu_size(uint32_t);
-    void publish_sob_msgs(bool pub) { d_pub_sobs = pub; };
-    void set_eob_parameters(uint32_t, uint32_t);
-    void enable_time_debug(bool);
-
-    void handle_ctrl_msg(pmt::pmt_t ctrl_msg);
-
-    uint32_t get_eob_offset() { return d_eob_offset; };
-    uint32_t get_eob_alignment() { return d_eob_alignment; };
+    void set_start_tag(pmt::pmt_t) override;
+    void set_end_tag(pmt::pmt_t) override;
+    void set_time_tag_key(pmt::pmt_t) override;
+    void set_samp_rate(double) override;
+    void set_start_time(double) override;
+    void set_prepend(std::vector<T>) override;
+    void set_tail_size(uint32_t) override;
+    void set_max_pdu_size(uint32_t) override;
+    void publish_sob_msgs(bool pub) override { d_pub_sobs = pub; };
+    void set_eob_parameters(uint32_t, uint32_t) override;
+    void enable_time_debug(bool) override;
+    uint32_t get_eob_offset() override { return d_eob_offset; };
+    uint32_t get_eob_alignment() override { return d_eob_alignment; };
 
     // Where all the action really happens
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

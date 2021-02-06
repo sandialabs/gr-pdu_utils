@@ -22,59 +22,20 @@ private:
     pmt::pmt_t d_k;
     pmt::pmt_t d_v;
 
-public:
-    /**
-     * Constructor
-     *
-     * @param k - Key to add
-     * @param v - Value to add
-     */
-    pdu_set_m_impl(pmt::pmt_t k, pmt::pmt_t v);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_set_m_impl();
-    void setup_rpc(); // enable controlport
-
     void handle_msg(pmt::pmt_t msg);
     void handle_ctrl_msg(pmt::pmt_t msg);
 
-    /**
-     * Get key value
-     *
-     * @return pmt::pmt_t
-     */
-    pmt::pmt_t key() { return d_k; }
+public:
+    pdu_set_m_impl(pmt::pmt_t k, pmt::pmt_t v);
 
-    /**
-     * Get Val value
-     *
-     * @return pmt::pmt_t
-     */
-    pmt::pmt_t val() { return d_v; }
+    ~pdu_set_m_impl() override;
+    void setup_rpc() override; // enable controlport
 
-    /**
-     * Set Key Value
-     *
-     * @param k - key value
-     */
-    void set_key(pmt::pmt_t k);
-
-    /**
-     * Set Val Value
-     *
-     * @param v - value
-     */
-    void set_val(pmt::pmt_t v);
-
-    /**
-     * Set K-V pair
-     *
-     * @param k - key
-     * @param v - val
-     */
-    void set_kv(pmt::pmt_t k, pmt::pmt_t v);
+    pmt::pmt_t key() override { return d_k; }
+    pmt::pmt_t val() override { return d_v; }
+    void set_key(pmt::pmt_t k) override;
+    void set_val(pmt::pmt_t v) override;
+    void set_kv(pmt::pmt_t k, pmt::pmt_t v) override;
 };
 
 } // namespace pdu_utils

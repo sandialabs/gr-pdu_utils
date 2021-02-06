@@ -48,20 +48,10 @@ private:
 
     void set_known_time_offset(uint64_t, double, uint64_t);
 
+    // message port
+    void control_input(pmt::pmt_t msg);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param trigger_key -
-     * @param arming_key -
-     * @param message -
-     * @param holdoff -
-     * @param samp_rate -
-     * @param start_time -
-     * @param delay_time -
-     * @param tpdu_mode -
-     */
     tag_message_trigger_impl(pmt::pmt_t trigger_key,
                              pmt::pmt_t arming_key,
                              pmt::pmt_t message,
@@ -71,29 +61,24 @@ public:
                              double delay_time,
                              bool tpdu_mode);
 
-    /**
-     * Deconstructor
-     */
     ~tag_message_trigger_impl();
 
     // public callback setters
-    void set_trigger_key(pmt::pmt_t key) { d_trigger_key = key; };
-    void set_arming_key(pmt::pmt_t key) { d_arming_key = key; };
-    void set_time_tag_key(pmt::pmt_t key) { d_time_tag_key = key; };
-    void set_message(pmt::pmt_t);
-    void set_holdoff(uint32_t);
-    void set_samp_rate(double);
-    void set_start_time(double);
-    void set_delay_time(double);
-    void set_tx_limit(uint64_t);
+    void set_trigger_key(pmt::pmt_t key) override { d_trigger_key = key; };
+    void set_arming_key(pmt::pmt_t key) override { d_arming_key = key; };
+    void set_time_tag_key(pmt::pmt_t key) override { d_time_tag_key = key; };
+    void set_message(pmt::pmt_t) override;
+    void set_holdoff(uint32_t) override;
+    void set_samp_rate(double) override;
+    void set_start_time(double) override;
+    void set_delay_time(double) override;
+    void set_tx_limit(uint64_t) override;
 
-    // message port
-    void control_input(pmt::pmt_t msg);
 
     // Where all the action really happens
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

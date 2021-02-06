@@ -29,23 +29,13 @@ private:
 
 
 public:
-    /**
-     * Constructor
-     *
-     * @param mode - #Modes operating mode
-     */
     pdu_binary_tools_impl(uint8_t mode);
 
-    /**
-     * Deconstructor
-     */
     ~pdu_binary_tools_impl();
 
-
-    // Where all the action really happens
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

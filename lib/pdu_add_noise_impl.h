@@ -28,60 +28,18 @@ private:
     noise_dist d_noise_dist;
 
     float get_rand_samp();
-
-public:
-    /**
-     * Constructor
-     *
-     * @param noise_level - noise scaling (std dev)
-     * @param offset - signal shifting
-     * @param scale - signal scaling
-     * @param seed - RNG seed
-     * @param dist - noise distribution from enum #noise_dist
-     */
-    pdu_add_noise_impl(float noise_level, float offset, float scale, long seed, int dist);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_add_noise_impl();
-
     void handle_msg(pmt::pmt_t pdu);
 
-    /**
-     * Set Noise Level
-     *
-     * @param nl - noise level
-     */
-    void set_noise_level(float nl);
+public:
+    pdu_add_noise_impl(float noise_level, float offset, float scale, long seed, int dist);
 
-    /**
-     * Set offset, signal shifting
-     *
-     * @param o - offset
-     */
-    void set_offset(float o);
+    ~pdu_add_noise_impl();
 
-    /**
-     * Set Scale factor
-     *
-     * @param s - scale
-     */
-    void set_scale(float s);
-
-    /**
-     * Set noise distribution
-     *
-     * @param d - #noise_dist
-     */
-    void set_noise_dist(int d);
-
-    /**
-     * Set RNG seed
-     *
-     * @param x - seed
-     */
-    void set_seed(int x);
+    void set_noise_level(float nl) override;
+    void set_offset(float o) override;
+    void set_scale(float s) override;
+    void set_noise_dist(int d) override;
+    void set_seed(int x) override;
 };
 
 } // namespace pdu_utils

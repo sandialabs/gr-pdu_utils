@@ -23,46 +23,16 @@ private:
     uint64_t d_n_msgs;
 
 public:
-    /*!
-     * Constructor
-     *
-     * @param msg - PDU message to emit
-     */
     message_emitter_impl(pmt::pmt_t msg = pmt::PMT_NIL);
 
-    /**
-     * Deconstructor
-     */
     ~message_emitter_impl();
-    bool stop();      // overloaded for print output
-    void setup_rpc(); // enable controlport
+    bool stop() override;      // overloaded for print output
+    void setup_rpc() override; // enable controlport
 
-    /**
-     * Set Message to emit
-     *
-     * @param msg - message to emit
-     */
-    void set_msg(pmt::pmt_t msg);
-
-    /**
-     * Returns count of total messages emitted
-     *
-     * @return uint64_t
-     */
-    uint64_t get_n_msgs(void) { return d_n_msgs; }
-
-    /**
-     * Emits pre-specified message
-     */
-    void emit();
-
-    /**
-     * Emits passed message.
-     * If passed message is invalid, pre-specified message is emitted
-     *
-     * @param msg - Message to emit
-     */
-    void emit(pmt::pmt_t msg);
+    void set_msg(pmt::pmt_t msg) override;
+    uint64_t get_n_msgs(void) override { return d_n_msgs; }
+    void emit() override;
+    void emit(pmt::pmt_t msg) override;
 };
 
 } // namespace pdu_utils

@@ -21,26 +21,16 @@ private:
     int d_decimation;
     int d_phase;
 
-public:
-    /**
-     * Constructor
-     *
-     * @param decimation - decimation factor
-     * @param phase - offset into each PDU
-     */
-    pdu_downsample_impl(int decimation, int phase);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_downsample_impl();
-
     void handle_msg(pmt::pmt_t pdu);
 
-    // Where all the action really happens
+public:
+    pdu_downsample_impl(int decimation, int phase);
+
+    ~pdu_downsample_impl() override;
+
     int work(int noutput_items,
              gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items);
+             gr_vector_void_star& output_items) override;
 };
 
 } // namespace pdu_utils

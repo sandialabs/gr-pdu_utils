@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(pdu_head_tail.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(6960610f82194381f33952732ba1c14d)                     */
+/* BINDTOOL_HEADER_FILE_HASH(517b7ea163119881dce459c1e2c889d5)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -53,6 +53,12 @@ void bind_pdu_head_tail(py::module& m)
              &pdu_head_tail::set_histsize,
              py::arg("histsize"),
              D(pdu_head_tail, set_histsize))
+
+
+        .def("set_space_bytes",
+             &pdu_head_tail::set_space_bytes,
+             py::arg("spacebytes"),
+             D(pdu_head_tail, set_space_bytes))
 
         ;
 }

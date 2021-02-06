@@ -21,20 +21,12 @@ class pdu_quadrature_demod_cf_impl : public pdu_quadrature_demod_cf
 private:
     float d_sensitivity;
 
+    void handle_pdu(pmt::pmt_t pdu);
+
 public:
-    /**
-     * Constructor
-     *
-     * @param sensitivity -
-     */
     pdu_quadrature_demod_cf_impl(float sensitivity);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_quadrature_demod_cf_impl();
-
-    void handle_pdu(pmt::pmt_t pdu);
+    ~pdu_quadrature_demod_cf_impl() override;
 };
 
 } // namespace pdu_utils

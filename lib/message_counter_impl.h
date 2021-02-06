@@ -24,47 +24,23 @@ private:
     uint64_t d_ctr;
     std::string d_name;
 
-public:
-    /**
-     * Constructor
+    /*!
+     * \brief Message handler for input messages
      *
-     * @param name - name of counter
-     */
-    message_counter_impl(std::string name);
-
-    /**
-     * deconstructor
-     */
-    ~message_counter_impl();
-    virtual bool stop(); // overloaded for print output
-    void setup_rpc();    // enable controlport
-
-    /**
-     * message handler
-     *
-     * @param msg - incoming message
+     * \param msg Any PMT message passed from the scheduler's message handling.
      */
     void handle_msg(pmt::pmt_t msg);
 
-    /**
-     * resets the counter to zero
-     */
-    virtual void reset(void) { d_ctr = 0; }
+public:
+    message_counter_impl(std::string name);
 
+    ~message_counter_impl() override;
+    virtual bool stop() override; // overloaded for print output
+    void setup_rpc() override;    // enable controlport
 
-    /**
-     * returns the current value of the counter
-     *
-     * @return uint64_t - counter value.
-     */
-    virtual uint64_t get_ctr() { return d_ctr; }
-
-    /**
-     * returns the counter name
-     *
-     * @return pmt::pmt_t
-     */
-    virtual std::string get_name(void) { return d_name; }
+    virtual void reset(void) override { d_ctr = 0; }
+    virtual uint64_t get_ctr() override { return d_ctr; }
+    virtual std::string get_name(void) override { return d_name; }
 
 }; // end class message_counter_impl
 

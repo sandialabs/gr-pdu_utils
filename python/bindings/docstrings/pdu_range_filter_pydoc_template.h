@@ -18,7 +18,22 @@
 static const char* __doc_gr_pdu_utils_pdu_range_filter = R"doc()doc";
 
 
-static const char* __doc_gr_pdu_utils_pdu_range_filter_pdu_range_filter = R"doc()doc";
+static const char* __doc_gr_pdu_utils_pdu_range_filter_pdu_range_filter_0 = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_range_filter_pdu_range_filter_1 = R"doc()doc";
 
 
 static const char* __doc_gr_pdu_utils_pdu_range_filter_make = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_range_filter_set_key = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_range_filter_set_min = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_range_filter_set_max = R"doc()doc";
+
+
+static const char* __doc_gr_pdu_utils_pdu_range_filter_set_inversion = R"doc()doc";

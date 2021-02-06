@@ -25,9 +25,10 @@ private:
 
 public:
     pdu_rotate_impl(double phase_inc);
-    ~pdu_rotate_impl();
 
-    void set_phase_inc(double phase_inc);
+    ~pdu_rotate_impl() override;
+
+    void set_phase_inc(double phase_inc) override;
 };
 
 } // namespace pdu_utils

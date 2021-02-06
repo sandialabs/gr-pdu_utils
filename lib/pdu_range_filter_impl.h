@@ -27,25 +27,14 @@ private:
     void pdu_handler(pmt::pmt_t pdu);
 
 public:
-    /**
-     * Constructor
-     *
-     * @param key - dict key to filter on
-     * @param min - min value, inclusive
-     * @param max - max value, inclusive
-     * @param invert - false to pass values [min..max], true to pass outside range
-     */
     pdu_range_filter_impl(pmt::pmt_t key, double min, double max, bool invert);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_range_filter_impl();
+    ~pdu_range_filter_impl() override;
 
-    void set_key(pmt::pmt_t key) { d_key = key; }
-    void set_min(double min) { d_min = min; }
-    void set_max(double max) { d_max = max; }
-    void set_inversion(bool invert) { d_invert = invert; }
+    void set_key(pmt::pmt_t key) override { d_key = key; }
+    void set_min(double min) override { d_min = min; }
+    void set_max(double max) override { d_max = max; }
+    void set_inversion(bool invert) override { d_invert = invert; }
 };
 
 } // namespace pdu_utils

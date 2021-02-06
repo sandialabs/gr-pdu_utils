@@ -40,6 +40,34 @@ public:
      * @param invert - false to pass values [min..max], true to pass outside range
      */
     static sptr make(pmt::pmt_t key, double min, double max, bool invert);
+
+    /**
+     * Set Filter Key
+     *
+     * @param key - Key
+     */
+    virtual void set_key(pmt::pmt_t key) = 0;
+
+    /**
+     * Set Minimum Value
+     *
+     * @param min - Minimum Value
+     */
+    virtual void set_min(double min) = 0;
+
+    /**
+     * Set Maximum Value
+     *
+     * @param max - Maximum Value
+     */
+    virtual void set_max(double max) = 0;
+
+    /**
+     * Set Filter Inversion
+     *
+     * @param invert - Invert Filter
+     */
+    virtual void set_inversion(bool invert) = 0;
 };
 
 } // namespace pdu_utils

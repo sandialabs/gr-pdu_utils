@@ -30,20 +30,9 @@ private:
     align_modes d_mode;
 
 public:
-    /**
-     * Constructor
-     *
-     * @param syncwords - binary syncword to search for
-     * @param threshold - number of bit errors allowed
-     * @param offset - bit offset to pass through
-     * @param mode - Align mode
-     */
     pdu_align_impl(std::string syncwords, int threshold, int offset, align_modes mode);
 
-    /**
-     * Deconstructor
-     */
-    ~pdu_align_impl();
+    ~pdu_align_impl() override;
 };
 
 } // namespace pdu_utils

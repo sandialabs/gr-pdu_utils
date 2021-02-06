@@ -37,6 +37,11 @@ public:
     static sptr make(bool enabled);
 
     /**
+     * Resets state of block
+     */
+    virtual void reset(void) = 0;
+
+    /**
      * Return count of passed messages
      *
      * @return uint64_t

@@ -42,29 +42,13 @@ private:
     window_type d_window_type;
 
 public:
-    /**
-     * Constructor
-     *
-     * @param binary_slice - true if binary slicing to produce a u8vector
-     * @param debug - true to enable debug ports and logging
-     * @param type - window type to use.
-     */
     pdu_clock_recovery_impl(bool binary_slice,
                             bool debug = false,
                             window_type type = TUKEY_WIN);
 
-    /**
-     * deconstructor
-     */
-    ~pdu_clock_recovery_impl();
+    ~pdu_clock_recovery_impl() override;
 
-    /**
-     * Specify what window type to use.
-     *
-     *
-     * @param type - Window type to use
-     */
-    virtual void set_window_type(window_type type);
+    virtual void set_window_type(window_type type) override;
 
 private:
     /**

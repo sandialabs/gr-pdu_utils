@@ -25,35 +25,15 @@ private:
     filter::kernel::fir_filter_fff* d_fir;
     std::vector<float> d_log_ramp;
 
-public:
-    /**
-     * constructor
-     *
-     * @param sensitivity -
-     * @param taps -
-     */
-    pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> taps);
-
-    /**
-     * Deconstructor
-     */
-    ~pdu_gmsk_fc_impl();
-
     void handle_pdu(pmt::pmt_t pdu);
 
-    /**
-     * Sets sensitivity
-     *
-     * @param sensitivity -
-     */
-    void set_sensitivity(float sensitivity);
+public:
+    pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> taps);
 
-    /**
-     * Sets taps array
-     *
-     * @param taps -
-     */
-    void set_taps(std::vector<float> taps);
+    ~pdu_gmsk_fc_impl() override;
+
+    void set_sensitivity(float sensitivity) override;
+    void set_taps(std::vector<float> taps) override;
 };
 
 } // namespace pdu_utils

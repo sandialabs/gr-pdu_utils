@@ -22,35 +22,15 @@ private:
     uint32_t d_n;
     bool d_repeat;
 
-public:
-    /**
-     * Constructor
-     *
-     * @param n - upsample by factor n
-     * @param repeat - true to repeat values, false to zero fill
-     */
-    upsample_impl(uint32_t n, bool repeat);
-
-    /**
-     * Deconstructor
-     */
-    ~upsample_impl();
-
     void handle_msg(pmt::pmt_t);
 
-    /**
-     * Set upsample factor
-     *
-     * @param n
-     */
-    void set_n(uint32_t n);
+public:
+    upsample_impl(uint32_t n, bool repeat);
 
-    /**
-     * Set repeat behavior
-     *
-     * @param repeat = true to report values, false to zero fill
-     */
-    void set_repeat(bool repeat);
+    ~upsample_impl() override;
+
+    void set_n(uint32_t n) override;
+    void set_repeat(bool repeat) override;
 };
 
 } // namespace pdu_utils
