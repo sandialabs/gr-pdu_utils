@@ -14,11 +14,10 @@ import os
 
 # import pybind11 generated symbols into the pdu_utils namespace
 try:
+    # this might fail if the module is python-only
     from .pdu_utils_python import *
-except ImportError:
-    dirname, filename = os.path.split(os.path.abspath(__file__))
-    __path__.append(os.path.join(dirname, "bindings"))
-    from .pdu_utils_python import *
+except ModuleNotFoundError:
+    pass
 
 # import any pure python here
 from .pdu_flow_ctrl import pdu_flow_ctrl
