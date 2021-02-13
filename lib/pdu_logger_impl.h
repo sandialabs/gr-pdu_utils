@@ -22,8 +22,9 @@ private:
     std::string d_logfile;
     int d_burstnum;
 
-    void write_data_c(const gr_complex* data, size_t len, char* name, int num);
-    void write_data_f(const float* data, size_t len, char* name, int num);
+    void write_data_c32(const gr_complex* data, size_t len, char* name, int num);
+    void write_data_f32(const float* data, size_t len, char* name, int num);
+    void write_data_u8(const char* data, size_t len, char* name, int num);
 
 public:
     /**

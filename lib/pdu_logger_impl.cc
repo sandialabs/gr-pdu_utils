@@ -46,7 +46,7 @@ void pdu_logger_impl::handle_pdu(pmt::pmt_t pdu)
 {
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
-        GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-pair)");
+        GR_LOG_NOTICE(d_logger, "Received unexpected message (non-pair). Dropping");
         return;
     }
 
@@ -55,16 +55,22 @@ void pdu_logger_impl::handle_pdu(pmt::pmt_t pdu)
 
     if (pmt::is_c32vector(samples)) {
         const gr_complex* burst = (const gr_complex*)pmt::c32vector_elements(samples, N);
-        write_data_c(burst, N, (char*)"c", d_burstnum);
+        write_data_c32(burst, N, (char*)"c32", d_burstnum);
         d_burstnum++;
     } else if (pmt::is_f32vector(samples)) {
         const float* burst = (const float*)pmt::f32vector_elements(samples, N);
-        write_data_f(burst, N, (char*)"f", d_burstnum);
+        write_data_f32(burst, N, (char*)"f32", d_burstnum);
         d_burstnum++;
+    } else if (pmt::is_u8vector(samples)) {
+        const char* burst = (const char*)pmt::u8vector_elements(samples, N);
+        write_data_u8(burst, N, (char*)"u8", d_burstnum);
+        d_burstnum++;
+    } else {
+        GR_LOG_NOTICE(d_logger, "Received PDU of unhandled data type (C32, F32, U8 supported). Dropping.");
     }
 }
 
-void pdu_logger_impl::write_data_c(const gr_complex* data,
+void pdu_logger_impl::write_data_c32(const gr_complex* data,
                                    size_t len,
                                    char* name,
                                    int num)
@@ -81,7 +87,7 @@ void pdu_logger_impl::write_data_c(const gr_complex* data,
     }
 }
 
-void pdu_logger_impl::write_data_f(const float* data, size_t len, char* name, int num)
+void pdu_logger_impl::write_data_f32(const float* data, size_t len, char* name, int num)
 {
     char filename[512];
     sprintf(filename, "%s%s_%04d.f32", d_logfile.c_str(), name, num);
@@ -91,6 +97,20 @@ void pdu_logger_impl::write_data_f(const float* data, size_t len, char* name, in
         perror(strcat(msg, filename));
     } else {
         fwrite(data, sizeof(float), len, fp);
+        fclose(fp);
+    }
+}
+
+void pdu_logger_impl::write_data_u8(const char* data, size_t len, char* name, int num)
+{
+    char filename[512];
+    sprintf(filename, "%s%s_%04d.u8", d_logfile.c_str(), name, num);
+    FILE* fp = fopen(filename, "wb");
+    if (fp == NULL) {
+        char msg[128] = "Error opening ";
+        perror(strcat(msg, filename));
+    } else {
+        fwrite(data, sizeof(char), len, fp);
         fclose(fp);
     }
 }
