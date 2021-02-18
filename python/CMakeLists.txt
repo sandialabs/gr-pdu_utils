@@ -34,7 +34,8 @@ include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-pdu_utils)
 set(GR_TEST_LIBRARY_DIRS /usr/local/lib64)
-set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
+set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/python)
+
 GR_ADD_TEST(qa_constants ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_constants.py)
 GR_ADD_TEST(qa_tags_to_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tags_to_pdu.py)
 GR_ADD_TEST(qa_take_skip_to_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_take_skip_to_pdu.py)
