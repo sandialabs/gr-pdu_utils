@@ -178,6 +178,9 @@ void tags_to_pdu_impl<T>::publish_message()
         PMTCONSTSTR__uhd_time_tuple()); // TODO: remove, no longer necessary?
     d_meta_dict = pmt::dict_add(
         d_meta_dict, PMTCONSTSTR__pdu_num(), pmt::from_uint64(d_burst_counter));
+    d_meta_dict = pmt::dict_add(
+        d_meta_dict, PMTCONSTSTR__sample_rate(), pmt::from_double(d_samp_rate));
+    
     if (d_wall_clock_time) {
         double t_now((boost::get_system_time() - d_epoch).total_microseconds() /
                      1000000.0);
