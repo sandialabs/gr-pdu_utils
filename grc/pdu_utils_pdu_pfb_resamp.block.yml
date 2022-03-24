@@ -44,7 +44,7 @@ templates:
         % if taps:
             ${taps},
         % else:
-            filter.firdes.low_pass_2(${nfilts}, ${nfilts}, 0.4, 0.2, 100, filter.firdes.WIN_BLACKMAN_HARRIS) \
+            filter.firdes.low_pass_2(${nfilts}, ${nfilts}, 0.4, 0.2, 100, fft.window.WIN_BLACKMAN_HARRIS) \
             if ${resamp_rate} < 1 \
             else filter.optfir.low_pass(${nfilts}, ${nfilts}, 0.4, 0.6, .1, 100),
         % endif
