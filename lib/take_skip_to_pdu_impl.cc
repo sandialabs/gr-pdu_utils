@@ -12,6 +12,7 @@
 #endif
 
 #include "take_skip_to_pdu_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 //#include <pmt/pmt.h>
 

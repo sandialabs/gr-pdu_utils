@@ -12,6 +12,7 @@
 #endif
 
 #include "pack_unpack_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 
 namespace gr {

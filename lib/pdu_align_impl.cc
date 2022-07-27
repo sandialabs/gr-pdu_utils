@@ -14,6 +14,7 @@
 #include "pdu_align_impl.h"
 #include <gnuradio/io_signature.h>
 #include <pdu_utils/constants.h>
+#include <boost/format.hpp>
 #include <volk/volk.h>
 
 namespace gr {

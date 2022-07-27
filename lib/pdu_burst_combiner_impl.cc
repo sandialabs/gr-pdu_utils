@@ -13,6 +13,7 @@
 
 #include "pdu_burst_combiner_impl.h"
 #include "pdu_utils/constants.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 
 #include <cmath>

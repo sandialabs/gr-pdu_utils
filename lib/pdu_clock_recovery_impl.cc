@@ -12,6 +12,7 @@
 #endif
 
 #include "pdu_clock_recovery_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 #include <volk/volk.h>
 

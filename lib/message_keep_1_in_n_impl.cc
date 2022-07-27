@@ -12,6 +12,7 @@
 #endif
 
 #include "message_keep_1_in_n_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 
 namespace gr {

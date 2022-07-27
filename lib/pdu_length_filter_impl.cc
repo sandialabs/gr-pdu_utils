@@ -12,6 +12,7 @@
 #endif
 
 #include "pdu_length_filter_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 
 namespace gr {

@@ -12,6 +12,7 @@
 #endif
 
 #include "tag_message_trigger_impl.h"
+#include <boost/format.hpp>
 #include <gnuradio/io_signature.h>
 
 namespace gr {
