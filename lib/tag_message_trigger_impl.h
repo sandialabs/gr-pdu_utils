@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_TAG_MESSAGE_TRIGGER_IMPL_H
 #define INCLUDED_PDU_UTILS_TAG_MESSAGE_TRIGGER_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/tag_message_trigger.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/tag_message_trigger.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -20,22 +20,24 @@ template <class T>
 class tag_message_trigger_impl : public tag_message_trigger<T>
 {
 private:
-    pmt::pmt_t d_message;      // message to send
     pmt::pmt_t d_trigger_key;  // tag key to trigger message
     pmt::pmt_t d_arming_key;   // tag key to arm message trigger
     pmt::pmt_t d_time_tag_key; // tag key to arm message trigger
+    bool d_fire_at_will;      // if set, fire anytime trigger is received
+    bool d_armed;             // armed state
+    pmt::pmt_t d_message;      // message to send
+    uint64_t d_last_trigger_offset;
+
     double d_samp_rate;
     double d_start_time;
     bool d_tpdu_mode;
-    uint64_t d_disarm_offset; // offset the block should disarm at
-    bool d_fire_at_will;      // if set, fire anytime trigger is received
-    bool d_armed;             // armed state
     uint64_t d_tx_limit;      // prevent additional transmissions
+
+    uint64_t d_disarm_offset; // offset the block should disarm at
     bool d_no_holdoff;
     uint32_t d_holdoff; // holdoff - maximum arming time if there is a
                         // a trigger, or if not minimum interval in
                         // samples between trigger events
-    uint64_t d_last_trigger_offset;
 
     uint64_t d_known_time_int_sec; // known integer seconds of a particular item
     double d_known_time_frac_sec;  // known fractional seconds of a particular item

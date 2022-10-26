@@ -15,7 +15,7 @@
 #include <gnuradio/io_signature.h>
 
 #include <gnuradio/fxpt.h>
-#include <pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/constants.h>
 #include <cmath>
 
 
@@ -34,8 +34,8 @@ pdu_gmsk_fc_impl::pdu_gmsk_fc_impl(float sensitivity, const std::vector<float> t
     : gr::block("pdu_gmsk_fc",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
-      d_phase(0),
       d_sensitivity(sensitivity),
+      d_phase(0),
       d_taps(taps)
 {
     d_fir = new filter::kernel::fir_filter_fff(taps);
@@ -75,7 +75,6 @@ void pdu_gmsk_fc_impl::handle_pdu(pmt::pmt_t pdu)
 
     if (pmt::is_f32vector(v_data)) {
         uint32_t v_len = pmt::length(v_data);
-        size_t offset = 0;
 
         const std::vector<float> d_in = pmt::f32vector_elements(v_data);
 
@@ -86,7 +85,7 @@ void pdu_gmsk_fc_impl::handle_pdu(pmt::pmt_t pdu)
         mod.resize(v_len);
 
         // do FIR filtering
-        for (int ii = 0; ii < v_len; ii++) {
+        for (uint32_t ii = 0; ii < v_len; ii++) {
             if (d_taps.size() > 1) {
                 float in_filt = 0;
 

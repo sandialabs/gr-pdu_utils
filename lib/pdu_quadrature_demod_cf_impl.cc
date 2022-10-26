@@ -14,7 +14,7 @@
 #include "pdu_quadrature_demod_cf_impl.h"
 #include <gnuradio/io_signature.h>
 #include <gnuradio/math.h>
-#include <pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/constants.h>
 
 #include <inttypes.h>
 #include <volk/volk.h>
@@ -60,7 +60,7 @@ void pdu_quadrature_demod_cf_impl::handle_pdu(pmt::pmt_t pdu)
     std::vector<float> out(burst_size);
 
     volk_32fc_x2_multiply_conjugate_32fc(&tmp[0], &burst[1], &burst[0], burst_size);
-    for (int i = 0; i < burst_size; i++) {
+    for (size_t i = 0; i < burst_size; i++) {
         out[i] = d_sensitivity * gr::fast_atan2f(imag(tmp[i]), real(tmp[i]));
     }
 

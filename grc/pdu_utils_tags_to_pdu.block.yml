@@ -117,7 +117,7 @@ asserts:
 
 templates:
     imports: |-
-        import pdu_utils
+        from gnuradio import pdu_utils
         import pmt
     make: |
         pdu_utils.tags_to_pdu_${type}(pmt.intern(${start_tag}), pmt.intern(${end_tag}), ${max_pdu_size}, ${rate}, ${prepend}, ${pub_det}, ${tail_size}, ${start_time})

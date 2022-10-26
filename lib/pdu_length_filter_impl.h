@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_LENGTH_FILTER_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_LENGTH_FILTER_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_length_filter.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_length_filter.h>
 
 namespace gr {
 namespace pdu_utils {

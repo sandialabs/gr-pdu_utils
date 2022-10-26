@@ -275,7 +275,7 @@ int pdu_to_bursts_impl<T>::work(int noutput_items,
     }
 
     // if everything remaining will fit, send it and tag EOB
-    if (data_remaining <= noutput_items) {
+    if ((int)data_remaining <= noutput_items) {
         // std::cout << "writing " << data_remaining << " items (done)" << std::endl;
 
         memcpy(out, &d_data[0], d_itemsize * data_remaining);

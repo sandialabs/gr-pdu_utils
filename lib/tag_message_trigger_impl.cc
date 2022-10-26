@@ -165,9 +165,9 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
 {
     gr::thread::scoped_lock l(this->d_setlock);
 
-    const T* in = (const T*)input_items[0];
+   // const T* in = (const T*)input_items[0];
 
-    uint32_t consumed = noutput_items;
+   // uint32_t consumed = noutput_items;
     uint64_t a_start = this->nitems_read(0);
     uint64_t a_end = a_start + noutput_items;
 
@@ -175,7 +175,7 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
     this->get_tags_in_range(d_tags, 0, a_start, a_end);
 
     // find relavant tags:
-    for (int ii = 0; ii < d_tags.size(); ii++) {
+    for (size_t ii = 0; ii < d_tags.size(); ii++) {
         d_tag = d_tags[ii];
         if (pmt::eqv(d_tag.key, d_arming_key)) {
             d_armed = true;

@@ -12,7 +12,7 @@
 #endif
 
 #include "pdu_rotate_impl.h"
-#include "pdu_utils/constants.h"
+#include "gnuradio/pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
 
 namespace gr {

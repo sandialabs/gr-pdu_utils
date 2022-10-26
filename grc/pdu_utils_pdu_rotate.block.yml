@@ -3,7 +3,7 @@ label: PDU Rotate
 category: '[Sandia]/PDU Utilities/'
 
 templates:
-  imports: import pdu_utils
+  imports: from gnuradio import pdu_utils
   make: pdu_utils.pdu_rotate(${phase_inc})
   callbacks:
   - set_phase_inc(${phase_inc})

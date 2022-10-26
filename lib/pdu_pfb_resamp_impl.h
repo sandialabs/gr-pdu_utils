@@ -11,8 +11,8 @@
 #define INCLUDED_PDU_UTILS_PDU_PFB_RESAMP_IMPL_H
 
 #include <gnuradio/filter/pfb_arb_resampler.h>
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_pfb_resamp.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_pfb_resamp.h>
 
 namespace gr {
 namespace pdu_utils {

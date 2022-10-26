@@ -43,7 +43,7 @@ asserts:
 
 templates:
     imports: |-
-        import pdu_utils
+        from gnuradio import pdu_utils
         import numpy
     make: pdu_utils.pdu_preamble(${preamble}, ${tail}, ${interp}, ${zero_pad}, ${nrz})
     callbacks:

@@ -16,7 +16,7 @@ inputs:
 templates:
     imports: |-
         import pmt
-        import pdu_utils
+        from gnuradio import pdu_utils
     make: pdu_utils.message_counter( ${name} )
 
 file_format: 1

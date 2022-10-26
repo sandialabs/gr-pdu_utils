@@ -32,7 +32,7 @@ outputs:
 
 templates:
     imports: |-
-        import pdu_utils
+        from gnuradio import pdu_utils
         import pmt
     make: pdu_utils.extract_metadata(${key}, ${scale}, ${offset})
     callbacks:

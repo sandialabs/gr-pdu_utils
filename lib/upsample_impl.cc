@@ -84,14 +84,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint8_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -104,14 +104,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<int8_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -124,14 +124,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint16_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -144,14 +144,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<int16_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -164,14 +164,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint32_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -184,14 +184,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<int32_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -204,14 +204,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint64_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -224,14 +224,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<int64_t> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -244,14 +244,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<float> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -264,14 +264,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<double> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }
@@ -284,14 +284,14 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<gr_complex> output;
         if (d_repeat) {
             output.reserve(out_len);
-            for (int ii = 0; ii < v_len; ii++) {
-                for (int jj = 0; jj < d_n; jj++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
+                for (size_t jj = 0; jj < d_n; jj++) {
                     output.push_back(in_data[ii]);
                 }
             }
         } else {
             output.resize(out_len, 0);
-            for (int ii = 0; ii < v_len; ii++) {
+            for (size_t ii = 0; ii < v_len; ii++) {
                 output[ii * d_n] = in_data[ii];
             }
         }

@@ -13,16 +13,16 @@
 
 #include "pdu_align_impl.h"
 #include <gnuradio/io_signature.h>
-#include <pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
 
 namespace gr {
 namespace pdu_utils {
 
 pdu_align::sptr
-pdu_align::make(std::string syncwords, int threshold, int offset, align_modes mode)
+pdu_align::make(std::string syncwords, int threshold, int offset, align_modes mode, align_match_mode match_mode)
 {
-    return gnuradio::make_block_sptr<pdu_align_impl>(syncwords, threshold, offset, mode);
+    return gnuradio::make_block_sptr<pdu_align_impl>(syncwords, threshold, offset, mode, match_mode);
 }
 
 /*
@@ -31,38 +31,51 @@ pdu_align::make(std::string syncwords, int threshold, int offset, align_modes mo
 pdu_align_impl::pdu_align_impl(std::string syncwords,
                                int threshold,
                                int offset,
-                               align_modes mode)
+                               align_modes mode,
+			       align_match_mode match_mode)
     : gr::block(
           "pdu_align", gr::io_signature::make(0, 0, 0), gr::io_signature::make(0, 0, 0)),
       d_threshold(threshold),
       d_offset(offset),
-      d_mode(mode)
+      d_mode(mode),
+      d_match_mode(match_mode)
 {
 
     // convert comma delimited binary syncwords to vector of unsigned ints
     std::stringstream ss(syncwords);
+    
     while (ss.good()) {
+	bool is_hex = false;
         std::string syncword;
         getline(ss, syncword, ',');
         // remove leading whitespace
         while (std::isspace(syncword[0])) {
             syncword.erase(syncword.begin());
         }
-        // remove '0b' prefix if it's there
+        // check for hex prefix
+	if (syncword.length() > 2 && syncword[0] == '0' && syncword[1] == 'x'){
+	    is_hex = true;
+	}
+	// remove '0b' prefix if it's there
         if (syncword.length() > 2 && syncword[0] == '0' && syncword[1] == 'b') {
             syncword = syncword.substr(2, std::string::npos);
         }
         size_t syncword_len;
         uint64_t syncword_int, mask_int;
         try {
-            syncword_int = std::stoul(syncword, &syncword_len, 2);
+            syncword_int = (is_hex) ? std::stoul(syncword, &syncword_len, 16)
+		    		    : std::stoul(syncword, &syncword_len, 2);
+	    syncword_len = (is_hex) ? 4 * (syncword_len - 2)
+		    	            : syncword_len;
             mask_int = (syncword_len >= 64 ? -1 : (1lu << syncword_len) - 1);
-        } catch (std::invalid_argument ex) {
-            GR_LOG_ERROR(d_logger,
-                         boost::format("unable to parse syncword '%s' (must be base 2)") %
+            std::cout << "syncword_int = " << std::bitset<16>(syncword_int) << std::endl;
+	} catch (std::invalid_argument& ex) {
+            GR_LOG_ERROR(
+			 d_logger,
+                         boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
                              syncword.c_str());
             exit(1);
-        } catch (std::out_of_range ex) {
+        } catch (std::out_of_range& ex) {
 
             GR_LOG_ERROR(d_logger,
                          boost::format("syncword '%s' out of range (max of 64 bits)") %
@@ -75,6 +88,8 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
         d_syncwords.push_back(syncword_int);
         d_syncword_lens.push_back(syncword_len);
         d_masks.push_back(mask_int);
+	std::cout << "syncword = " << d_syncwords[0] << std::endl;
+	std::cout << "syncword len = " << d_syncword_lens[0] << std::endl;
     }
 
 
@@ -152,15 +167,19 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
 
     uint64_t nwrong = 0;
     uint64_t data_reg = 0;
+    int current_best = d_threshold + 1;
+    bool found = false;
+    int look_ahead = d_syncword_lens[0]/2;
+    int start_idx = 0;
 
     // take the bits one at a time, checking for a match
-    for (int bit_idx = 0; bit_idx < data_len; bit_idx++) {
-
-        // shift in the next bit
+    for (size_t bit_idx = 0; bit_idx < data_len; bit_idx++) {
+	  
+	// shift in the next bit
         data_reg = (data_reg << 1) | (data[bit_idx] & 0x1);
-
-        // compare with each syncword
-        for (int sync_idx = 0; sync_idx < d_syncwords.size(); sync_idx++) {
+        
+	// compare with each syncword
+        for (size_t sync_idx = 0; sync_idx < d_syncwords.size(); sync_idx++) {
             uint64_t to_test = (data_reg ^ d_syncwords[sync_idx]) & d_masks[sync_idx];
             // printf("to test: %016lx vs %016lx -> %016lx\n", data_reg &
             // d_masks[sync_idx],
@@ -168,21 +187,50 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
             volk_64u_popcnt(&nwrong, to_test);
             // printf("nwrong = %ld,bit_idx = %d, len = %ld,threshold = %d\n",nwrong,
             //   bit_idx,d_syncword_lens[sync_idx],d_threshold);
-
+	
             // check for a match
-            if ((nwrong <= d_threshold) and
-                ((size_t)bit_idx >= (d_syncword_lens[sync_idx] - 1))) {
-                int start_idx = bit_idx + 1 + d_offset;
-                // printf("found match at index %d\n", start_idx);
-                update_time_metadata(metadata, start_idx);
-                pmt::pmt_t data_vec =
+            if (((int)nwrong <= d_threshold) and
+                ((size_t)bit_idx >= (d_syncword_lens[sync_idx] - 1)) and
+	        ((int)nwrong < current_best))  {
+                found = true;
+		current_best = nwrong;
+		start_idx = bit_idx + 1 + d_offset;
+                look_ahead = d_syncword_lens[sync_idx]/2;
+		//printf("found match at index %d\n", start_idx);
+                
+		if ((d_match_mode == ALIGN_FIRST_MATCH) or (current_best == 0)){
+	            update_time_metadata(metadata, start_idx);
+                    pmt::pmt_t data_vec =
                     pmt::init_u8vector(data_len - start_idx, data + start_idx);
-                message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
-                return;
-            }
-        }
-    }
+               	     message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
+                    return;
+		}
+	    }
+	}
+	   if (d_match_mode == ALIGN_BEST_MATCH){
+                if (found and (int)bit_idx > (start_idx + look_ahead)){
+                      update_time_metadata(metadata, start_idx);
+                      pmt::pmt_t data_vec =
+                      pmt::init_u8vector(data_len - start_idx, data + start_idx);
+                      message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
+                      return;
 
+                        }
+                }
+        
+
+    }
+	// ALIGN_FIRST_MATCH or ALIGN_BEST_MATCH
+	// d_match_mode
+	//
+    // If match found but didn't publish yet, publish now
+    if (found){
+	    update_time_metadata(metadata, start_idx);
+            pmt::pmt_t data_vec =
+            pmt::init_u8vector(data_len - start_idx, data + start_idx);
+            message_port_pub(PMTCONSTSTR__pdu_out(), pmt::cons(metadata, data_vec));
+	    return;
+    }
     // syncword not found - what should we do?
     if (d_mode == ALIGN_FORWARD) {
         message_port_pub(PMTCONSTSTR__pdu_out(), pdu);

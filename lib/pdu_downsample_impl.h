@@ -10,7 +10,7 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_DOWNSAMPLE_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_DOWNSAMPLE_IMPL_H
 
-#include <pdu_utils/pdu_downsample.h>
+#include <gnuradio/pdu_utils/pdu_downsample.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -28,9 +28,8 @@ public:
 
     ~pdu_downsample_impl() override;
 
-    int work(int noutput_items,
-             gr_vector_const_void_star& input_items,
-             gr_vector_void_star& output_items) override;
+
+
 };
 
 } // namespace pdu_utils

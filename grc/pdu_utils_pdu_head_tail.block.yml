@@ -39,7 +39,7 @@ asserts:
 - ${ histsize <= 4096 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.pdu_head_tail(${pdu_type}, ${length}, ${histsize})
     callbacks:
     - set_length(${length})

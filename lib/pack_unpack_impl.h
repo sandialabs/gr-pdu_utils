@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PACK_UNPACK_IMPL_H
 #define INCLUDED_PDU_UTILS_PACK_UNPACK_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pack_unpack.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pack_unpack.h>
 
 namespace gr {
 namespace pdu_utils {

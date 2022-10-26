@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_GATE_IMPL_H
 #define INCLUDED_PDU_UTILS_MESSAGE_GATE_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/message_gate.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/message_gate.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -20,8 +20,8 @@ class message_gate_impl : public message_gate
 {
 private:
     bool d_enabled;
-    uint64_t d_n_passed;
     uint64_t d_n_blocked;
+    uint64_t d_n_passed;
 
     /*!
      * \brief Message handler for input messages

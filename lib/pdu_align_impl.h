@@ -10,7 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_ALIGN_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_ALIGN_IMPL_H
 
-#include <pdu_utils/pdu_align.h>
+#include <gnuradio/pdu_utils/pdu_align.h>
+#include <gnuradio/pdu_utils/constants.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -25,12 +26,13 @@ private:
     std::vector<size_t> d_syncword_lens;
     std::vector<uint64_t> d_masks;
 
-    int d_offset;
     int d_threshold;
+    int d_offset;
     align_modes d_mode;
+    align_match_mode d_match_mode;
 
 public:
-    pdu_align_impl(std::string syncwords, int threshold, int offset, align_modes mode);
+    pdu_align_impl(std::string syncwords, int threshold, int offset, align_modes mode, align_match_mode match_mode);
 
     ~pdu_align_impl() override;
 };

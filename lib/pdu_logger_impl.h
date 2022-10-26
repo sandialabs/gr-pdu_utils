@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_LOGGER_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_LOGGER_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_logger.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_logger.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -20,7 +20,9 @@ class pdu_logger_impl : public pdu_logger
 {
 private:
     std::string d_logfile;
-    int d_burstnum;
+    uint32_t d_pdus_per_file;
+    uint32_t d_burstnum;
+    uint32_t d_filenum;
 
     void write_data_c32(const gr_complex* data, size_t len, char* name, int num);
     void write_data_f32(const float* data, size_t len, char* name, int num);
@@ -29,6 +31,7 @@ private:
     void handle_pdu(pmt::pmt_t pdu);
 
 public:
+    pdu_logger_impl(std::string logfile, uint32_t pdus_per_file);
     pdu_logger_impl(std::string logfile);
 
     ~pdu_logger_impl() override;

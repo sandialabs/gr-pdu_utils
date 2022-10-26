@@ -11,7 +11,7 @@
 #define INCLUDED_PDU_UTILS_PDU_ROTATE_IMPL_H
 
 #include <gnuradio/blocks/rotator.h>
-#include <pdu_utils/pdu_rotate.h>
+#include <gnuradio/pdu_utils/pdu_rotate.h>
 
 namespace gr {
 namespace pdu_utils {

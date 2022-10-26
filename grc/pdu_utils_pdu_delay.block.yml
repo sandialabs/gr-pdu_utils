@@ -1,0 +1,30 @@
+id: pdu_utils_pdu_delay
+label: PDU Delay
+category: '[Sandia]/PDU Utilities/'
+
+parameters:
+- id: delay
+  label: Delay (s)
+  dtype: float
+  default: '0'
+- id: debug
+  label: Debug Mode
+  dtype: bool
+  default: 'False'
+
+inputs:
+-   domain: message
+    id: pdu_in
+
+outputs:
+-   domain: message
+    id: pdu_out
+
+templates:
+  imports: from gnuradio import pdu_utils
+  make: pdu_utils.pdu_delay(${delay})
+  callbacks:
+  - set_delay(${delay})
+  - set_debug(${debug})
+
+file_format: 1

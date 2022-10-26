@@ -11,7 +11,7 @@
 #define INCLUDED_PDU_UTILS_PDU_GMSK_FC_IMPL_H
 
 #include <gnuradio/filter/fir_filter.h>
-#include <pdu_utils/pdu_gmsk_fc.h>
+#include <gnuradio/pdu_utils/pdu_gmsk_fc.h>
 
 namespace gr {
 namespace pdu_utils {

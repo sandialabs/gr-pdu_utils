@@ -84,7 +84,7 @@ asserts:
 
 templates:
     imports: |-
-        import pdu_utils
+        from gnuradio import pdu_utils
         import pmt
     make: pdu_utils.tag_message_trigger_${type}(${trig_key}, ${arm_key}, ${msg}, ${holdoff},
         ${samp_rate}, ${start_time}, ${delay_time}, ${tpdu_mode})

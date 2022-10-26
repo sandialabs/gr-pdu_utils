@@ -12,8 +12,8 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_flow_ctrl_helper.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_flow_ctrl_helper.h>
 
 namespace gr {
 namespace pdu_utils {

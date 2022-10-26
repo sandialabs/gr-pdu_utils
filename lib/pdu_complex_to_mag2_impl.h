@@ -10,7 +10,7 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_COMPLEX_TO_MAG2_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_COMPLEX_TO_MAG2_IMPL_H
 
-#include <pdu_utils/pdu_complex_to_mag2.h>
+#include <gnuradio/pdu_utils/pdu_complex_to_mag2.h>
 
 namespace gr {
 namespace pdu_utils {

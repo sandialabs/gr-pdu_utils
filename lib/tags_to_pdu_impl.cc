@@ -180,7 +180,7 @@ void tags_to_pdu_impl<T>::publish_message()
         d_meta_dict, PMTCONSTSTR__pdu_num(), pmt::from_uint64(d_burst_counter));
     d_meta_dict = pmt::dict_add(
         d_meta_dict, PMTCONSTSTR__sample_rate(), pmt::from_double(d_samp_rate));
-    
+
     if (d_wall_clock_time) {
         double t_now((boost::get_system_time() - d_epoch).total_microseconds() /
                      1000000.0);
@@ -217,7 +217,7 @@ int tags_to_pdu_impl<T>::work(int noutput_items,
 
     // find first SOB/EOB tag and process an time/offset tags encountered
     d_tag_type = NONE;
-    for (int ii = 0; ii < d_tags.size(); ii++) {
+    for (size_t ii = 0; ii < d_tags.size(); ii++) {
         d_tag = d_tags[ii];
         if (pmt::eqv(d_tag.key, d_sob_tag_key)) {
             d_tag_type = SOB;

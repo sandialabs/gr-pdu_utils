@@ -12,7 +12,7 @@
 #endif
 
 #include "pdu_downsample_impl.h"
-#include "pdu_utils/constants.h"
+#include "gnuradio/pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
 
 namespace gr {
@@ -27,7 +27,7 @@ pdu_downsample::sptr pdu_downsample::make(int decimation, int phase)
  * The private constructor
  */
 pdu_downsample_impl::pdu_downsample_impl(int decimation, int phase)
-    : gr::sync_block("pdu_downsample",
+    : gr::block("pdu_downsample",
                      gr::io_signature::make(0, 0, 0),
                      gr::io_signature::make(0, 0, 0)),
       d_decimation(decimation),
@@ -92,12 +92,6 @@ void pdu_downsample_impl::handle_msg(pmt::pmt_t pdu)
     }
 }
 
-int pdu_downsample_impl::work(int noutput_items,
-                              gr_vector_const_void_star& input_items,
-                              gr_vector_void_star& output_items)
-{
-    return noutput_items;
-}
 
 } /* namespace pdu_utils */
 } /* namespace gr */

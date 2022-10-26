@@ -17,6 +17,16 @@ parameters:
     label: Threshold
     dtype: int
     default: '0'
+-   id: mode
+    label: Output if no sync
+    dtype: enum
+    options: [pdu_utils.ALIGN_DROP, pdu_utils.ALIGN_FORWARD, pdu_utils.ALIGN_EMPTY]
+    option_labels: [Send nothing, Send input PDU, Send empty PDU]
+-   id: match_mode
+    label: Sync match mode
+    dtype: enum
+    options: [pdu_utils.ALIGN_FIRST_MATCH, pdu_utils.ALIGN_BEST_MATCH]
+    option_labels: [Output at first match, Look ahead for better match]
 
 inputs:
 -   domain: message
@@ -29,8 +39,8 @@ asserts:
 - ${ threshold >= 0 }
 
 templates:
-    imports: import pdu_utils
-    make: pdu_utils.pdu_align(${syncwords}, ${threshold}, ${offset})
+    imports: from gnuradio import pdu_utils
+    make: pdu_utils.pdu_align(${syncwords}, ${threshold}, ${offset}, ${mode}, ${match_mode})
 
 
 file_format: 1

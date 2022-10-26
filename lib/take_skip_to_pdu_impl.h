@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_TAKE_SKIP_TO_PDU_IMPL_H
 #define INCLUDED_PDU_UTILS_TAKE_SKIP_TO_PDU_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/take_skip_to_pdu.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/take_skip_to_pdu.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -43,8 +43,8 @@ private:
     uint32_t d_take;
     uint32_t d_skip;
     uint64_t d_next;
-    uint64_t d_burst_counter;
     bool d_triggered;
+    uint64_t d_burst_counter;
     uint8_t d_prev_byte;
     pmt::pmt_t d_meta_dict;
 

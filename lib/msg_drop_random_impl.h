@@ -11,8 +11,8 @@
 #define INCLUDED_PDU_UTILS_MSG_DROP_RANDOM_IMPL_H
 
 #include <gnuradio/random.h>
-#include <pdu_utils/constants.h>
-#include <pdu_utils/msg_drop_random.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/msg_drop_random.h>
 
 namespace gr {
 namespace pdu_utils {

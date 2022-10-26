@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_EXTRACT_METADATA_IMPL_H
 #define INCLUDED_PDU_UTILS_EXTRACT_METADATA_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/extract_metadata.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/extract_metadata.h>
 
 namespace gr {
 namespace pdu_utils {

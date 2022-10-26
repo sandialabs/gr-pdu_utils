@@ -39,7 +39,7 @@ asserts:
 - ${ post_burst_time > 0 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.pdu_fine_time_measure(${pre_burst_time}, ${post_burst_time}, ${average_width},
         ${buffer_percent})
 

@@ -10,7 +10,7 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_FINE_TIME_MEASURE_IMPL_H
 
-#include <pdu_utils/pdu_fine_time_measure.h>
+#include <gnuradio/pdu_utils/pdu_fine_time_measure.h>
 
 namespace gr {
 namespace pdu_utils {

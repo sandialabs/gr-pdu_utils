@@ -91,7 +91,7 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
     }
 
     uint32_t v_len = pmt::length(v_data);
-    size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
+    //size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
 
     // make sure data is u8 vector
     if (!(pmt::is_u8vector(v_data))) {
@@ -108,14 +108,14 @@ void pdu_preamble_impl::handle_msg(pmt::pmt_t pdu)
     out.insert(out.end(), d_zeros.begin(), d_zeros.end());
     out.insert(out.end(), d_preamble_interp.begin(), d_preamble_interp.end());
 
-    for (int ii = 0; ii < data_in.size(); ii++) {
+    for (size_t ii = 0; ii < data_in.size(); ii++) {
         if (d_nrz) {
             float x = (data_in[ii] > 0) ? 1.0 : -1.0;
-            for (int jj = 0; jj < d_interp; jj++) {
+            for (size_t jj = 0; jj < d_interp; jj++) {
                 out.push_back(x);
             }
         } else {
-            for (int jj = 0; jj < d_interp; jj++) {
+            for (size_t jj = 0; jj < d_interp; jj++) {
                 out.push_back(data_in[ii]);
             }
         }
@@ -144,14 +144,14 @@ void pdu_preamble_impl::set_preamble(const std::vector<uint8_t> preamble)
     d_preamble = preamble;
     d_preamble_interp.clear();
     if (d_preamble.size()) {
-        for (int ii = 0; ii < d_preamble.size(); ii++) {
+        for (size_t ii = 0; ii < d_preamble.size(); ii++) {
             if (d_nrz) {
                 float x = (d_preamble[ii] > 0) ? 1.0 : -1.0;
-                for (int jj = 0; jj < d_interp; jj++) {
+                for (size_t jj = 0; jj < d_interp; jj++) {
                     d_preamble_interp.push_back(x);
                 }
             } else {
-                for (int jj = 0; jj < d_interp; jj++) {
+                for (size_t jj = 0; jj < d_interp; jj++) {
                     d_preamble_interp.push_back(d_preamble[ii]);
                 }
             }
@@ -172,14 +172,14 @@ void pdu_preamble_impl::set_tail(const std::vector<uint8_t> tail)
     d_tail = tail;
     d_tail_interp.clear();
     if (d_tail.size()) {
-        for (int ii = 0; ii < d_tail.size(); ii++) {
+        for (size_t ii = 0; ii < d_tail.size(); ii++) {
             if (d_nrz) {
                 float x = (d_tail[ii] > 0) ? 1.0 : -1.0;
-                for (int jj = 0; jj < d_interp; jj++) {
+                for (size_t jj = 0; jj < d_interp; jj++) {
                     d_tail_interp.push_back(x);
                 }
             } else {
-                for (int jj = 0; jj < d_interp; jj++) {
+                for (size_t jj = 0; jj < d_interp; jj++) {
                     d_tail_interp.push_back(d_tail[ii]);
                 }
             }

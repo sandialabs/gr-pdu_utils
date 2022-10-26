@@ -69,7 +69,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint8_t> out;
         out.resize(v_len);
 
-        for (int ii = 0; ii < v_len; ii++) {
+        for (size_t ii = 0; ii < v_len; ii++) {
             // u8 noise is [0-1]
             out[ii] = uint8_t(
                 (input[ii] + (((get_rand_samp() + 1) / 2) * d_noise_level)) * d_scale +
@@ -84,7 +84,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<float> out;
         out.resize(v_len);
 
-        for (int ii = 0; ii < v_len; ii++) {
+        for (size_t ii = 0; ii < v_len; ii++) {
             out[ii] =
                 (input[ii] + (get_rand_samp() * d_noise_level)) * d_scale + d_offset;
         }
@@ -97,7 +97,7 @@ void pdu_add_noise_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<gr_complex> out;
         out.resize(v_len);
 
-        for (int ii = 0; ii < v_len; ii++) {
+        for (size_t ii = 0; ii < v_len; ii++) {
             out[ii].real((input[ii].real() + (get_rand_samp() * d_complex_nl)) * d_scale +
                          d_offset);
             out[ii].imag((input[ii].imag() + (get_rand_samp() * d_complex_nl)) * d_scale +

@@ -13,7 +13,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include <pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/constants.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -272,6 +272,16 @@ const pmt::pmt_t PMTCONSTSTR__system()
 const pmt::pmt_t PMTCONSTSTR__phase_inc()
 {
     static const pmt::pmt_t val = pmt::mp("phase_inc");
+    return val;
+}
+const pmt::pmt_t PMTCONSTSTR__bit_reversed()
+{
+    static const pmt::pmt_t val = pmt::mp("bit_reversed");
+    return val;
+}
+const pmt::pmt_t PMTCONSTSTR__bit_index()
+{
+    static const pmt::pmt_t val = pmt::mp("bit_index");
     return val;
 }
 

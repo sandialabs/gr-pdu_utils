@@ -13,6 +13,16 @@ parameters:
     label: Value
     dtype: raw
     default: pmt.intern("value")
+-   id: kv_merge
+    label: Parse for Value Insertion
+    dtype: bool
+    default: False
+-   id: v_overwrite
+    label: Value Overwrite
+    dtype: bool
+    default: False
+    hide: part
+
 
 inputs:
 -   domain: message
@@ -25,10 +35,12 @@ outputs:
     optional: true
 
 templates:
-    imports: import pdu_utils
-    make: pdu_utils.pdu_set_m(${k}, ${v})
+    imports: from gnuradio import pdu_utils
+    make: pdu_utils.pdu_set_m(${k}, ${v}, ${kv_merge}, ${v_overwrite})
     callbacks:
     - set_key(${k})
     - set_val(${v})
+    - set_val(${kv_merge})
+    - set_val(${v_overwrite})
 
 file_format: 1

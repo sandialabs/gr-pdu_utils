@@ -102,14 +102,14 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
             loop_size = d_length;
 
         // convert head to binary
-        for (int ii = 0; ii < loop_size; ii++) {
+        for (size_t ii = 0; ii < loop_size; ii++) {
             head_bits[ii] = (data[ii] == 0) ? 0 : 1;
         }
 
         int tail_idx = data.size() - d_length;
         if (tail_idx < 0)
             tail_idx = 0;
-        for (int ii = (d_length - loop_size); ii < d_length; ii++) {
+        for (size_t ii = (d_length - loop_size); ii < d_length; ii++) {
             tail_bits[ii] = (data[tail_idx++] == 0) ? 0 : 1;
         }
 
@@ -125,14 +125,14 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
             loop_size = d_length;
 
         // convert head to binary
-        for (int ii = 0; ii < loop_size; ii++) {
+        for (size_t ii = 0; ii < loop_size; ii++) {
             head_bits_f[ii] = (data[ii]); // == 0) ? 0 : 1;
         }
 
         int tail_idx = data.size() - d_length;
         if (tail_idx < 0)
             tail_idx = 0;
-        for (int ii = (d_length - loop_size); ii < d_length; ii++) {
+        for (size_t ii = (d_length - loop_size); ii < d_length; ii++) {
             tail_bits_f[ii] = (data[tail_idx++]); // == 0) ? 0 : 1;
         }
 
@@ -149,8 +149,8 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
 
         // unpack the input PDU
         uint8_t head_byte = 0;
-        uint8_t tail_byte = 0;
-        for (int ii = 0; ii < d_length; ii++) {
+        //uint8_t tail_byte = 0;
+        for (size_t ii = 0; ii < d_length; ii++) {
             if (d_bit_order == BIT_ORDER_LSB_FIRST) {
                 // START LSB FIRST PROCESSING
                 head_byte >>= 1;
@@ -177,11 +177,11 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
 
     /*
     std::cout << "head: [" << int(head_bits[0]);
-    for (int ii=1;ii<d_length;ii++) std::cout << ", " << int(head_bits[ii]);
+    for (size_t ii=1;ii<d_length;ii++) std::cout << ", " << int(head_bits[ii]);
     std::cout << "]" << std::endl;
 
     std::cout << "tail: [" << int(tail_bits[0]);
-    for (int ii=1;ii<d_length;ii++) std::cout << ", " << int(tail_bits[ii]);
+    for (size_t ii=1;ii<d_length;ii++) std::cout << ", " << int(tail_bits[ii]);
     std::cout << "]" << std::endl;
     */
 
@@ -189,7 +189,7 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         if (d_histsize < d_maxhistsize) {
             uint32_t s = d_histsize * d_length;
             // append the bit vectors
-            for (int ii = 0; ii < d_length; ii++) {
+            for (size_t ii = 0; ii < d_length; ii++) {
                 d_head_f[s + ii] = head_bits_f[ii];
                 d_tail_f[s + ii] = tail_bits_f[ii];
             }
@@ -197,13 +197,13 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         } else {
             uint32_t s = d_maxhistsize * d_length;
             // shift data forward
-            for (int ii = 0; ii < (s - d_length); ii++) {
+            for (size_t ii = 0; ii < (s - d_length); ii++) {
                 d_head_f[ii] = d_head_f[ii + d_length];
                 d_tail_f[ii] = d_tail_f[ii + d_length];
             }
             // append the bit vector
             s -= d_length;
-            for (int ii = 0; ii < d_length; ii++) {
+            for (size_t ii = 0; ii < d_length; ii++) {
                 d_head_f[s + ii] = head_bits_f[ii];
                 d_tail_f[s + ii] = tail_bits_f[ii];
             }
@@ -220,7 +220,7 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         if (d_histsize < d_maxhistsize) {
             uint32_t s = d_histsize * d_length;
             // append the bit vectors
-            for (int ii = 0; ii < d_length; ii++) {
+            for (size_t ii = 0; ii < d_length; ii++) {
                 d_head[s + ii] = head_bits[ii];
                 d_tail[s + ii] = tail_bits[ii];
             }
@@ -228,13 +228,13 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
         } else {
             uint32_t s = d_maxhistsize * d_length;
             // shift data forward
-            for (int ii = 0; ii < (s - d_length); ii++) {
+            for (size_t ii = 0; ii < (s - d_length); ii++) {
                 d_head[ii] = d_head[ii + d_length];
                 d_tail[ii] = d_tail[ii + d_length];
             }
             // append the bit vector
             s -= d_length;
-            for (int ii = 0; ii < d_length; ii++) {
+            for (size_t ii = 0; ii < d_length; ii++) {
                 d_head[s + ii] = head_bits[ii];
                 d_tail[s + ii] = tail_bits[ii];
             }
@@ -242,11 +242,11 @@ void pdu_head_tail_impl::handle_pdu(pmt::pmt_t pdu)
 
         /*
         std::cout << "D_head: [" << int(d_head[0]);
-        for (int ii=1;ii<d_histsize*d_length;ii++) std::cout << ", " << int(d_head[ii]);
+        for (size_t ii=1;ii<d_histsize*d_length;ii++) std::cout << ", " << int(d_head[ii]);
         std::cout << "]" << std::endl;
 
         std::cout << "D_tail: [" << int(d_tail[0]);
-        for (int ii=1;ii<d_histsize*d_length;ii++) std::cout << ", " << int(d_tail[ii]);
+        for (size_t ii=1;ii<d_histsize*d_length;ii++) std::cout << ", " << int(d_tail[ii]);
         std::cout << "]" << std::endl;
         */
 

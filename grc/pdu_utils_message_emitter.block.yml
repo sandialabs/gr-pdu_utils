@@ -9,6 +9,11 @@ parameters:
     label: Message
     dtype: raw
     default: pmt.PMT_NIL
+-   id: emit_msg
+    label: Emit Message Now
+    dtype: raw
+    default: pmt.PMT_NIL
+
 
 outputs:
 -   domain: message
@@ -17,10 +22,11 @@ outputs:
 
 templates:
     imports: |-
-        import pdu_utils
+        from gnuradio import pdu_utils
         import pmt
     make: pdu_utils.message_emitter(${msg})
     callbacks:
     - set_msg(msg)
+    - emit(${emit_msg})
 
 file_format: 1

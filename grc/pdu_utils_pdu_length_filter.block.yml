@@ -26,7 +26,7 @@ outputs:
     optional: true
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.pdu_length_filter(${length}, ${drop_long})
 
 

@@ -12,7 +12,7 @@
 #endif
 
 #include "pdu_round_robin_impl.h"
-#include "pdu_utils/constants.h"
+#include "gnuradio/pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
 
 namespace gr {
@@ -39,7 +39,7 @@ pdu_round_robin_impl::pdu_round_robin_impl(int num_outputs)
                     [this](pmt::pmt_t msg) { this->pdu_handler(msg); });
 
     // outputs
-    for (size_t i = 0; i < d_num_outputs; i++) {
+    for (int i = 0; i < d_num_outputs; i++) {
         std::stringstream s;
         s << "pdu_out_" << i;
         d_output_ports.push_back(pmt::mp(s.str()));

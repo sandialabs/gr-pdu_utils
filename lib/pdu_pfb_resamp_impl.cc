@@ -108,7 +108,7 @@ void pdu_pfb_resamp_impl<T, S>::handle_pdu(pmt::pmt_t pdu)
             // Give ourselves some extra size to prevent a ton of reallocs
             resize_arrays(nitems * 1.25 + d_nfilts * 2);
         }
-        const float z = 0.0;
+        //const float z = 0.0;
         int start = d_nfilts / 2;
         int num_read;
 

@@ -1,0 +1,53 @@
+id: pdu_utils_access_code_to_pdu
+label: Access Code to PDU
+category: '[Sandia]/PDU Utilities'
+
+templates:
+  imports: from gnuradio import pdu_utils
+  make: pdu_utils.access_code_to_pdu(${access_code}, ${tail_sync}, ${burst_len}, ${threshold}, ${sync_mode}, ${read_mode})
+
+parameters:
+- id: access_code
+  label: Access Code Word
+  dtype: string
+  default: ''
+- id: tail_sync
+  label: Tail Syncword
+  dtype: string
+  default: ''
+- id: burst_len
+  label: Burst Length
+  dtype: int
+- id: threshold
+  label: Threshold
+  dtype: int
+- id: sync_mode
+  label: Syncwords in PDU
+  dtype: enum
+  options: [pdu_utils.SYNC_KEEP, pdu_utils.SYNC_FIX, pdu_utils.SYNC_DISCARD]
+  option_labels: [Keep, Fix, Discard]
+  default: 'pdu_utils.SYNC_KEEP'
+- id: read_mode
+  label: Read-in Mode
+  dtype: enum
+  options: [pdu_utils.READ_STRICT, pdu_utils.READ_PERMISSIVE, pdu_utils.READ_RESET]
+  option_labels: [Strict, Permissive, Reset]
+  default: 'pdu_utils.READ_STRICT'
+
+inputs:
+- domain: stream
+  dtype: byte
+#  label: in
+#  id: in
+
+outputs:
+- label: pdu_out
+  domain: message
+  id: pdu_out
+
+asserts:
+- ${ burst_len > -1 }
+- ${ threshold > -1 }
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

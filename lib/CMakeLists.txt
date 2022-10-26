@@ -47,6 +47,8 @@ list(APPEND pdu_utils_sources
     pdu_quadrature_demod_cf_impl.cc
     constants.cc
     pdu_rotate_impl.cc
+    pdu_slice_impl.cc
+    access_code_to_pdu_impl.cc
 )
 
 set(pdu_utils_sources "${pdu_utils_sources}" PARENT_SCOPE)

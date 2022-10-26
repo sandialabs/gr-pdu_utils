@@ -10,7 +10,7 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_ROUND_ROBIN_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_ROUND_ROBIN_IMPL_H
 
-#include <pdu_utils/pdu_round_robin.h>
+#include <gnuradio/pdu_utils/pdu_round_robin.h>
 
 namespace gr {
 namespace pdu_utils {

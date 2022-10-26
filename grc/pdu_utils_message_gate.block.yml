@@ -27,7 +27,7 @@ outputs:
     optional: true
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.message_gate(${enabled})
     callbacks:
     - set_enabled(${enabled})

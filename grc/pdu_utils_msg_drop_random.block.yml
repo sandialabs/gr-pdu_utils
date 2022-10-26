@@ -16,19 +16,19 @@ parameters:
 
 inputs:
 -   domain: message
-    id: in
+    id: pdu_in
     optional: true
 
 outputs:
 -   domain: message
-    id: out
+    id: pdu_out
     optional: true
 asserts:
 - ${ p_drop >= 0 }
 - ${ p_drop <= 1 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.msg_drop_random(${p_drop}, ${seed})
     callbacks:
     - set_prob_drop(${p_drop})

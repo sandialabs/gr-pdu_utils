@@ -13,7 +13,7 @@
 
 #include "pdu_complex_to_mag2_impl.h"
 #include <gnuradio/io_signature.h>
-#include <pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/constants.h>
 
 #include <volk/volk.h>
 
@@ -47,7 +47,21 @@ pdu_complex_to_mag2_impl::~pdu_complex_to_mag2_impl() {}
 
 void pdu_complex_to_mag2_impl::handle_pdu(pmt::pmt_t pdu)
 {
+
+    // make sure PDU data is formed properly
+    if (!(pmt::is_pair(pdu))) {
+        GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-pair)");
+        return;
+    }
+
     pmt::pmt_t samples = pmt::cdr(pdu);
+
+    // make sure PDU data is c32
+    if (!(pmt::is_c32vector(samples))) {
+        GR_LOG_NOTICE(d_logger, "data is not c32 vector, returning");
+        return;
+    }
+
     size_t burst_size;
     const gr_complex* burst =
         (const gr_complex*)pmt::c32vector_elements(samples, burst_size);

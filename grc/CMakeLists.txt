@@ -44,5 +44,8 @@ install(FILES
     pdu_utils_pdu_fine_time_measure.block.yml
     pdu_utils_pdu_complex_to_mag2.block.yml
     pdu_utils_pdu_quadrature_demod_cf.block.yml
-    pdu_utils_pdu_rotate.block.yml DESTINATION share/gnuradio/grc/blocks
+    pdu_utils_pdu_rotate.block.yml
+    pdu_utils_pdu_slice.block.yml
+    pdu_utils_pdu_delay.block.yml
+    pdu_utils_access_code_to_pdu.block.yml DESTINATION share/gnuradio/grc/blocks
 )

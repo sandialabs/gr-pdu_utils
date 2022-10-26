@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_TAGS_TO_PDU_IMPL_H
 #define INCLUDED_PDU_UTILS_TAGS_TO_PDU_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/tags_to_pdu.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/tags_to_pdu.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -44,23 +44,26 @@ private:
     pmt::pmt_t d_time_tag_key;
     uint32_t d_max_pdu_size;
     double d_samp_rate;
-    bool d_pub_sobs;
     std::vector<T> d_prepend;
+    bool d_pub_sobs;
     uint32_t d_tail_size;
+
+    bool d_triggered;
+    uint64_t d_burst_counter;
+
+
     uint64_t d_known_time_int_sec; // known integer seconds of a particular item
     double d_known_time_frac_sec;  // known fractional seconds of a particular item
     uint64_t d_known_time_offset;  // known item offset of a particular item
 
     uint32_t d_eob_alignment;
     uint32_t d_eob_offset;
-    uint64_t d_burst_counter;
     uint64_t d_sob_tag_offset;
 
     std::vector<T> d_vector;
     pmt::pmt_t d_meta_dict;
     std::vector<tag_t> d_tags;
     tag_t d_tag;
-    bool d_triggered;
 
     bool d_wall_clock_time;
     boost::posix_time::ptime d_epoch;

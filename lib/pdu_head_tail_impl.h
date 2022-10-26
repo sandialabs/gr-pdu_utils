@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_HEAD_TAIL_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_HEAD_TAIL_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_head_tail.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_head_tail.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -20,11 +20,11 @@ class pdu_head_tail_impl : public pdu_head_tail
 {
 private:
     uint32_t d_input_type;
-    uint32_t d_bit_order;
     uint32_t d_length;
-    uint32_t d_histsize;
     uint32_t d_maxhistsize;
+    uint32_t d_histsize;
     bool d_space_bytes;
+    uint32_t d_bit_order;
 
     void reset(void);
 

@@ -22,7 +22,7 @@ outputs:
     optional: true
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.pdu_binary_tools(${mode})
 
 file_format: 1

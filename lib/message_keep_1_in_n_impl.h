@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_KEEP_1_IN_N_IMPL_H
 #define INCLUDED_PDU_UTILS_MESSAGE_KEEP_1_IN_N_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/message_keep_1_in_n.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/message_keep_1_in_n.h>
 
 namespace gr {
 namespace pdu_utils {

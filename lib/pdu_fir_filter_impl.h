@@ -11,8 +11,8 @@
 #define INCLUDED_PDU_UTILS_PDU_FIR_FILTER_IMPL_H
 
 #include <gnuradio/filter/fir_filter.h>
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_fir_filter.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_fir_filter.h>
 
 namespace gr {
 namespace pdu_utils {

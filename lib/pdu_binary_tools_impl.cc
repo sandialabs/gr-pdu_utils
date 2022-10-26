@@ -12,7 +12,7 @@
 #endif
 
 #include "pdu_binary_tools_impl.h"
-#include "pdu_utils/constants.h"
+#include "gnuradio/pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
 
 namespace gr {
@@ -27,7 +27,7 @@ pdu_binary_tools::sptr pdu_binary_tools::make(uint8_t mode)
  * The private constructor
  */
 pdu_binary_tools_impl::pdu_binary_tools_impl(uint8_t mode)
-    : gr::sync_block("pdu_binary_tools",
+    : gr::block("pdu_binary_tools",
                      gr::io_signature::make(0, 0, 0),
                      gr::io_signature::make(0, 0, 0))
 {
@@ -403,12 +403,6 @@ void pdu_binary_tools_impl::handle_msg_manchester_encode(pmt::pmt_t pdu)
     }
 }
 
-int pdu_binary_tools_impl::work(int noutput_items,
-                                gr_vector_const_void_star& input_items,
-                                gr_vector_void_star& output_items)
-{
-    return noutput_items;
-}
 
 } /* namespace pdu_utils */
 } /* namespace gr */

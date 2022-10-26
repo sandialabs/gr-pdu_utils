@@ -37,7 +37,7 @@ asserts:
 - ${ depth <= 2048 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.pdu_to_bursts_${type}(${early_behavior}, ${depth})
     callbacks:
     - set_max_queue_size(${depth})

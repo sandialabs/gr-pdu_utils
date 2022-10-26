@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_UPSAMPLE_IMPL_H
 #define INCLUDED_PDU_UTILS_UPSAMPLE_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/upsample.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/upsample.h>
 
 namespace gr {
 namespace pdu_utils {

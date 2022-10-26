@@ -98,6 +98,27 @@ void pdu_clock_recovery_impl::set_window_type(window_type type)
     fft_setup(15);
 } // end set_window_type
 
+/**
+ * Specify the variance of the Gaussian window.
+ *
+ *
+ * @param gauss_sigma - standard deviation
+ */
+void pdu_clock_recovery_impl::set_gauss_sigma(float gauss_sigma)
+{
+    d_gauss_sigma = gauss_sigma;
+}
+
+/**
+ * Specify the DC reject level
+ *
+ *
+ * @param dc_reject - DC rejection
+ */
+void pdu_clock_recovery_impl::set_dc_reject(float dc_reject)
+{
+    d_dc_reject = dc_reject;
+}
 
 /**
  * sets up FFT memory space for a given power if needed
@@ -309,7 +330,7 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
 
     // make a list of zero crossing locations, offset
     std::vector<float> zero_crossings = findZeroCrossings(&data[offset], fftsize);
-    if (zero_crossings.empty() || zero_crossings.size() < (fftsize / (2 * SPS_MAX))) {
+    if (zero_crossings.empty() || zero_crossings.size() < (size_t)(fftsize / (2 * SPS_MAX))) {
         if (d_debug) {
             GR_LOG_WARN(
                 d_logger,

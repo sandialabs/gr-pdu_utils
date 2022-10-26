@@ -37,7 +37,7 @@ asserts:
 - ${ skip >= 0 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.take_skip_to_pdu_${type}(${take}, ${skip})
     callbacks:
     - set_take(${take})

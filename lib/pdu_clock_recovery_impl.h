@@ -11,8 +11,8 @@
 #define INCLUDED_PDU_UTILS_PDU_CLOCK_RECOVERY_IMPL_H
 
 #include <gnuradio/fft/fft.h>
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_clock_recovery.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_clock_recovery.h>
 
 const int LUT_SIZE = 256;
 
@@ -25,21 +25,20 @@ namespace pdu_utils {
 class pdu_clock_recovery_impl : public pdu_clock_recovery
 {
 private:
-    const static int SPS_MAX = 20;
-    const int d_lanczos_a;
-    const float d_gauss_sigma;
-    float d_sinc_table[LUT_SIZE];
-
-    const float d_dc_reject;
-
-    std::vector<gr::fft::fft_real_fwd*> d_ffts;
-    std::vector<float*> d_windows;
-    float* d_mags;
-
     bool d_binary_slice;
+    const int d_lanczos_a;
+    float d_gauss_sigma;
+    float d_dc_reject;
+    float* d_mags;
     bool d_debug;
     uint64_t d_burst_id;
     window_type d_window_type;
+
+    const static int SPS_MAX = 20;
+    float d_sinc_table[LUT_SIZE];
+
+    std::vector<gr::fft::fft_real_fwd*> d_ffts;
+    std::vector<float*> d_windows;
 
 public:
     pdu_clock_recovery_impl(bool binary_slice,
@@ -49,6 +48,10 @@ public:
     ~pdu_clock_recovery_impl() override;
 
     virtual void set_window_type(window_type type) override;
+
+    virtual void set_gauss_sigma(float gauss_sigma) override;
+
+    virtual void set_dc_reject(float dc_reject) override;
 
 private:
     /**

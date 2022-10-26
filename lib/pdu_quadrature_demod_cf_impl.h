@@ -11,7 +11,7 @@
 #define INCLUDED_PDU_UTILS_PDU_QUADRATURE_DEMOD_CF_IMPL_H
 
 #include <gnuradio/filter/fir_filter.h>
-#include <pdu_utils/pdu_quadrature_demod_cf.h>
+#include <gnuradio/pdu_utils/pdu_quadrature_demod_cf.h>
 
 namespace gr {
 namespace pdu_utils {

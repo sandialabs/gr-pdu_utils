@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_COUNTER_IMPL_H
 #define INCLUDED_PDU_UTILS_MESSAGE_COUNTER_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/message_counter.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/message_counter.h>
 
 namespace gr {
 namespace pdu_utils {
@@ -21,8 +21,8 @@ namespace pdu_utils {
 class message_counter_impl : public message_counter
 {
 private:
-    uint64_t d_ctr;
     std::string d_name;
+    uint64_t d_ctr;
 
     /*!
      * \brief Message handler for input messages

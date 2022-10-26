@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_MESSAGE_EMITTER_IMPL_H
 #define INCLUDED_PDU_UTILS_MESSAGE_EMITTER_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/message_emitter.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/message_emitter.h>
 
 namespace gr {
 namespace pdu_utils {

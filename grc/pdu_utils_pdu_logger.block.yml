@@ -10,12 +10,17 @@ parameters:
     dtype: string
     default: '''/tmp/bursts/raw-'''
 
+-   id: pdus_per_file
+    label: PDUs per File
+    dtype: int
+    default: '1'
+
 inputs:
 -   domain: message
     id: pdu_in
 
 templates:
-    imports: import pdu_utils
-    make: pdu_utils.pdu_logger(${logfile})
+    imports: from gnuradio import pdu_utils
+    make: pdu_utils.pdu_logger(${logfile}, ${pdus_per_file})
 
 file_format: 1

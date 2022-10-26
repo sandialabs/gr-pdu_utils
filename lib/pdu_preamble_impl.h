@@ -10,8 +10,8 @@
 #ifndef INCLUDED_PDU_UTILS_PDU_PREAMBLE_IMPL_H
 #define INCLUDED_PDU_UTILS_PDU_PREAMBLE_IMPL_H
 
-#include <pdu_utils/constants.h>
-#include <pdu_utils/pdu_preamble.h>
+#include <gnuradio/pdu_utils/constants.h>
+#include <gnuradio/pdu_utils/pdu_preamble.h>
 
 namespace gr {
 namespace pdu_utils {

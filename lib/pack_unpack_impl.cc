@@ -71,7 +71,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
     }
 
     uint32_t v_len = pmt::length(v_data);
-    size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
+   // size_t v_itemsize = pmt::uniform_vector_itemsize(v_data);
 
     if (d_mode == MODE_UNPACK_BYTE) {
         /*
@@ -85,10 +85,10 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
         const std::vector<uint8_t> data = pmt::u8vector_elements(v_data);
         std::vector<uint8_t> out;
 
-        for (int ii = 0; ii < data.size(); ii++) {
+        for (size_t ii = 0; ii < data.size(); ii++) {
             if (d_bit_order == BIT_ORDER_LSB_FIRST) {
                 // START LSB FIRST PROCESSING
-                for (int jj = 0; jj < 8; jj++) {
+                for (size_t jj = 0; jj < 8; jj++) {
                     out.push_back((data[ii] >> jj) & 0x01);
                 }
                 // END LSB FIRST PROCESSING
@@ -128,7 +128,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
         out.reserve(nbytes);
 
         uint8_t byte = 0;
-        for (int ii = 0; ii < data.size(); ii++) {
+        for (size_t ii = 0; ii < data.size(); ii++) {
             if (d_bit_order == BIT_ORDER_LSB_FIRST) {
                 // START LSB FIRST PROCESSING
                 byte >>= 1;
@@ -170,7 +170,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
         std::vector<uint8_t> data = pmt::u8vector_elements(v_data);
         std::vector<uint8_t> out;
         out.reserve(v_len);
-        for (int ii = 0; ii < v_len; ii++) {
+        for (size_t ii = 0; ii < v_len; ii++) {
             out.push_back(bitreverse[data[ii]]);
         }
 

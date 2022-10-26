@@ -8,10 +8,11 @@ author:
   - Peter Knee
   - Sam Whiting
   - Brian Adams
+  - Darren Kartchner
 copyright_owner:
   - NTESS, LLC
 license: GPLv3
-gr_supported_version: v3.7, v3.8, v3.9
+gr_supported_version: v3.7, v3.8, v3.10
 dependencies:
 repo: https://github.com/sandialabs/gr-pdu_utils
 icon: https://raw.githubusercontent.com/sandialabs/gr-pdu_utils/master/docs/pdu.png

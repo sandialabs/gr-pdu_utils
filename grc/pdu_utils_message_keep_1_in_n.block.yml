@@ -22,7 +22,7 @@ asserts:
 - ${ n >= 1 }
 
 templates:
-    imports: import pdu_utils
+    imports: from gnuradio import pdu_utils
     make: pdu_utils.message_keep_1_in_n(${n})
     callbacks:
     - set_n(${n})
