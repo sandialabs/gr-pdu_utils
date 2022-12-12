@@ -13,7 +13,7 @@
 
 #include "msg_drop_random_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 

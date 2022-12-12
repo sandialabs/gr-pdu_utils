@@ -13,7 +13,7 @@
 
 #include "tag_message_trigger_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 

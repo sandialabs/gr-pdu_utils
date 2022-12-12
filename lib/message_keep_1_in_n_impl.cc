@@ -13,7 +13,7 @@
 
 #include "message_keep_1_in_n_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 

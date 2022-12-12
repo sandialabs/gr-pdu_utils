@@ -13,7 +13,7 @@
 
 #include "pdu_head_tail_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 

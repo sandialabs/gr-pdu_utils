@@ -15,7 +15,7 @@
 #include <gnuradio/pdu_utils/pdu_set_m.h>
 #include <gnuradio/io_signature.h>
 #include <algorithm>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
