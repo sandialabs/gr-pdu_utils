@@ -73,7 +73,7 @@ tags_to_pdu_impl<T>::tags_to_pdu_impl(pmt::pmt_t start_tag,
     this->d_logger->notice("starting at time ({} {:e})",d_known_time_int_sec,
                       d_known_time_frac_sec);
 
-    this->d_logger->notice("rate {+12e}",d_samp_rate);
+    this->d_logger->notice("rate {:0.12f}",d_samp_rate);
 
     // store the data to prepend
     // d_prepend.clear();
