@@ -14,7 +14,7 @@
 #include "pdu_burst_combiner_impl.h"
 #include "gnuradio/pdu_utils/constants.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 #include <cmath>
 
 
@@ -56,7 +56,7 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
 {
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
-        GR_LOG_NOTICE(d_logger, "received unexpected PMT (non-pair)");
+        d_logger->notice("received unexpected PMT (non-pair)");
         return;
     }
 
@@ -66,14 +66,14 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
 
 
     if (!(is_dict(meta) && pmt::is_c32vector(v_data))) {
-        GR_LOG_WARN(d_logger, "PMT is not a complex PDU, dropping");
+        d_logger->warn("PMT is not a complex PDU, dropping");
         return;
     }
 
     uint32_t v_len = pmt::length(v_data);
 
     if (v_len == 0) {
-        GR_LOG_WARN(d_logger, "Zero length PDU, ignoring");
+        d_logger->warn("Zero length PDU, ignoring");
         return;
     }
 
@@ -90,26 +90,23 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
         // we are in the middle of processing bursts...
         if (x > y) {
             // error...bad
-            GR_LOG_ALERT(
-                d_logger,
-                boost::format("Error processing PDU, burst_index metadata invalid (%)") %
-                    burst_index);
-            GR_LOG_ERROR(d_logger, "resetting state and dropping PDU");
+            std::ostringstream msg;
+            msg << boost::format("Error processing PDU, burst_index metadata invalid (%)") % burst_index;
+            d_logger->alert(msg.str());
+            d_logger->error("resetting state and dropping PDU");
             reset_state();
         } else if (x < y) {
             // not the last burst in the string
             const std::vector<gr_complex> d_in = pmt::c32vector_elements(v_data);
             d_data.insert(d_data.end(), d_in.begin(), d_in.end());
-            GR_LOG_DEBUG(d_logger,
-                         boost::format("saving PDU %d / %d! size is %d") % x % y %
+            d_logger->debug("saving PDU {} / {}! size is {}",x,y,
                              d_data.size());
 
         } else {
             // done with the burst, add new stuff and send it
             const std::vector<gr_complex> d_in = pmt::c32vector_elements(v_data);
             d_data.insert(d_data.end(), d_in.begin(), d_in.end());
-            GR_LOG_DEBUG(d_logger,
-                         boost::format("saving PDU %d / %d! size is %d") % x % y %
+            d_logger->debug("saving PDU {} / {}! size is {}",x,y,
                              d_data.size());
 
             message_port_pub(
@@ -127,17 +124,15 @@ void pdu_burst_combiner_impl::handle_pdu(pmt::pmt_t pdu)
                 reset_state();
                 const std::vector<gr_complex> d_in = pmt::c32vector_elements(v_data);
                 d_data.insert(d_data.end(), d_in.begin(), d_in.end());
-                GR_LOG_DEBUG(d_logger,
-                             boost::format("saving PDU %d / %d! size is %d") % x % y %
+                d_logger->debug("saving PDU {} / {}! size is {}",x,y,
                                  d_data.size());
 
                 d_burst_count = y;
                 d_burst0_metadata = meta;
 
             } else {
-                GR_LOG_ERROR(d_logger,
-                             "Error processing PDU, first burst does not have index = 1");
-                GR_LOG_ERROR(d_logger, "resetting state and dropping PDU");
+                d_logger->error("Error processing PDU, first burst does not have index = 1");
+                d_logger->error("resetting state and dropping PDU");
                 reset_state();
             }
         } else {

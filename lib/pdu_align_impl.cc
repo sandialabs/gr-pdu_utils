@@ -15,6 +15,7 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -70,21 +71,17 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
             mask_int = (syncword_len >= 64 ? -1 : (1lu << syncword_len) - 1);
             std::cout << "syncword_int = " << std::bitset<16>(syncword_int) << std::endl;
 	} catch (std::invalid_argument& ex) {
-            GR_LOG_ERROR(
-			 d_logger,
-                         boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
+            d_logger->error("unable to parse syncword '{}' (must be base 2 or 16)",
                              syncword.c_str());
             exit(1);
         } catch (std::out_of_range& ex) {
 
-            GR_LOG_ERROR(d_logger,
-                         boost::format("syncword '%s' out of range (max of 64 bits)") %
+            d_logger->error("syncword '{}' out of range (max of 64 bits)",
                              syncword.c_str());
             exit(1);
         }
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("PDU align syncword: 0x%016lX (mask 0x%016lX)") %
-                         syncword_int % mask_int);
+        d_logger->debug("PDU align syncword: {:#+16X} (mask {:#+16X})",
+                         syncword_int, mask_int);
         d_syncwords.push_back(syncword_int);
         d_syncword_lens.push_back(syncword_len);
         d_masks.push_back(mask_int);
@@ -150,7 +147,7 @@ void pdu_align_impl::update_time_metadata(pmt::pmt_t& metadata, int start_idx)
 void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
 {
     if (!pmt::is_pair(pdu)) {
-        GR_LOG_DEBUG(d_logger, "WARNING: PDU is not a pair, dropping");
+        d_logger->debug("WARNING: PDU is not a pair, dropping");
         return;
     }
 
@@ -158,7 +155,7 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
     pmt::pmt_t pdu_data = pmt::cdr(pdu);
 
     if (!pmt::is_u8vector(pdu_data)) {
-        GR_LOG_DEBUG(d_logger, "WARNING: PDU not u8vector, dropping");
+        d_logger->debug("WARNING: PDU not u8vector, dropping");
         return;
     }
 
@@ -240,7 +237,7 @@ void pdu_align_impl::pdu_handler(pmt::pmt_t pdu)
     }
 
 
-    // GR_LOG_DEBUG(d_logger, "Syncword not found, dropping PDU");
+    // d_logger->debug("Syncword not found, dropping PDU");
 }
 
 } /* namespace pdu_utils */

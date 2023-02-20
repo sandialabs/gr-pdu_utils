@@ -15,7 +15,7 @@
 #include <gnuradio/pdu_utils/pdu_set_m.h>
 #include <gnuradio/io_signature.h>
 #include <algorithm>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -71,21 +71,30 @@ void pdu_set_m_impl::handle_ctrl_msg(pmt::pmt_t msg)
 
     if (pmt::is_pair(msg)) {
         if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__val())) {
-            GR_LOG_NOTICE(d_logger, boost::format("value is %1%") % val());
+            std::ostringstream msgx;
+            msgx << "value is %1%" << val();
+            d_logger->notice(msgx.str());
         } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__key())) {
-            GR_LOG_NOTICE(d_logger, boost::format("key is %1%") % key());
+            std::ostringstream msgx;
+            msgx << "key is %1%" << key();
+            d_logger->notice(msgx.str());
         } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__set_val())) {
             set_val(pmt::cdr(msg));
-            GR_LOG_NOTICE(d_logger, boost::format("value set to %1%") % val());
+            std::ostringstream msgx;
+            msgx << "value set to %1%" << val();
+            d_logger->notice(msgx.str());
         } else if (pmt::eqv(pmt::car(msg), PMTCONSTSTR__set_key())) {
             set_key(pmt::cdr(msg));
-            GR_LOG_DEBUG(d_logger, boost::format("key set to %1%") % key());
+            std::ostringstream msgx;
+            msgx << "key set to %1%" << key();
+            d_logger->debug(msgx.str());
         } else {
-            GR_LOG_WARN(d_logger,
-                        boost::format("invalid command %1% received...") % pmt::car(msg));
+            std::ostringstream msgx;
+            msgx << "invalid command %1% received..." << pmt::car(msg);
+            d_logger->warn(msgx.str());
         }
     } else {
-        GR_LOG_WARN(d_logger, "received unexpected PMT command (non-pair)");
+        d_logger->warn( "received unexpected PMT command (non-pair)");
     }
 }
 
@@ -94,7 +103,7 @@ void pdu_set_m_impl::handle_msg(pmt::pmt_t pdu)
 {
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
-        GR_LOG_WARN(d_logger, "received unexpected PMT (non-pair)");
+        d_logger->warn("received unexpected PMT (non-pair)");
         return;
     }
 
@@ -104,12 +113,12 @@ void pdu_set_m_impl::handle_msg(pmt::pmt_t pdu)
     pmt::pmt_t meta = pmt::car(pdu);
 
     if (!pmt::is_dict(meta)) {
-        GR_LOG_WARN(d_logger, "received malformed PDU");
+        d_logger->warn("received malformed PDU");
         return;
     }
 
     if (!d_v_overwrite && pmt::dict_has_key(meta, d_k)) {
-        GR_LOG_WARN(d_logger, "key already found, and overwrite disabled");
+        d_logger->warn("key already found, and overwrite disabled");
         return;
     }
 
@@ -142,7 +151,7 @@ pmt::pmt_t pdu_set_m_impl::parse_val(pmt::pmt_t dict)
 
         // if right brace appears before left brace, invalid syntax
         if (in_val.find('}') < in_val.find('{')) {
-            GR_LOG_WARN(d_logger, "unable to parse val string");
+            d_logger->warn("unable to parse val string");
             return dict;
         }
         // read up to first brace and add to output string
@@ -151,7 +160,7 @@ pmt::pmt_t pdu_set_m_impl::parse_val(pmt::pmt_t dict)
         in_val.erase(0, in_val.find('{')+1);
         // if there's no right brace after a left brace, invalid syntax
         if (in_val.find('}') > in_val.size()) {
-            GR_LOG_WARN(d_logger, "unable to parse val string");
+            d_logger->warn("unable to parse val string");
             return dict;
         }
 
@@ -175,7 +184,7 @@ pmt::pmt_t pdu_set_m_impl::parse_val(pmt::pmt_t dict)
         } else if (pmt::is_symbol(refval)) {
             out_val += pmt::symbol_to_string(refval);
         } else {
-            GR_LOG_WARN(d_logger, boost::format("value type of %1% not supported") % tmp);
+            d_logger->warn("value type of {} not supported",tmp);
             out_val += tmp;
         }
     }

@@ -13,7 +13,7 @@
 
 #include "msg_drop_random_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -47,9 +47,8 @@ msg_drop_random_impl::~msg_drop_random_impl() {}
 
 bool msg_drop_random_impl::stop(void)
 {
-    GR_LOG_INFO(d_logger,
-                boost::format("Dropped %s messages, passed %d (%d total)") % d_drop_ctr %
-                    d_pass_ctr % d_msg_ctr);
+    d_logger->info("Dropped {} messages, passed {} ({} total)",d_drop_ctr,
+                    d_pass_ctr,d_msg_ctr);
     return true;
 }
 
