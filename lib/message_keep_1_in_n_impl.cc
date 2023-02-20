@@ -68,7 +68,7 @@ void message_keep_1_in_n_impl::set_n(uint32_t n)
     if (n) {
         d_n = n;
     } else {
-        GR_LOG_ERROR(d_logger, boost::format("n cannot be zero, not set (n=%d)") % d_n);
+        d_logger->error("n cannot be zero, not set (n={})",d_n);
     }
 }
 
