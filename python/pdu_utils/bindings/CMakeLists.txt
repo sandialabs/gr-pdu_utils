@@ -58,7 +58,6 @@ list(APPEND pdu_utils_python_files
     pdu_rotate_python.cc
     pdu_round_robin_python.cc
     pdu_slice_python.cc
-    pdu_to_bursts_python.cc
     tag_message_trigger_python.cc
     upsample_python.cc
     access_code_to_pdu_python.cc python_bindings.cc)

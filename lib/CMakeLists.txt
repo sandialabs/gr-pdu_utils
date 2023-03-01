@@ -39,7 +39,6 @@ list(APPEND pdu_utils_sources
     pdu_downsample_impl.cc
     pdu_fine_time_measure_impl.cc
     pdu_complex_to_mag2_impl.cc
-    pdu_to_bursts_impl.cc
     pdu_quadrature_demod_cf_impl.cc
     constants.cc
     pdu_rotate_impl.cc

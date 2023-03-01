@@ -39,7 +39,6 @@ install(FILES
     pdu_downsample.h
     pdu_fine_time_measure.h
     pdu_complex_to_mag2.h
-    pdu_to_bursts.h
     tag_message_trigger.h
     pdu_quadrature_demod_cf.h
     pdu_rotate.h
