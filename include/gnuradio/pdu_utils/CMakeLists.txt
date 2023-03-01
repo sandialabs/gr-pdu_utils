@@ -41,7 +41,6 @@ install(FILES
     pdu_complex_to_mag2.h
     pdu_to_bursts.h
     tag_message_trigger.h
-    tags_to_pdu.h
     pdu_quadrature_demod_cf.h
     pdu_rotate.h
     pdu_slice.h

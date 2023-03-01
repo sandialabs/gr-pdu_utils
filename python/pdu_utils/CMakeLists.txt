@@ -44,7 +44,6 @@ add_custom_target(
 )
 
 GR_ADD_TEST(qa_constants ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_constants.py)
-GR_ADD_TEST(qa_tags_to_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tags_to_pdu.py)
 GR_ADD_TEST(qa_pdu_to_bursts ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_to_bursts.py)
 GR_ADD_TEST(qa_qt_pdu_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_qt_pdu_source.py)
 GR_ADD_TEST(qa_tag_message_trigger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tag_message_trigger.py)
