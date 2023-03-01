@@ -49,7 +49,6 @@ GR_ADD_TEST(qa_pdu_to_bursts ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa
 GR_ADD_TEST(qa_qt_pdu_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_qt_pdu_source.py)
 GR_ADD_TEST(qa_tag_message_trigger ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tag_message_trigger.py)
 GR_ADD_TEST(qa_pdu_gmsk_fc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_gmsk_fc.py)
-GR_ADD_TEST(qa_pdu_set_m ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_set_m.py)
 GR_ADD_TEST(qa_message_gate ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_message_gate.py)
 GR_ADD_TEST(qa_message_counter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_message_counter.py)
 GR_ADD_TEST(qa_message_emitter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_message_emitter.py)

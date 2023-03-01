@@ -13,7 +13,6 @@ install(FILES
     api.h
     constants.h
     pdu_gmsk_fc.h
-    pdu_set_m.h
     pdu_burst_combiner.h
     pdu_fir_filter.h
     pdu_pfb_resamp.h

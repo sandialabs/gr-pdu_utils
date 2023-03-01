@@ -57,7 +57,6 @@ list(APPEND pdu_utils_python_files
     pdu_range_filter_python.cc
     pdu_rotate_python.cc
     pdu_round_robin_python.cc
-    pdu_set_m_python.cc
     pdu_slice_python.cc
     pdu_to_bursts_python.cc
     tag_message_trigger_python.cc

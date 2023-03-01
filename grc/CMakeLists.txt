@@ -14,7 +14,6 @@ install(FILES
     pdu_utils_tag_message_trigger.block.yml
     pdu_utils_pdu_preamble.block.yml
     pdu_utils_pdu_gmsk_fc.block.yml
-    pdu_utils_pdu_set_m.block.yml
     pdu_utils_pdu_head_tail.block.yml
     pdu_utils_pdu_burst_combiner.block.yml
     pdu_utils_pdu_fir_filter.block.yml
