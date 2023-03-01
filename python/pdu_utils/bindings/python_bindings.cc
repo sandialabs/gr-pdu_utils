@@ -49,7 +49,6 @@ void bind_pdu_range_filter(py::module& m);
 void bind_pdu_rotate(py::module& m);
 void bind_pdu_round_robin(py::module& m);
 void bind_pdu_set_m(py::module& m);
-void bind_pdu_split(py::module& m);
 void bind_pdu_to_bursts(py::module& m);
 void bind_tag_message_trigger(py::module& m);
 void bind_tags_to_pdu(py::module& m);
@@ -113,7 +112,6 @@ PYBIND11_MODULE(pdu_utils_python, m)
     bind_pdu_rotate(m);
     bind_pdu_round_robin(m);
     bind_pdu_set_m(m);
-    bind_pdu_split(m);
     bind_pdu_to_bursts(m);
     bind_tag_message_trigger(m);
     bind_tags_to_pdu(m);

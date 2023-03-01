@@ -14,7 +14,6 @@ list(APPEND pdu_utils_sources
     pdu_gmsk_fc_impl.cc
     pdu_set_m_impl.cc
     pdu_burst_combiner_impl.cc
-    pdu_split_impl.cc
     pdu_fir_filter_impl.cc
     pdu_pfb_resamp_impl.cc
     #pdu_rational_resampler_cc_impl.cc

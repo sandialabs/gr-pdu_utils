@@ -15,7 +15,6 @@ install(FILES
     pdu_gmsk_fc.h
     pdu_set_m.h
     pdu_burst_combiner.h
-    pdu_split.h
     pdu_fir_filter.h
     pdu_pfb_resamp.h
     #pdu_rational_resampler_cc.h
