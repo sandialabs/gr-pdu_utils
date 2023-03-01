@@ -17,7 +17,6 @@ install(FILES
     pdu_utils_pdu_set_m.block.yml
     pdu_utils_pdu_head_tail.block.yml
     pdu_utils_pdu_burst_combiner.block.yml
-    pdu_utils_take_skip_to_pdu.block.yml
     pdu_utils_pdu_fir_filter.block.yml
     pdu_utils_pdu_pfb_resamp.block.yml
     #pdu_utils_pdu_rational_resampler_cc.xml

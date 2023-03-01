@@ -62,7 +62,6 @@ list(APPEND pdu_utils_python_files
     pdu_to_bursts_python.cc
     tag_message_trigger_python.cc
     tags_to_pdu_python.cc
-    take_skip_to_pdu_python.cc
     upsample_python.cc
     access_code_to_pdu_python.cc python_bindings.cc)
 

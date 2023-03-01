@@ -30,7 +30,6 @@ list(APPEND pdu_utils_sources
     pdu_head_tail_impl.cc
     tag_message_trigger_impl.cc
     tags_to_pdu_impl.cc
-    take_skip_to_pdu_impl.cc
     pdu_length_filter_impl.cc
     pdu_logger_impl.cc
     pdu_clock_recovery_impl.cc

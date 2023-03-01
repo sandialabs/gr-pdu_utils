@@ -52,7 +52,6 @@ void bind_pdu_set_m(py::module& m);
 void bind_pdu_to_bursts(py::module& m);
 void bind_tag_message_trigger(py::module& m);
 void bind_tags_to_pdu(py::module& m);
-void bind_take_skip_to_pdu(py::module& m);
 void bind_upsample(py::module& m);
 void bind_pdu_slice(py::module& m);
 void bind_access_code_to_pdu(py::module& m);
@@ -115,7 +114,6 @@ PYBIND11_MODULE(pdu_utils_python, m)
     bind_pdu_to_bursts(m);
     bind_tag_message_trigger(m);
     bind_tags_to_pdu(m);
-    bind_take_skip_to_pdu(m);
     bind_upsample(m);
     bind_pdu_slice(m);
     bind_access_code_to_pdu(m);
