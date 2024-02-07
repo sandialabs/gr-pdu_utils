@@ -15,6 +15,8 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
+#include <boost/format.hpp>
+#include <bitset>
 
 namespace gr {
 namespace pdu_utils {
@@ -72,19 +74,19 @@ pdu_align_impl::pdu_align_impl(std::string syncwords,
 	} catch (std::invalid_argument& ex) {
             GR_LOG_ERROR(
 			 d_logger,
-                         boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
-                             syncword.c_str());
+                         str(boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
+                             syncword.c_str()));
             exit(1);
         } catch (std::out_of_range& ex) {
 
             GR_LOG_ERROR(d_logger,
-                         boost::format("syncword '%s' out of range (max of 64 bits)") %
-                             syncword.c_str());
+                         str(boost::format("syncword '%s' out of range (max of 64 bits)") %
+                             syncword.c_str()));
             exit(1);
         }
         GR_LOG_DEBUG(d_logger,
-                     boost::format("PDU align syncword: 0x%016lX (mask 0x%016lX)") %
-                         syncword_int % mask_int);
+                     str(boost::format("PDU align syncword: 0x%016lX (mask 0x%016lX)") %
+                         syncword_int % mask_int));
         d_syncwords.push_back(syncword_int);
         d_syncword_lens.push_back(syncword_len);
         d_masks.push_back(mask_int);

@@ -13,6 +13,7 @@
 
 #include "upsample_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -50,7 +51,7 @@ void upsample_impl::handle_msg(pmt::pmt_t pdu)
 {
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
-        GR_LOG_NOTICE(d_logger, boost::format("received unexpected PMT (non-pair)"));
+        GR_LOG_NOTICE(d_logger, str(boost::format("received unexpected PMT (non-pair)")));
         return;
     }
 

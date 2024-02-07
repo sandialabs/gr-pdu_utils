@@ -13,6 +13,7 @@
 
 #include "pack_unpack_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -182,7 +183,7 @@ void pack_unpack_impl::handle_msg(pmt::pmt_t pdu)
         /*
          * All other modes are undefined... print a warning and drop PDU
          */
-        GR_LOG_WARN(d_logger, boost::format("Unknown block mode %d") % d_mode);
+        GR_LOG_WARN(d_logger, str(boost::format("Unknown block mode %d") % d_mode));
     }
 }
 
