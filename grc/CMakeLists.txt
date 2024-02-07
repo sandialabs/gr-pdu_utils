@@ -7,18 +7,13 @@
 #
 
 install(FILES
-    pdu_utils_tags_to_pdu.block.yml
-    pdu_utils_pdu_to_bursts.block.yml
     pdu_utils_qt_pdu_source.block.yml
     pdu_utils_message_gate.block.yml
-    pdu_utils_pdu_split.block.yml
     pdu_utils_tag_message_trigger.block.yml
     pdu_utils_pdu_preamble.block.yml
     pdu_utils_pdu_gmsk_fc.block.yml
-    pdu_utils_pdu_set_m.block.yml
     pdu_utils_pdu_head_tail.block.yml
     pdu_utils_pdu_burst_combiner.block.yml
-    pdu_utils_take_skip_to_pdu.block.yml
     pdu_utils_pdu_fir_filter.block.yml
     pdu_utils_pdu_pfb_resamp.block.yml
     #pdu_utils_pdu_rational_resampler_cc.xml

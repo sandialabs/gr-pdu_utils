@@ -13,6 +13,7 @@
 
 #include "message_gate_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -48,8 +49,8 @@ message_gate_impl::~message_gate_impl() {}
 bool message_gate_impl::stop()
 {
     GR_LOG_INFO(d_logger,
-                boost::format("Message gate passed %d messages and blocked %d messages") %
-                    d_n_passed % d_n_blocked);
+                str(boost::format("Message gate passed %d messages and blocked %d messages") %
+                    d_n_passed % d_n_blocked));
     return true;
 }
 
