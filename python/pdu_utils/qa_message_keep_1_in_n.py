@@ -45,7 +45,7 @@ class qa_message_keep_1_in_n (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(1, debug.num_messages())
+        self.assertEqual(1, debug.num_messages())
 
 
     def test_002_send8_keep4 (self):
@@ -63,7 +63,7 @@ class qa_message_keep_1_in_n (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(4, debug.num_messages())
+        self.assertEqual(4, debug.num_messages())
 
 
 if __name__ == '__main__':

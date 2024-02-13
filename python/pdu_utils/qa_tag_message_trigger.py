@@ -47,7 +47,7 @@ class qa_tag_message_trigger (gr_unittest.TestCase):
         self.tb.msg_connect((tmt, 'msg'), (debug, 'store'))
         self.tb.run ()
 
-        self.assertEquals(debug.num_messages(),2)
+        self.assertEqual(debug.num_messages(),2)
         self.assertTrue(pmt.eqv(msg, debug.get_message(0)))
 
         self.tb = None
@@ -74,7 +74,7 @@ class qa_tag_message_trigger (gr_unittest.TestCase):
         self.tb.msg_connect((tmt, 'msg'), (debug, 'store'))
         self.tb.run ()
 
-        self.assertEquals(debug.num_messages(),3)
+        self.assertEqual(debug.num_messages(),3)
         self.assertTrue(pmt.eqv(msg, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
@@ -100,7 +100,7 @@ class qa_tag_message_trigger (gr_unittest.TestCase):
         self.tb.msg_connect((tmt, 'msg'), (debug, 'store'))
         self.tb.run ()
 
-        self.assertEquals(debug.num_messages(),2)
+        self.assertEqual(debug.num_messages(),2)
         self.assertTrue(pmt.eqv(msg, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
@@ -133,7 +133,7 @@ class qa_tag_message_trigger (gr_unittest.TestCase):
         self.tb.msg_connect((tmt, 'msg'), (debug, 'store'))
         self.tb.run ()
 
-        self.assertEquals(debug.num_messages(),3)
+        self.assertEqual(debug.num_messages(),3)
         self.assertTrue(pmt.eqv(msg, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
