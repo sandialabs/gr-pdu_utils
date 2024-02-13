@@ -47,8 +47,8 @@ class qa_message_emitter (gr_unittest.TestCase):
         self.tb.wait()
         
         
-        self.assertEquals(3, debug.num_messages())
-        self.assertEquals(3, emitter.get_n_msgs() )
+        self.assertEqual(3, debug.num_messages())
+        self.assertEqual(3, emitter.get_n_msgs() )
 
     def test_002_emit2 (self):
         emitter = pdu_utils.message_emitter()
@@ -66,8 +66,8 @@ class qa_message_emitter (gr_unittest.TestCase):
         self.tb.wait()
 
         print(emitter.get_n_msgs())
-        self.assertEquals(2, debug.num_messages())
-        self.assertEquals(2, emitter.get_n_msgs() )
+        self.assertEqual(2, debug.num_messages())
+        self.assertEqual(2, emitter.get_n_msgs() )
         self.assertTrue(pmt.eqv(pmt.PMT_NIL, debug.get_message(0)))
         self.assertTrue(pmt.eqv(msg, debug.get_message(1)))
 
