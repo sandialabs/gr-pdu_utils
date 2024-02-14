@@ -135,7 +135,7 @@ class qt_pdu_source(gr.sync_block, QGroupBox):
 
     def parse_byte_array(self,v_txt):
         vec = []
-        for entry in re.split('\D',v_txt):
+        for entry in re.split(r'\D',v_txt):
             try:
                 item = int(entry)
                 vec.append(item)
