@@ -16,7 +16,7 @@
 #include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
 #include <bitset>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -62,16 +62,13 @@ access_code_to_pdu_impl::access_code_to_pdu_impl(std::string access_code,
 
     // throw error if access code is empty and strict mode is not on
     if (d_access_len == 0 && d_readmode != READ_STRICT) {
-        GR_LOG_ERROR(
-            d_logger,
-            boost::format("access code should not be empty outside of strict mode"));
+        d_logger->error("access code should not be empty outside of strict mode");
         throw std::runtime_error("");
     }
 
     // make sure burst length is at least the size of the sum of the syncwords
     if (d_burst_len < d_access_len + d_tail_len) {
-        GR_LOG_ERROR(d_logger,
-                     boost::format("total burst length shorter than syncword(s)"));
+        d_logger->error("total burst length shorter than syncword(s)");
         throw std::runtime_error("");
     }
 
@@ -125,19 +122,15 @@ void access_code_to_pdu_impl::set_sync(const std::string sync_string,
         syncword_len = (is_hex) ? 4 * (syncword_len - 2) : syncword_len;
         mask_int = (syncword_len >= 64 ? -1 : (1lu << syncword_len) - 1);
     } catch (std::invalid_argument& ex) {
-        GR_LOG_ERROR(
-            d_logger,
-            boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
+        d_logger->error("unable to parse syncword '{}' (must be base 2 or 16)",
                 syncword.c_str());
         throw std::runtime_error("");
     } catch (std::out_of_range& ex) {
-        GR_LOG_ERROR(d_logger,
-                     boost::format("syncword '%s' out of range (max of 64 bits)") %
+        d_logger->error("syncword '{}' out of range (max of 64 bits)",
                          syncword.c_str());
         throw std::runtime_error("");
     }
-    GR_LOG_DEBUG(d_logger,
-                 boost::format("syncword: 0x%016lX (mask 0x%016lX)") % syncword_int %
+    d_logger->debug("syncword: {:#+16X} (mask {:#+16X})",syncword_int,
                      mask_int);
     *sync = syncword_int;
     *mask = mask_int;

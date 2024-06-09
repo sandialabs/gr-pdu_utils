@@ -13,7 +13,7 @@
 
 #include "extract_metadata_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -78,32 +78,26 @@ void extract_metadata_impl::handle_msg(pmt::pmt_t msg)
                 try {
                     value = pmt::from_double(pmt::to_double(value) * d_scale + d_offset);
                 } catch (const pmt::wrong_type& e) {
-                    GR_LOG_ERROR(d_logger, "was real...but double() failed");
+                    d_logger->error("was real...but double() failed");
                 }
             } else if (pmt::is_uint64(value)) {
                 try {
                     value = pmt::from_uint64(
                         uint64_t(pmt::to_uint64(value) * d_scale + d_offset));
                 } catch (const pmt::wrong_type& e) {
-                    GR_LOG_ERROR(d_logger,
-                                 boost::format("something went wrong getting uint64") %
-                                     value);
+                    d_logger->error("something went wrong getting uint64 {}",uint64_t(pmt::to_uint64(value) * d_scale + d_offset));
                 }
             } else if (pmt::is_integer(value)) {
                 try {
                     value =
                         pmt::from_long(long(pmt::to_long(value) * d_scale + d_offset));
                 } catch (const pmt::wrong_type& e) {
-                    GR_LOG_ERROR(d_logger,
-                                 boost::format("something went wrong getting long") %
-                                     value);
+                    d_logger->error("something went wrong getting long {}",long(pmt::to_long(value) * d_scale + d_offset));
                 }
             } else if (pmt::is_complex(value)) {
                 ;
             } else {
-                GR_LOG_ERROR(
-                    d_logger,
-                    boost::format("got a number...but not an int, real, complex"));
+                d_logger->error("got a number...but not an int, real, complex");
             }
         }
 

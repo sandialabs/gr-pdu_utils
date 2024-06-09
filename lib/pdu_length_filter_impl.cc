@@ -13,7 +13,7 @@
 
 #include "pdu_length_filter_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -50,9 +50,8 @@ pdu_length_filter_impl::~pdu_length_filter_impl() {}
  */
 bool pdu_length_filter_impl::stop()
 {
-    GR_LOG_INFO(d_logger,
-                boost::format("PDU length filter blocked %d and passed %d PDUs") %
-                    d_n_blocked % d_n_passed);
+    d_logger->info("PDU length filter blocked {} and passed {} PDUs",
+                    d_n_blocked,d_n_passed);
     return true;
 }
 
@@ -64,12 +63,12 @@ void pdu_length_filter_impl::handle_pdu(pmt::pmt_t pdu)
 {
     // make sure PDU data is formed properly
     if (!(pmt::is_pair(pdu))) {
-        GR_LOG_WARN(d_logger, "received unexpected PMT (non-pair)");
+        d_logger->warn("received unexpected PMT (non-pair)");
         return;
     }
 
     if (!pmt::is_uniform_vector(pmt::cdr(pdu))) {
-        GR_LOG_WARN(d_logger, "received unexpected PMT (CDR not uniform vector)");
+        d_logger->warn("received unexpected PMT (CDR not uniform vector)");
         return;
     }
 

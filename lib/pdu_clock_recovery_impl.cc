@@ -14,7 +14,7 @@
 #include "pdu_clock_recovery_impl.h"
 #include <gnuradio/io_signature.h>
 #include <volk/volk.h>
-
+#include <boost/format.hpp>
 #include <algorithm>
 
 namespace gr {
@@ -91,7 +91,7 @@ void pdu_clock_recovery_impl::set_window_type(window_type type)
 {
     d_window_type = type;
 
-    GR_LOG_INFO(d_logger, boost::format("Changing Window type %d") % d_window_type);
+    d_logger->info("Changing Window type {}",d_window_type);
 
     // flush all the existing pre-made memory & recreate it.
     fft_cleanup();
@@ -315,27 +315,21 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
             }
         }
 
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("BurstID %u, Input Sz: %d, FFT Power: %d, FFTSz: %d") %
-                         d_burst_id % length % fftpower % fftsize);
+        d_logger->debug("BurstID {}, Input Sz: {}, FFT Power: {}, FFTSz: {}",
+                         d_burst_id,length,fftpower,fftsize);
     }
 
     // calculate sample offset
     offset = (length - fftsize) / 2;
     if (d_debug) {
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("BurstID %u sampLen:%d len:%d offset:%d") %
-                         d_burst_id % length % fftsize % offset);
+        d_logger->debug("BurstID {} sampLen:{} len:{} offset:{}",d_burst_id,length,fftsize,offset);
     }
 
     // make a list of zero crossing locations, offset
     std::vector<float> zero_crossings = findZeroCrossings(&data[offset], fftsize);
     if (zero_crossings.empty() || zero_crossings.size() < (size_t)(fftsize / (2 * SPS_MAX))) {
         if (d_debug) {
-            GR_LOG_WARN(
-                d_logger,
-                boost::format("BurstID %u no/low zero crossings found, dropping") %
-                    d_burst_id);
+            d_logger->warn("BurstID {} no/low zero crossings found, dropping", d_burst_id);
         }
         return;
     }
@@ -376,10 +370,8 @@ void pdu_clock_recovery_impl::pdu_handler(pmt::pmt_t pdu)
     float symbol_freq = peak_bin / fftsize / 2.0f;
 
     if (d_debug) {
-        GR_LOG_DEBUG(
-            d_logger,
-            boost::format("peak_bin %f   fftsize %d   symbol_freq %f    symbol_rate %f") %
-                peak_bin % fftsize % symbol_freq % (symbol_freq * samp_rate));
+        d_logger->debug("peak_bin {:e}   fftsize {}   symbol_freq {:e}    symbol_rate {:e}",
+                peak_bin,fftsize,symbol_freq,(symbol_freq * samp_rate));
     }
 
     // now extract soft symbols
@@ -445,7 +437,7 @@ bool pdu_clock_recovery_impl::inputCheck(pmt::pmt_t pdu)
 {
 
     if (!pmt::is_pair(pdu)) {
-        GR_LOG_WARN(d_logger, "PDU is not a pair, dropping\n");
+        d_logger->warn("PDU is not a pair, dropping\n");
         return false;
     }
 
@@ -453,19 +445,19 @@ bool pdu_clock_recovery_impl::inputCheck(pmt::pmt_t pdu)
     pmt::pmt_t pdu_data = pmt::cdr(pdu);
 
     if (!pmt::is_f32vector(pdu_data)) {
-        GR_LOG_WARN(d_logger, "PDU is not f32vector, dropping\n");
+        d_logger->warn("PDU is not f32vector, dropping\n");
         return false;
     }
 
     if (!pmt::is_dict(metadata)) {
-        GR_LOG_WARN(d_logger, "PDU metadata is not dict, dropping\n");
+        d_logger->warn("PDU metadata is not dict, dropping\n");
         return false;
     }
 
     pmt::pmt_t pmt_samp_rate =
         pmt::dict_ref(metadata, PMTCONSTSTR__sample_rate(), pmt::get_PMT_NIL());
     if (pmt_samp_rate == pmt::get_PMT_NIL() || !pmt::is_number(pmt_samp_rate)) {
-        GR_LOG_WARN(d_logger, "no sample rate, dropping\n");
+        d_logger->warn("no sample rate, dropping\n");
         return false;
     }
 
@@ -540,10 +532,9 @@ int pdu_clock_recovery_impl::findMaxFundamental(const float* mags, const int len
     float thresh = 0.5 * d_mags[max_bin];
 
     if (d_debug) {
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("first pass max_bin %d(%f)   first_bin %d") % max_bin %
-                         d_mags[max_bin] % first_bin);
-        GR_LOG_DEBUG(d_logger, boost::format("harmonic thresh %f") % thresh);
+        d_logger->debug("first pass max_bin {}({:e})   first_bin {}",max_bin,
+                         d_mags[max_bin], first_bin);
+        d_logger->debug("harmonic thresh {:e}", thresh);
     }
 
 
@@ -558,9 +549,8 @@ int pdu_clock_recovery_impl::findMaxFundamental(const float* mags, const int len
         if (first_bin <= funIdx && funIdx < len) // avoid DC reject & inbounds
         {
             if (d_debug) {
-                GR_LOG_DEBUG(d_logger,
-                             boost::format("harmonic check %d(%f) thresh %f  denom %d") %
-                                 funIdx % d_mags[funIdx] % thresh % denom);
+                d_logger->debug("harmonic check {}({:e}) thresh {:e}  denom {}",
+                                 funIdx, d_mags[funIdx], thresh, denom);
             }
 
             if (d_mags[funIdx] >= thresh || d_mags[funIdx - 1] >= thresh ||
@@ -576,9 +566,8 @@ int pdu_clock_recovery_impl::findMaxFundamental(const float* mags, const int len
                 }
 
                 if (d_debug) {
-                    GR_LOG_DEBUG(d_logger,
-                                 boost::format("harmonic found, denom %d, bin %d(%f)") %
-                                     denom % max_bin % d_mags[max_bin]);
+                    d_logger->debug("harmonic found, denom {}, bin {}({:e})",
+                                     denom, max_bin, d_mags[max_bin]);
                 }
 
                 break;
@@ -590,8 +579,7 @@ int pdu_clock_recovery_impl::findMaxFundamental(const float* mags, const int len
     } // end for(denom
 
     if (d_debug) {
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("second pass max_bin %d(%f)") % max_bin %
+        d_logger->debug("second pass max_bin {}({:e})", max_bin, 
                          d_mags[max_bin]);
     }
 
@@ -624,14 +612,10 @@ float pdu_clock_recovery_impl::calcPeakBin(const float* mags,
 
         if (std::isnan(ans) || std::isinf(ans) || (ans < 0)) {
             if (d_debug) {
-                GR_LOG_DEBUG(
-                    d_logger,
-                    boost::format("busrtID:%u peak_bin is inf or nan, reverting") %
+                d_logger->debug("burstID:{} peak_bin is inf or nan, reverting",
                         d_burst_id);
-                GR_LOG_DEBUG(
-                    d_logger,
-                    boost::format("burstID:%u max_bin:%d alpha:%f beta:%f gamma:%f") %
-                        d_burst_id % max_bin % alpha % beta % gamma);
+                d_logger->debug("burstID:{} max_bin:{} alpha:{:e} beta:{:e} gamma:{:e}",
+                        d_burst_id, max_bin, alpha, beta, gamma);
             }
             ans = max_bin;
         }
@@ -641,11 +625,8 @@ float pdu_clock_recovery_impl::calcPeakBin(const float* mags,
             // not a local maxima, i.e. a linear increasing/decreasing set of points
 
             if (d_debug) {
-                GR_LOG_DEBUG(
-                    d_logger,
-                    boost::format(
-                        "burstID:%u bin_offset outside sanity check %f, reverting") %
-                        d_burst_id % bin_offset);
+                d_logger->debug("burstID:{} bin_offset outside sanity check {:e}, reverting",
+                        d_burst_id, bin_offset);
             }
 
             ans = max_bin;
@@ -725,8 +706,7 @@ std::vector<float> pdu_clock_recovery_impl::extractSymbols(const float* data,
     // NOTE: The SincWaveform & FFT were not taken from the start of the file. We need to
     // offset clock_phase to account for this
     if (d_debug) {
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("Pre correction phase %f   clock_phase %f") % phase %
+        d_logger->debug("Pre correction phase {:e}   clock_phase {:e}",phase,
                          clock_phase);
     }
     clock_phase -= offset * symbol_freq;
@@ -737,8 +717,7 @@ std::vector<float> pdu_clock_recovery_impl::extractSymbols(const float* data,
         clock_phase -= 1.0f;
     }
     if (d_debug) {
-        GR_LOG_DEBUG(d_logger,
-                     boost::format("phase %f   clock_phase %f") % phase % clock_phase);
+        d_logger->debug("phase {:e}   clock_phase {:e}", phase, clock_phase);
     }
 
 

@@ -13,7 +13,7 @@
 
 #include "tag_message_trigger_impl.h"
 #include <gnuradio/io_signature.h>
-
+#include <boost/format.hpp>
 namespace gr {
 namespace pdu_utils {
 
@@ -69,21 +69,17 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
     set_holdoff(holdoff);
 
     if (d_tpdu_mode) {
-        GR_LOG_NOTICE(this->d_logger,
-                      boost::format("started at time %f in timed PDU mode") % start_time);
+        this->d_logger->notice("started at time {:e} in timed PDU mode",start_time);
     } else {
-        GR_LOG_NOTICE(this->d_logger,
-                      boost::format("started at time %f in normal message mode") %
+        this->d_logger->notice("started at time {:e} in normal message mode",
                           start_time);
     }
 
     if (pmt::eq(d_arming_key, pmt::PMT_NIL)) {
-        GR_LOG_WARN(this->d_logger, "operating in always armed mode");
+        this->d_logger->warn("operating in always armed mode");
         d_fire_at_will = true;
     } else {
-        GR_LOG_WARN(this->d_logger,
-                    boost::format("operating with arming key \"%s\"") %
-                        pmt::symbol_to_string(arming_key));
+        this->d_logger->warn("operating with arming key {}", pmt::symbol_to_string(arming_key));
     }
 
     this->message_port_register_in(PMTCONSTSTR__ctrl());
@@ -205,7 +201,7 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
 
                 // if we have reached the transmit limit, disarm and continue
                 if (d_tx_limit == 0) {
-                    GR_LOG_NOTICE(this->d_logger, "not firing, TX Limit reached");
+                    this->d_logger->notice( "not firing, TX Limit reached");
                     d_armed = false;
 
                     // otherwise fire the burst
@@ -266,10 +262,7 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
 
                 // we aren't armed, do nothing
             } else {
-                GR_LOG_INFO(
-                    this->d_logger,
-                    boost::format("trigger received at offset %d but not ready to fire") %
-                        d_tag.offset);
+                    this->d_logger->info("trigger received at offset {} but not ready to fire",d_tag.offset);
             }
 
             // if we get a rx_time tag from the USRP, use that to set timing offsets
@@ -277,9 +270,8 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
             set_known_time_offset(pmt::to_uint64(pmt::tuple_ref(d_tag.value, 0)),
                                   pmt::to_double(pmt::tuple_ref(d_tag.value, 1)),
                                   d_tag.offset);
-            GR_LOG_INFO(this->d_logger,
-                        boost::format("got a time update ({%d  %f} at %d)") %
-                            d_known_time_int_sec % d_known_time_frac_sec %
+            this->d_logger->info("got a time update ({{}  {:e}} at {})",
+                            d_known_time_int_sec,d_known_time_frac_sec,
                             d_known_time_offset);
         }
     }
