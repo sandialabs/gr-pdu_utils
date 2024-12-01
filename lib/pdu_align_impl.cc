@@ -15,6 +15,7 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
+#include <bitset>
 
 namespace gr {
 namespace pdu_utils {
