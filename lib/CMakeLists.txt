@@ -12,9 +12,7 @@
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND pdu_utils_sources
     pdu_gmsk_fc_impl.cc
-    pdu_set_m_impl.cc
     pdu_burst_combiner_impl.cc
-    pdu_split_impl.cc
     pdu_fir_filter_impl.cc
     pdu_pfb_resamp_impl.cc
     #pdu_rational_resampler_cc_impl.cc
@@ -30,8 +28,6 @@ list(APPEND pdu_utils_sources
     msg_drop_random_impl.cc
     pdu_head_tail_impl.cc
     tag_message_trigger_impl.cc
-    tags_to_pdu_impl.cc
-    take_skip_to_pdu_impl.cc
     pdu_length_filter_impl.cc
     pdu_logger_impl.cc
     pdu_clock_recovery_impl.cc
@@ -43,7 +39,6 @@ list(APPEND pdu_utils_sources
     pdu_downsample_impl.cc
     pdu_fine_time_measure_impl.cc
     pdu_complex_to_mag2_impl.cc
-    pdu_to_bursts_impl.cc
     pdu_quadrature_demod_cf_impl.cc
     constants.cc
     pdu_rotate_impl.cc
