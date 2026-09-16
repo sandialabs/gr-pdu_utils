@@ -42,8 +42,8 @@ class qa_message_gate (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(4, gate.get_n_passed())
-        self.assertEquals(4, debug.num_messages())
+        self.assertEqual(4, gate.get_n_passed())
+        self.assertEqual(4, debug.num_messages())
 
     def test_002_2x_pass_3x_block (self):
         strobe = blocks.message_strobe(pmt.PMT_NIL, 25)
@@ -59,9 +59,9 @@ class qa_message_gate (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-        self.assertEquals(2, gate.get_n_passed())
-        self.assertEquals(2, debug.num_messages())
-        self.assertEquals(3, gate.get_n_blocked())
+        self.assertEqual(2, gate.get_n_passed())
+        self.assertEqual(2, debug.num_messages())
+        self.assertEqual(3, gate.get_n_blocked())
 
 
 if __name__ == '__main__':
