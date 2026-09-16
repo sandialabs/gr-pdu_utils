@@ -13,9 +13,7 @@ install(FILES
     api.h
     constants.h
     pdu_gmsk_fc.h
-    pdu_set_m.h
     pdu_burst_combiner.h
-    pdu_split.h
     pdu_fir_filter.h
     pdu_pfb_resamp.h
     #pdu_rational_resampler_cc.h
@@ -41,10 +39,7 @@ install(FILES
     pdu_downsample.h
     pdu_fine_time_measure.h
     pdu_complex_to_mag2.h
-    pdu_to_bursts.h
     tag_message_trigger.h
-    tags_to_pdu.h
-    take_skip_to_pdu.h
     pdu_quadrature_demod_cf.h
     pdu_rotate.h
     pdu_slice.h

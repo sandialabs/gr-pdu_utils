@@ -13,6 +13,7 @@
 
 #include "extract_metadata_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -86,8 +87,8 @@ void extract_metadata_impl::handle_msg(pmt::pmt_t msg)
                         uint64_t(pmt::to_uint64(value) * d_scale + d_offset));
                 } catch (const pmt::wrong_type& e) {
                     GR_LOG_ERROR(d_logger,
-                                 boost::format("something went wrong getting uint64") %
-                                     value);
+                                 str(boost::format("something went wrong getting uint64") %
+                                     value));
                 }
             } else if (pmt::is_integer(value)) {
                 try {
@@ -95,15 +96,15 @@ void extract_metadata_impl::handle_msg(pmt::pmt_t msg)
                         pmt::from_long(long(pmt::to_long(value) * d_scale + d_offset));
                 } catch (const pmt::wrong_type& e) {
                     GR_LOG_ERROR(d_logger,
-                                 boost::format("something went wrong getting long") %
-                                     value);
+                                 str(boost::format("something went wrong getting long") %
+                                     value));
                 }
             } else if (pmt::is_complex(value)) {
                 ;
             } else {
                 GR_LOG_ERROR(
                     d_logger,
-                    boost::format("got a number...but not an int, real, complex"));
+                    str(boost::format("got a number...but not an int, real, complex")));
             }
         }
 

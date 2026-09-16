@@ -13,6 +13,7 @@
 
 #include "pdu_length_filter_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -51,8 +52,8 @@ pdu_length_filter_impl::~pdu_length_filter_impl() {}
 bool pdu_length_filter_impl::stop()
 {
     GR_LOG_INFO(d_logger,
-                boost::format("PDU length filter blocked %d and passed %d PDUs") %
-                    d_n_blocked % d_n_passed);
+                str(boost::format("PDU length filter blocked %d and passed %d PDUs") %
+                    d_n_blocked % d_n_passed));
     return true;
 }
 
