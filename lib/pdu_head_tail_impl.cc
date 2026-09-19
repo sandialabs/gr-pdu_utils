@@ -13,6 +13,7 @@
 
 #include "pdu_head_tail_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -50,8 +51,8 @@ pdu_head_tail_impl::pdu_head_tail_impl(uint32_t input_type,
     } else {
         GR_LOG_FATAL(
             d_logger,
-            boost::format("PDU HEAD/TAIL block instantiated in unknown mode %d") %
-                d_input_type);
+            str(boost::format("PDU HEAD/TAIL block instantiated in unknown mode %d") %
+                d_input_type));
         throw std::invalid_argument("unknown mode");
     }
 

@@ -13,6 +13,7 @@
 
 #include "tag_message_trigger_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -70,11 +71,11 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
 
     if (d_tpdu_mode) {
         GR_LOG_NOTICE(this->d_logger,
-                      boost::format("started at time %f in timed PDU mode") % start_time);
+                      str(boost::format("started at time %f in timed PDU mode") % start_time));
     } else {
         GR_LOG_NOTICE(this->d_logger,
-                      boost::format("started at time %f in normal message mode") %
-                          start_time);
+                      str(boost::format("started at time %f in normal message mode") %
+                          start_time));
     }
 
     if (pmt::eq(d_arming_key, pmt::PMT_NIL)) {
@@ -82,8 +83,8 @@ tag_message_trigger_impl<T>::tag_message_trigger_impl(pmt::pmt_t trigger_key,
         d_fire_at_will = true;
     } else {
         GR_LOG_WARN(this->d_logger,
-                    boost::format("operating with arming key \"%s\"") %
-                        pmt::symbol_to_string(arming_key));
+                    str(boost::format("operating with arming key \"%s\"") %
+                        pmt::symbol_to_string(arming_key)));
     }
 
     this->message_port_register_in(PMTCONSTSTR__ctrl());
@@ -268,8 +269,8 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
             } else {
                 GR_LOG_INFO(
                     this->d_logger,
-                    boost::format("trigger received at offset %d but not ready to fire") %
-                        d_tag.offset);
+                    str(boost::format("trigger received at offset %d but not ready to fire") %
+                        d_tag.offset));
             }
 
             // if we get a rx_time tag from the USRP, use that to set timing offsets
@@ -278,9 +279,9 @@ int tag_message_trigger_impl<T>::work(int noutput_items,
                                   pmt::to_double(pmt::tuple_ref(d_tag.value, 1)),
                                   d_tag.offset);
             GR_LOG_INFO(this->d_logger,
-                        boost::format("got a time update ({%d  %f} at %d)") %
+                        str(boost::format("got a time update ({%d  %f} at %d)") %
                             d_known_time_int_sec % d_known_time_frac_sec %
-                            d_known_time_offset);
+                            d_known_time_offset));
         }
     }
 

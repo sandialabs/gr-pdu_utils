@@ -16,6 +16,7 @@
 #include <gnuradio/pdu_utils/constants.h>
 #include <volk/volk.h>
 #include <bitset>
+#include <boost/format.hpp>
 
 namespace gr {
 namespace pdu_utils {
@@ -64,14 +65,14 @@ access_code_to_pdu_impl::access_code_to_pdu_impl(std::string access_code,
     if (d_access_len == 0 && d_readmode != READ_STRICT) {
         GR_LOG_ERROR(
             d_logger,
-            boost::format("access code should not be empty outside of strict mode"));
+            str(boost::format("access code should not be empty outside of strict mode")));
         throw std::runtime_error("");
     }
 
     // make sure burst length is at least the size of the sum of the syncwords
     if (d_burst_len < d_access_len + d_tail_len) {
         GR_LOG_ERROR(d_logger,
-                     boost::format("total burst length shorter than syncword(s)"));
+                     str(boost::format("total burst length shorter than syncword(s)")));
         throw std::runtime_error("");
     }
 
@@ -127,18 +128,18 @@ void access_code_to_pdu_impl::set_sync(const std::string sync_string,
     } catch (std::invalid_argument& ex) {
         GR_LOG_ERROR(
             d_logger,
-            boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
-                syncword.c_str());
+            str(boost::format("unable to parse syncword '%s' (must be base 2 or 16)") %
+                syncword.c_str()));
         throw std::runtime_error("");
     } catch (std::out_of_range& ex) {
         GR_LOG_ERROR(d_logger,
-                     boost::format("syncword '%s' out of range (max of 64 bits)") %
-                         syncword.c_str());
+                     str(boost::format("syncword '%s' out of range (max of 64 bits)") %
+                         syncword.c_str()));
         throw std::runtime_error("");
     }
     GR_LOG_DEBUG(d_logger,
-                 boost::format("syncword: 0x%016lX (mask 0x%016lX)") % syncword_int %
-                     mask_int);
+                 str(boost::format("syncword: 0x%016lX (mask 0x%016lX)") % syncword_int %
+                     mask_int));
     *sync = syncword_int;
     *mask = mask_int;
     *len = syncword_len;
